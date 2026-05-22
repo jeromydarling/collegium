@@ -96,7 +96,12 @@ export const demoStore = {
 
 export function useDemoState(): DemoState {
   const [state, setLocal] = useState<DemoState>(currentState);
-  useEffect(() => demoStore.subscribe(setLocal), []);
+  useEffect(() => {
+    const unsubscribe = demoStore.subscribe(setLocal);
+    return () => {
+      unsubscribe();
+    };
+  }, []);
   return state;
 }
 

@@ -1,73 +1,91 @@
-# Welcome to your Lovable project
+# Collegium
 
-## Project info
+> A guild operating system for Christian and Catholic legal communities.
+>
+> _Lex caritas est — the law is love made just._
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Collegium is built on the moral imagination of Aquinas and Catholic Social
+Teaching. It is the recurring rhythms of guild life — **chapter, mentor,
+service, formation, leadership** — supported by a Narrative Relational
+Intelligence (NRI) layer that helps stewards notice who is drifting, who
+is rising, and where the chapter is being formed.
 
-## How can I edit this code?
+## What's in the box
 
-There are several ways of editing your application.
+- **Marketing site** — `/`, `/manifesto`, `/about`, `/modules`,
+  `/formation`, `/pricing`, `/contact`.
+- **Working demo** — `/demo` gates an in-memory experience covering all
+  five modules (Chapters, Mentorship, Service, Formation, Advancement)
+  plus the **NRI Pulse** surface, a **Daily Office** for legal vocation,
+  and an ecumenical legal-liturgical calendar.
+- **Seed library** — public-domain readings from Aquinas, Augustine,
+  _Rerum Novarum_, _Quadragesimo Anno_, Blackstone, Newman, Burke, Roman
+  law, and More's _Utopia_ — every entry linked to its verified
+  Gutenberg / Internet Archive / Vatican source.
 
-**Use Lovable**
+## Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Vite + React 18 + TypeScript
+- Tailwind CSS + shadcn-ui (inherited from the CROS starter)
+- React Router 6 (BrowserRouter with auto base-path)
+- Demo state in localStorage; no backend dependency
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Local development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm install
+npm run dev   # serves on http://localhost:8080 (or 5173 if 8080 is taken)
 ```
 
-**Edit a file directly in GitHub**
+## Build
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run build            # local build, base = "/"
+VITE_COLLEGIUM_BASE=/collegium/ npm run build   # GitHub Pages build
+```
 
-**Use GitHub Codespaces**
+## Deploy
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The repo ships with `.github/workflows/deploy-pages.yml`, which on every
+push to `main` builds with `VITE_COLLEGIUM_BASE=/${repo-name}/` and
+publishes via `actions/deploy-pages@v4`.
 
-## What technologies are used for this project?
+To enable the deploy:
 
-This project is built with:
+1. **Settings → Pages → Source = GitHub Actions** (one-time).
+2. Push to `main`.
+3. The workflow takes ~1 minute. The site URL appears at the bottom of
+   the workflow run.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The workflow also copies `index.html` to `404.html` so that GitHub
+Pages's default 404 routes deep-link visits back through React Router.
 
-## How can I deploy this project?
+## Layout
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```
+src/
+├── collegium/              ← The Collegium app
+│   ├── CollegiumApp.tsx    ← Top-level router
+│   ├── brand.ts            ← Module catalogue, motto, principles
+│   ├── styles.css          ← Collegium theme (wine / gold / cream)
+│   ├── content/            ← Aquinas, CST, library, calendar, devotional
+│   ├── data/demo.ts        ← Chapters, people, mentor pairs, NRI briefings
+│   ├── lib/demoStore.ts    ← In-memory + localStorage demo state
+│   ├── components/         ← PublicLayout, AppLayout, Logo
+│   ├── pages/              ← Marketing pages
+│   └── app/                ← Demo app pages
+├── components/ui/          ← shadcn primitives (inherited)
+└── main.tsx                ← Boots CollegiumApp
+```
 
-## Can I connect a custom domain to my Lovable project?
+## Voice
 
-Yes, you can!
+We cite our sources. Latin appears as a discipline, not decoration. We
+trust the reader. We do not condescend. The five modules are named in
+Latin because the communities we serve already think this way.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Source: TBD by the maintainer. Public-domain texts cited in the library
+remain in the public domain in their original form; our excerpts and
+plain-language summaries are © Collegium.
