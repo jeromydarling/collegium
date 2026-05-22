@@ -52,12 +52,40 @@ export function Landing() {
             </Link>
           </div>
 
-          {/* Three front doors — Auxilium for the person seeking help,
-              Patrocinium for the advocate offering it, Justice Gap for
-              the conscience watching the gap. */}
+          {/* Three doors into the network, by audience:
+              Collegium — stewards, members, mentors (the resource network itself).
+              Auxilium — clients seeking help.
+              Patrocinium — lawyers offering it.
+              Justice Gap sits at the bottom of the hero as awareness content,
+              not a door. */}
           <div className="mt-10 sm:mt-12 max-w-5xl mx-auto px-2">
             <hr className="collegium-gold-rule" />
             <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              <Link
+                to="/app"
+                className="group text-left bg-[hsl(var(--c-wine))] text-[hsl(var(--c-cream))] border border-[hsl(var(--c-wine))] rounded-xl p-5 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-gold)/0.25)] flex items-center justify-center text-[hsl(var(--c-cream))] shrink-0">
+                    <Scale size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="collegium-latin text-xs text-[hsl(var(--c-gold))] mb-0.5 not-italic">
+                      Collegium
+                    </div>
+                    <h3 className="collegium-display text-base sm:text-lg mb-1 leading-tight text-[hsl(var(--c-cream))]">
+                      Steward, mentor, member?
+                    </h3>
+                    <p className="text-sm text-[hsl(40_25%_85%)] leading-snug">
+                      Enter the resource network — chapters, mentorship, NRI, Communio.{" "}
+                      <span className="text-[hsl(var(--c-gold))] font-medium underline decoration-[hsl(var(--c-gold)/0.5)] underline-offset-2 group-hover:decoration-[hsl(var(--c-gold))]">
+                        Open the app →
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </Link>
+
               <Link
                 to="/auxilium"
                 className="group text-left bg-white border border-[hsl(var(--c-border))] rounded-xl p-5 hover:shadow-md transition-shadow"
@@ -107,32 +135,13 @@ export function Landing() {
                   </div>
                 </div>
               </Link>
-
-              <Link
-                to="/justicegap"
-                className="group text-left bg-[hsl(220_30%_10%)] border border-[hsl(220_20%_22%)] rounded-xl p-5 hover:border-[hsl(38_60%_60%)] transition-colors"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[hsl(38_60%_60%/0.18)] flex items-center justify-center text-[hsl(38_60%_75%)] shrink-0">
-                    <ArrowRight size={16} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="collegium-latin text-xs text-[hsl(38_60%_70%)] mb-0.5 not-italic">
-                      Iustitia rapta
-                    </div>
-                    <h3 className="collegium-display text-base sm:text-lg mb-1 leading-tight text-[hsl(40_40%_94%)]">
-                      Why does this matter?
-                    </h3>
-                    <p className="text-sm text-[hsl(40_30%_82%)] leading-snug">
-                      The 92% gap, mapped state by state.{" "}
-                      <span className="text-[hsl(38_60%_70%)] font-medium underline decoration-[hsl(38_60%_60%/0.5)] underline-offset-2 group-hover:decoration-[hsl(38_60%_70%)]">
-                        Open Justice Gap →
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </Link>
             </div>
+            <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-4 text-center">
+              Want to see <em className="not-italic">why</em> this network exists?{" "}
+              <Link to="/justicegap" className="collegium-link">
+                The 92% justice gap, mapped state by state →
+              </Link>
+            </p>
           </div>
 
           <div className="collegium-divider-ornament mt-12 sm:mt-16">⁂</div>

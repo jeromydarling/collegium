@@ -23,6 +23,9 @@ import { NRIPulse } from "./app/NRIPulse";
 import { DailyOffice } from "./app/DailyOffice";
 import { CalendarPage } from "./app/Calendar";
 import { CommunioDirectory, CommunioPeer } from "./app/Communio";
+import { IntakeAssist } from "./app/IntakeAssist";
+import { JusticeGapInsights } from "./app/JusticeGapInsights";
+import { PracticeHub } from "./app/PracticeHub";
 
 import { AuxiliumLanding } from "./auxilium/AuxiliumLanding";
 import { MatterPicker } from "./auxilium/MatterPicker";
@@ -45,7 +48,7 @@ import { PatrociniumLanding } from "./patrocinium/PatrociniumLanding";
 import { CaseBrowser } from "./patrocinium/CaseBrowser";
 import { CaseDetail } from "./patrocinium/CaseDetail";
 import { MyProBono } from "./patrocinium/MyProBono";
-import { EvictionAnswer } from "./patrocinium/EvictionAnswer";
+import { TemplatePage } from "./patrocinium/TemplatePage";
 
 import "./styles.css";
 
@@ -101,8 +104,8 @@ export default function CollegiumApp() {
         <Route path="patrocinium/cases" element={<CaseBrowser />} />
         <Route path="patrocinium/cases/:id" element={<CaseDetail />} />
         <Route
-          path="patrocinium/cases/:id/eviction-answer"
-          element={<EvictionAnswer />}
+          path="patrocinium/cases/:id/template/:slug"
+          element={<TemplatePage />}
         />
         <Route path="patrocinium/me" element={<MyProBono />} />
 
@@ -119,6 +122,9 @@ export default function CollegiumApp() {
           <Route path="formation" element={<Formation />} />
           <Route path="advancement" element={<Advancement />} />
           <Route path="pulse" element={<NRIPulse />} />
+          <Route path="insights" element={<JusticeGapInsights />} />
+          <Route path="practice" element={<PracticeHub />} />
+          <Route path="intake-assist" element={<IntakeAssist />} />
           <Route path="office" element={<DailyOffice />} />
           <Route path="calendar" element={<CalendarPage />} />
         </Route>

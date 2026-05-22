@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { getCase, ENGAGEMENT_LABEL } from "./data/cases";
+import { isGuidedTemplate } from "./templates";
 import { useDemoState, demoStore } from "../lib/demoStore";
 import { chapters, people } from "../data/demo";
 
@@ -97,7 +98,9 @@ export function CaseDetail() {
     demoStore.toggleSavedCase(matter.id);
   }
 
-  const hasEvictionTemplate = meta.templatesAvailable?.includes("eviction-answer");
+  const guidedTemplates =
+    meta.templatesAvailable?.filter((t) => isGuidedTemplate(t)) ?? [];
+  const hasAnyGuided = guidedTemplates.length > 0;
 
   return (
     <div className="collegium-theme min-h-screen bg-[hsl(var(--c-cream))]">
@@ -350,13 +353,13 @@ export function CaseDetail() {
                 <TemplateRow key={t} slug={t} matterId={matter.id} />
               ))}
             </div>
-            {hasEvictionTemplate && (
+            {hasAnyGuided && (
               <div className="mt-3 text-xs text-[hsl(var(--c-slate-soft))] flex items-start gap-1.5">
                 <Sparkles size={11} className="text-[hsl(var(--c-wine))] mt-0.5 shrink-0" />
                 <span>
-                  Eviction answer is the first guided template — answer 8
-                  questions, get a working draft. The rest are static-form
-                  templates while we wire up generators.
+                  Guided templates run a short structured intake and assemble
+                  a working draft on the right. Static templates are reference
+                  forms — open in a new tab to copy in.
                 </span>
               </div>
             )}
@@ -428,9 +431,9 @@ function SafetyTile({
 
 function TemplateRow({ slug, matterId }: { slug: string; matterId: string }) {
   const label = TEMPLATE_LABEL[slug] ?? slug;
-  const isGuided = slug === "eviction-answer";
-  const to = isGuided ? `/patrocinium/cases/${matterId}/eviction-answer` : "#";
-  return isGuided ? (
+  const guided = isGuidedTemplate(slug);
+  const to = guided ? `/patrocinium/cases/${matterId}/template/${slug}` : "#";
+  return guided ? (
     <Link
       to={to}
       className="bg-white border border-[hsl(var(--c-border))] rounded-lg p-3 flex items-center gap-3 hover:shadow-sm transition-shadow group"
@@ -441,7 +444,7 @@ function TemplateRow({ slug, matterId }: { slug: string; matterId: string }) {
           {label}
         </div>
         <div className="text-[11px] text-[hsl(var(--c-wine))] inline-flex items-center gap-0.5">
-          Guided · {`8 questions`} <ArrowRight size={10} />
+          Guided draft <ArrowRight size={10} />
         </div>
       </div>
     </Link>

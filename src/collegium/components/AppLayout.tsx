@@ -16,6 +16,9 @@ import {
   X,
   Inbox,
   Globe,
+  BarChart3,
+  MessageCircleQuestion,
+  Sparkles,
 } from "lucide-react";
 import { useDemoState, roleLabel } from "../lib/demoStore";
 
@@ -29,6 +32,9 @@ const items = [
   { to: "/app/formation", label: "Formation", icon: Library },
   { to: "/app/advancement", label: "Advancement", icon: TrendingUp },
   { to: "/app/pulse", label: "NRI Pulse", icon: Activity },
+  { to: "/app/insights", label: "Justice Gap", icon: BarChart3 },
+  { to: "/app/practice", label: "Practice Hub", icon: MessageCircleQuestion },
+  { to: "/app/intake-assist", label: "Intake Assist", icon: Sparkles },
   { to: "/app/office", label: "Daily Office", icon: Sun },
   { to: "/app/calendar", label: "Calendar", icon: CalendarDays },
 ];
