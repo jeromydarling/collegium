@@ -52,34 +52,60 @@ export function Landing() {
             </Link>
           </div>
 
-          {/* Second front door — Auxilium. For the person, not the steward. */}
-          <div className="mt-10 sm:mt-12 max-w-2xl mx-auto px-2">
+          {/* Second + third front doors — Auxilium for the person, Justice Gap for the conscience. */}
+          <div className="mt-10 sm:mt-12 max-w-3xl mx-auto px-2">
             <hr className="collegium-gold-rule" />
-            <Link
-              to="/auxilium"
-              className="block mt-6 sm:mt-8 group text-left bg-white border border-[hsl(var(--c-border))] rounded-xl p-5 sm:p-6 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
-                  <ArrowRight size={18} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="collegium-latin text-xs text-[hsl(var(--c-wine))] mb-0.5">
-                    Auxilium
+            <div className="mt-6 sm:mt-8 grid sm:grid-cols-2 gap-3 sm:gap-4">
+              <Link
+                to="/auxilium"
+                className="group text-left bg-white border border-[hsl(var(--c-border))] rounded-xl p-5 sm:p-6 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+                    <ArrowRight size={16} />
                   </div>
-                  <h3 className="collegium-display text-xl sm:text-2xl mb-1 leading-tight">
-                    Need legal help yourself?
-                  </h3>
-                  <p className="text-sm sm:text-base text-[hsl(var(--c-slate))] leading-snug">
-                    A plain-English guide — your situation, your documents,
-                    your questions — so you walk into help prepared.{" "}
-                    <span className="text-[hsl(var(--c-wine))] font-medium underline decoration-[hsl(var(--c-gold)/0.5)] underline-offset-2 group-hover:decoration-[hsl(var(--c-wine))]">
-                      Open Auxilium →
-                    </span>
-                  </p>
+                  <div className="flex-1 min-w-0">
+                    <div className="collegium-latin text-xs text-[hsl(var(--c-wine))] mb-0.5">
+                      Auxilium
+                    </div>
+                    <h3 className="collegium-display text-lg sm:text-xl mb-1 leading-tight">
+                      Need legal help yourself?
+                    </h3>
+                    <p className="text-sm text-[hsl(var(--c-slate))] leading-snug">
+                      A plain-English guide so you walk into help prepared.{" "}
+                      <span className="text-[hsl(var(--c-wine))] font-medium underline decoration-[hsl(var(--c-gold)/0.5)] underline-offset-2 group-hover:decoration-[hsl(var(--c-wine))]">
+                        Open Auxilium →
+                      </span>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+
+              <Link
+                to="/justicegap"
+                className="group text-left bg-[hsl(220_30%_10%)] border border-[hsl(220_20%_22%)] rounded-xl p-5 sm:p-6 hover:border-[hsl(38_60%_60%)] transition-colors"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(38_60%_60%/0.18)] flex items-center justify-center text-[hsl(38_60%_75%)] shrink-0">
+                    <ArrowRight size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="collegium-latin text-xs text-[hsl(38_60%_70%)] mb-0.5 not-italic">
+                      Iustitia rapta
+                    </div>
+                    <h3 className="collegium-display text-lg sm:text-xl mb-1 leading-tight text-[hsl(40_40%_94%)]">
+                      Why does this matter?
+                    </h3>
+                    <p className="text-sm text-[hsl(40_30%_82%)] leading-snug">
+                      The 92% gap, mapped state by state. Seventeen chapters.{" "}
+                      <span className="text-[hsl(38_60%_70%)] font-medium underline decoration-[hsl(38_60%_60%/0.5)] underline-offset-2 group-hover:decoration-[hsl(38_60%_70%)]">
+                        Open Justice Gap →
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            </div>
           </div>
 
           <div className="collegium-divider-ornament mt-12 sm:mt-16">⁂</div>
