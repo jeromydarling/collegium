@@ -12,6 +12,7 @@ import {
   Inbox,
   Bookmark,
   CheckCircle2,
+  Quote,
 } from "lucide-react";
 import {
   allCases,
@@ -304,6 +305,11 @@ function CaseRow({
         <span className="text-[hsl(var(--c-slate-soft))]">
           {ENGAGEMENT_LABEL[meta.engagementType]}
         </span>
+        {matter.appeal?.consents.showToAdvocates && (
+          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] font-semibold">
+            <Quote size={11} /> Personal appeal
+          </span>
+        )}
         {meta.conflicts !== "pending" && (
           <span className="ml-auto inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-[hsl(145_40%_28%)] font-semibold">
             <ShieldCheck size={11} /> Conflicts cleared
@@ -351,9 +357,25 @@ function CaseRow({
         )}
       </div>
 
-      <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed line-clamp-2">
-        {meta.postureNotes ?? matter.summary}
-      </p>
+      {matter.appeal?.consents.showToAdvocates ? (
+        <div className="flex items-start gap-2 mt-1">
+          <Quote
+            size={14}
+            className="text-[hsl(var(--c-gold))] shrink-0 mt-0.5"
+            strokeWidth={1.5}
+          />
+          <p className="text-sm italic text-[hsl(var(--c-slate))] leading-relaxed line-clamp-2">
+            "{matter.appeal.storyText}"{" "}
+            <span className="not-italic text-[hsl(var(--c-wine))] font-medium">
+              — {matter.appeal.firstName}
+            </span>
+          </p>
+        </div>
+      ) : (
+        <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed line-clamp-2">
+          {meta.postureNotes ?? matter.summary}
+        </p>
+      )}
 
       <div className="mt-3 text-xs collegium-link inline-flex items-center gap-1">
         See brief <ArrowRight size={12} />

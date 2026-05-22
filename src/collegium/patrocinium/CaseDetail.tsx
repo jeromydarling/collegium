@@ -16,6 +16,10 @@ import {
   Users,
   CalendarClock,
   Sparkles,
+  Quote,
+  Mic,
+  Pencil,
+  HandHeart,
 } from "lucide-react";
 import { getCase, ENGAGEMENT_LABEL } from "./data/cases";
 import { isGuidedTemplate } from "./templates";
@@ -222,6 +226,11 @@ export function CaseDetail() {
           )}
         </div>
 
+        {/* In their words — the personal appeal, if the client shared one. */}
+        {matter.appeal && matter.appeal.consents.showToAdvocates && (
+          <ClientAppealCard appeal={matter.appeal} />
+        )}
+
         {/* The brief */}
         <section className="mb-6 sm:mb-8">
           <h2 className="collegium-display text-xl sm:text-2xl mb-3 leading-tight">
@@ -376,6 +385,86 @@ export function CaseDetail() {
         </section>
       </div>
     </div>
+  );
+}
+
+function ClientAppealCard({
+  appeal,
+}: {
+  appeal: NonNullable<ReturnType<typeof getCase>>["matter"]["appeal"];
+}) {
+  if (!appeal) return null;
+
+  const authorBadge = {
+    client: { icon: <Pencil size={11} />, label: "In their words" },
+    steward: { icon: <HandHeart size={11} />, label: "Transcribed by intake steward" },
+    "third-party": {
+      icon: <HandHeart size={11} />,
+      label: "Captured on their behalf",
+    },
+    "voice-transcribed": {
+      icon: <Mic size={11} />,
+      label: "Transcribed from voicemail",
+    },
+  }[appeal.storyAuthor];
+
+  return (
+    <section className="mb-6 sm:mb-8">
+      <div className="collegium-card p-5 sm:p-6 bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))] border-l-4 border-l-[hsl(var(--c-gold))]">
+        <div className="flex items-start gap-3">
+          <Quote
+            size={28}
+            className="text-[hsl(var(--c-gold))] shrink-0 mt-0.5"
+            strokeWidth={1.5}
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] font-semibold inline-flex items-center gap-1">
+                {authorBadge.icon} {authorBadge.label}
+              </span>
+              {appeal.originalLanguage && appeal.originalLanguage !== "en" && (
+                <span className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+                  · Originally in{" "}
+                  {(
+                    {
+                      es: "Spanish",
+                      fr: "French",
+                      fa: "Farsi",
+                      ti: "Tigrinya",
+                      ln: "Lingala",
+                      ht: "Haitian Creole",
+                      vi: "Vietnamese",
+                      zh: "Chinese",
+                    } as Record<string, string>
+                  )[appeal.originalLanguage] ?? appeal.originalLanguage}
+                </span>
+              )}
+            </div>
+            <p className="text-base sm:text-lg text-[hsl(var(--c-ink))] leading-relaxed italic">
+              "{appeal.storyText}"
+            </p>
+            <div className="flex flex-wrap items-center gap-3 mt-4 text-xs text-[hsl(var(--c-slate-soft))]">
+              <span className="font-medium text-[hsl(var(--c-wine))] not-italic">
+                — {appeal.firstName}
+              </span>
+              {appeal.translatedBy && (
+                <span>Translated by {appeal.translatedBy}</span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="mt-4 pt-3 border-t border-[hsl(var(--c-border))] flex items-start gap-1.5 text-[11px] text-[hsl(var(--c-slate-soft))] leading-relaxed">
+          <ShieldCheck size={11} className="text-[hsl(var(--c-wine))] mt-0.5 shrink-0" />
+          <span>
+            {appeal.firstName} consented to share this story with advocates
+            considering the case. {appeal.consents.shareCommunio ? "Cross-guild sharing enabled (sanitized via Communio). " : ""}
+            {appeal.consents.publicAdvocacy ? "Anonymized version may appear in Justice Gap stories. " : ""}
+            Last names, addresses, and contact details never leave the
+            referring chapter.
+          </span>
+        </div>
+      </div>
+    </section>
   );
 }
 
