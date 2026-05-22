@@ -67,6 +67,12 @@ export type InterviewQuestion = {
   extract?: (userReply: string, current: ExtractedFacts) => ExtractedFacts;
   /** Optional opening acknowledgement the UI can show after the user answers. */
   acknowledge?: (userReply: string, facts: ExtractedFacts) => string;
+  /**
+   * Optional quick-answer buttons for super-guided mode (e.g., ["Yes", "No"]
+   * for yes/no questions). When present, the UI surfaces these as
+   * one-tap answers alongside the text/voice input.
+   */
+  quickAnswers?: string[];
 };
 
 export type DefenseRule = {
@@ -227,6 +233,7 @@ export const evictionInterview: InterviewScript = {
       id: "lease",
       text:
         "Do you have a written lease — even an old one, even if it expired and you stayed on month-to-month?",
+      quickAnswers: ["Yes, I have one", "No, nothing in writing", "I'm not sure"],
       extract: (reply, current) => {
         const yn = detectYesNo(reply);
         if (yn === undefined) return current;
@@ -328,6 +335,7 @@ export const evictionInterview: InterviewScript = {
       text:
         "Have you ever called code enforcement, the health department, or 311 " +
         "about the apartment? Even years ago counts.",
+      quickAnswers: ["Yes, I called", "No, I didn't", "I'm not sure"],
       skipIf: (f) => !f.habitabilityIssues || f.habitabilityIssues.length === 0,
       extract: (reply, current) => {
         const yn = detectYesNo(reply);
