@@ -55,7 +55,7 @@ export function MapView() {
           <div className="px-4 sm:px-5 py-3 border-b border-[hsl(220_20%_18%)] flex items-center justify-between gap-3">
             <div>
               <div className="text-[10px] uppercase tracking-widest text-[hsl(38_60%_70%)] mb-0.5">
-                Chapter {currentChapter.number} of 12 · {currentChapter.eyebrow}
+                Chapter {currentChapter.number} of {chapters.length} · {currentChapter.eyebrow}
               </div>
               <h2 className="collegium-display text-lg sm:text-xl text-[hsl(40_40%_94%)] leading-tight">
                 {currentChapter.title}
@@ -195,7 +195,7 @@ export function MapView() {
               <ChevronLeft size={14} /> Back
             </button>
             <div className="text-[10px] uppercase tracking-widest text-[hsl(40_20%_60%)]">
-              {currentChapter.number} of 12
+              {currentChapter.number} of {chapters.length}
             </div>
             <button
               onClick={() => go(1)}

@@ -14,7 +14,7 @@ export function JusticeGapLanding() {
   const cards = [
     {
       to: "/justicegap/map",
-      eyebrow: "Twelve chapters",
+      eyebrow: "Seventeen chapters",
       title: "The map",
       icon: Map,
       body:

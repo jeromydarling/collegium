@@ -169,7 +169,7 @@ export function AuxiliumLanding() {
           <p className="text-[hsl(40_30%_82%)] leading-relaxed mb-6 max-w-2xl mx-auto">
             For the wider question — what the Constitution promised in
             1963, what we have actually built, and what the cost has been —
-            open the polemic. Twelve chapters. The map, the essay, the
+            open the polemic. Seventeen chapters. The map, the essay, the
             stories, the news, the solution.
           </p>
           <Link

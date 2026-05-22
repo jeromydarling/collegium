@@ -125,6 +125,51 @@ export const meditations: Meditation[] = [
       "to proclaim liberty to the captives,\n" +
       "and the opening of the prison to them that are bound.",
   },
+  {
+    id: "isaiah-10-decrees",
+    eyebrow: "Hebrew prophets · Isaiah",
+    title: "Woe unto them that decree unrighteous decrees",
+    body:
+      "Woe unto them that decree unrighteous decrees,\n" +
+      "and that write grievousness which they have prescribed;\n\n" +
+      "To turn aside the needy from judgment,\n" +
+      "and to take away the right from the poor of my people,\n" +
+      "that widows may be their prey,\n" +
+      "and that they may rob the fatherless!",
+  },
+  {
+    id: "proverbs-31-mouth",
+    eyebrow: "Proverbs · The words of King Lemuel, that his mother taught him",
+    title: "Open thy mouth for the dumb",
+    body:
+      "Open thy mouth for the dumb\n" +
+      "in the cause of all such as are appointed to destruction.\n\n" +
+      "Open thy mouth, judge righteously,\n" +
+      "and plead the cause of the poor and needy.",
+  },
+  {
+    id: "james-5-labourers",
+    eyebrow: "Epistle of James",
+    title: "The hire of the labourers crieth",
+    body:
+      "Behold, the hire of the labourers who have reaped down your fields,\n" +
+      "which is of you kept back by fraud, crieth:\n\n" +
+      "and the cries of them which have reaped\n" +
+      "are entered into the ears of the Lord of sabaoth.",
+  },
+  {
+    id: "leviticus-19-stranger",
+    eyebrow: "Torah · Leviticus",
+    title: "The stranger that dwelleth with you",
+    body:
+      "And if a stranger sojourn with thee in your land,\n" +
+      "ye shall not vex him.\n\n" +
+      "But the stranger that dwelleth with you\n" +
+      "shall be as one born among you,\n" +
+      "and thou shalt love him as thyself;\n" +
+      "for ye were strangers in the land of Egypt:\n" +
+      "I am the LORD your God.",
+  },
 ];
 
 export function meditationById(id: string): Meditation | undefined {
