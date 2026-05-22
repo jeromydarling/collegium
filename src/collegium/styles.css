@@ -23,6 +23,25 @@
   background: hsl(var(--c-cream));
   color: hsl(var(--c-slate));
   font-family: "Source Serif 4", Georgia, serif;
+  /* iOS safe-area-aware base; reliable on the longest scrolls. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Prevent the marketing hero's stretched glyphs from creating a horizontal
+ * scrollbar on phones; constrain to the viewport. */
+html, body {
+  overflow-x: hidden;
+}
+
+/* iOS bottom safe-area utility — keep the last button above the home bar. */
+.collegium-safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.collegium-safe-top {
+  padding-top: env(safe-area-inset-top);
 }
 
 .collegium-theme h1,
@@ -92,22 +111,37 @@
   );
 }
 
-/* Drop-cap for devotional/library reading panels. */
+/* Drop-cap for devotional/library reading panels. Smaller on phones so the
+ * first paragraph never feels swamped by an oversized capital. */
 .collegium-prose p:first-of-type::first-letter {
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 3.4em;
+  font-size: 2.6em;
   font-weight: 700;
   float: left;
-  line-height: 0.85;
+  line-height: 0.9;
   margin: 0.1em 0.08em 0 0;
   color: hsl(var(--c-wine));
 }
 
+@media (min-width: 640px) {
+  .collegium-prose p:first-of-type::first-letter {
+    font-size: 3.4em;
+    line-height: 0.85;
+  }
+}
+
 .collegium-prose {
   font-family: "Source Serif 4", Georgia, serif;
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.65;
   color: hsl(var(--c-slate));
+}
+
+@media (min-width: 640px) {
+  .collegium-prose {
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
 }
 
 .collegium-prose p {
@@ -124,13 +158,18 @@
   padding-left: 1.25rem;
 }
 
+/* Touch targets sized to comfortably hit with a thumb (≥44px). */
 .collegium-btn-primary {
   background: hsl(var(--c-wine));
   color: white;
   font-family: "Inter", system-ui, sans-serif;
   font-weight: 500;
   border-radius: 9999px;
-  padding: 0.625rem 1.5rem;
+  padding: 0.75rem 1.5rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: background-color 150ms;
 }
 
@@ -145,7 +184,11 @@
   font-family: "Inter", system-ui, sans-serif;
   font-weight: 500;
   border-radius: 9999px;
-  padding: 0.625rem 1.5rem;
+  padding: 0.75rem 1.5rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: all 150ms;
 }
 
@@ -221,4 +264,79 @@
 /* Scroll-anchor offset for sticky nav */
 .collegium-theme [id] {
   scroll-margin-top: 5rem;
+}
+
+/* Page container — standard inner padding that breathes on every viewport. */
+.collegium-page {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .collegium-page {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .collegium-page {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Service kanban — horizontally scrollable below md, momentum scroll on iOS. */
+.collegium-kanban {
+  display: grid;
+  gap: 0.75rem;
+  grid-auto-flow: column;
+  grid-auto-columns: 78%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.75rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.collegium-kanban > * {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+  .collegium-kanban {
+    grid-auto-columns: 42%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .collegium-kanban {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-flow: row;
+    overflow-x: visible;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    scroll-snap-type: none;
+  }
+}
+
+/* Touch-friendly link underline that doesn't get cropped by truncation. */
+.collegium-tap {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }

@@ -13,10 +13,10 @@ const STATUS_LABEL: Record<StatusKey, { label: string; latin: string }> = {
 
 export function Service() {
   return (
-    <div className="px-8 py-8 max-w-7xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-7xl mx-auto">
       <div className="mb-8">
         <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Ministerium</div>
-        <h1 className="collegium-display text-4xl">Service</h1>
+        <h1 className="collegium-display text-3xl sm:text-4xl">Service</h1>
         <p className="text-[hsl(var(--c-slate-soft))] mt-1">
           The works of mercy in legal vocation — pro bono, parish governance,
           canon-law overlap, and the unrepresented who would otherwise fall
@@ -24,7 +24,7 @@ export function Service() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6 sm:mb-8">
         {STATUS_COLS.map((s) => {
           const count = serviceMatters.filter((m) => m.status === s).length;
           return (
@@ -41,7 +41,10 @@ export function Service() {
         })}
       </div>
 
-      <div className="grid lg:grid-cols-5 gap-4">
+      <p className="lg:hidden text-xs text-[hsl(var(--c-slate-soft))] mb-2 italic">
+        Swipe sideways to move across the board →
+      </p>
+      <div className="collegium-kanban">
         {STATUS_COLS.map((s) => {
           const matters = serviceMatters.filter((m) => m.status === s);
           return (
@@ -84,7 +87,7 @@ export function Service() {
         })}
       </div>
 
-      <div className="mt-10 collegium-card-warm p-6 max-w-4xl">
+      <div className="mt-8 sm:mt-10 collegium-card-warm p-5 sm:p-6 max-w-4xl">
         <h3 className="collegium-display text-xl mb-2">Canon-law overlap</h3>
         <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed">
           Parish governance, marriage tribunals, religious-institute counsel —

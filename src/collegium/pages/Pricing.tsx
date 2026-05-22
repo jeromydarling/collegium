@@ -58,10 +58,10 @@ export function Pricing() {
   return (
     <div className="collegium-theme">
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-4xl mx-auto px-5 py-20 text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
           <div className="collegium-latin text-sm mb-2">Pretium</div>
-          <h1 className="collegium-display-xl text-5xl mb-6">Pricing</h1>
-          <p className="text-xl text-[hsl(var(--c-slate))] leading-relaxed max-w-2xl mx-auto">
+          <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-5 sm:mb-6">Pricing</h1>
+          <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] leading-relaxed max-w-2xl mx-auto">
             Priced so that a guild already collecting modest dues can afford to
             organize itself well. Student chapters are free during our pilot.
           </p>
@@ -69,19 +69,19 @@ export function Pricing() {
       </section>
 
       <section className="bg-white">
-        <div className="max-w-5xl mx-auto px-5 py-16">
-          <div className="grid md:grid-cols-3 gap-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
             {tiers.map((t) => (
               <div
                 key={t.name}
-                className={`collegium-card p-7 flex flex-col ${
+                className={`collegium-card p-6 sm:p-7 flex flex-col ${
                   t.highlighted
-                    ? "ring-2 ring-[hsl(var(--c-wine))] relative"
+                    ? "ring-2 ring-[hsl(var(--c-wine))] relative md:mt-3"
                     : ""
                 }`}
               >
                 {t.highlighted && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[hsl(var(--c-wine))] text-white text-[10px] uppercase tracking-widest px-3 py-1 rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[hsl(var(--c-wine))] text-white text-[10px] uppercase tracking-widest px-3 py-1 rounded-full whitespace-nowrap">
                     Recommended pilot
                   </div>
                 )}

@@ -13,7 +13,7 @@ export function DailyOffice() {
   }
 
   return (
-    <div className="px-8 py-10 max-w-3xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-10 max-w-3xl mx-auto">
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 text-[hsl(var(--c-wine))] mb-3">
           <Sun size={16} />
@@ -21,7 +21,7 @@ export function DailyOffice() {
             Officium quotidianum · The Daily Office
           </span>
         </div>
-        <h1 className="collegium-display text-4xl mb-2">
+        <h1 className="collegium-display text-3xl sm:text-4xl mb-2">
           {date.toLocaleDateString("en-US", {
             weekday: "long",
             month: "long",
@@ -41,24 +41,24 @@ export function DailyOffice() {
         </div>
       </div>
 
-      <article className="collegium-card p-10">
-        <div className="text-center mb-8">
+      <article className="collegium-card p-5 sm:p-8 md:p-10">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="collegium-latin text-base text-[hsl(var(--c-wine))] mb-1">{entry.latin}</div>
-          <h2 className="collegium-display text-3xl mb-3">{entry.theme}</h2>
+          <h2 className="collegium-display text-2xl sm:text-3xl mb-3">{entry.theme}</h2>
           <p className="text-sm italic text-[hsl(var(--c-slate-soft))]">— {entry.movement}</p>
         </div>
 
-        <hr className="collegium-gold-rule mb-8" />
+        <hr className="collegium-gold-rule mb-6 sm:mb-8" />
 
-        <section className="mb-8">
+        <section className="mb-6 sm:mb-8">
           <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))] mb-3">
             Lectio · Reading
           </div>
-          <blockquote className="collegium-quote text-xl mb-3">"{entry.excerpt}"</blockquote>
+          <blockquote className="collegium-quote text-lg sm:text-xl mb-3">"{entry.excerpt}"</blockquote>
           <div className="text-xs text-[hsl(var(--c-slate-soft))] italic">{entry.citation}</div>
         </section>
 
-        <section className="mb-8">
+        <section className="mb-6 sm:mb-8">
           <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))] mb-3">
             Meditatio · Reflection
           </div>
@@ -67,7 +67,7 @@ export function DailyOffice() {
           </div>
         </section>
 
-        <section className="mb-8 bg-[hsl(var(--c-cream-warm))] -mx-10 px-10 py-6">
+        <section className="mb-6 sm:mb-8 bg-[hsl(var(--c-cream-warm))] -mx-5 sm:-mx-8 md:-mx-10 px-5 sm:px-8 md:px-10 py-5 sm:py-6">
           <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2">
             Oratio · Prayer
           </div>
@@ -84,7 +84,7 @@ export function DailyOffice() {
         </section>
       </article>
 
-      <div className="mt-10 collegium-card-warm p-6">
+      <div className="mt-8 sm:mt-10 collegium-card-warm p-5 sm:p-6 collegium-safe-bottom">
         <h3 className="collegium-display text-lg mb-2">The week's rhythm</h3>
         <p className="text-sm text-[hsl(var(--c-slate))] mb-4">
           Each weekday carries its own emphasis. Together they form a rule of

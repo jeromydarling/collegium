@@ -86,12 +86,12 @@ export function Modules() {
   return (
     <div className="collegium-theme">
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-4xl mx-auto px-5 py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
           <div className="collegium-latin text-sm mb-2">Sex officia · Six functions</div>
-          <h1 className="collegium-display-xl text-5xl mb-6">
+          <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-5 sm:mb-6">
             One platform. One common life. Six ways in.
           </h1>
-          <p className="text-xl text-[hsl(var(--c-slate))] leading-relaxed">
+          <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] leading-relaxed">
             Each module is a window onto the same community. A student moves
             through all six over time — newcomer, mentee, member, mentor,
             officer, steward.
@@ -100,37 +100,37 @@ export function Modules() {
       </section>
 
       <section className="bg-white">
-        <div className="max-w-4xl mx-auto px-5 py-12 space-y-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 space-y-12 sm:space-y-16">
           {moduleOrder.map((m, idx) => {
             const Icon = moduleIcons[m.slug] ?? Users;
             const d = detail[m.slug];
             return (
               <article
                 key={m.slug}
-                className="grid md:grid-cols-[7rem_1fr] gap-8 items-start border-b border-[hsl(var(--c-border))] pb-16 last:border-0"
+                className="grid md:grid-cols-[7rem_1fr] gap-6 md:gap-8 items-start border-b border-[hsl(var(--c-border))] pb-12 sm:pb-16 last:border-0"
               >
-                <div>
-                  <div className="w-16 h-16 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] mb-3">
-                    <Icon size={28} />
+                <div className="flex items-center md:block gap-4">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] md:mb-3 shrink-0">
+                    <Icon size={26} />
                   </div>
-                  <div className="collegium-display text-2xl text-[hsl(var(--c-gold))]">
+                  <div className="collegium-display text-xl sm:text-2xl text-[hsl(var(--c-gold))]">
                     {String(idx + 1).padStart(2, "0")}
                   </div>
                 </div>
                 <div>
                   <div className="collegium-latin text-sm mb-1">{m.latin}</div>
-                  <h2 className="collegium-display text-4xl mb-4">{m.label}</h2>
-                  <p className="text-xl text-[hsl(var(--c-slate))] mb-6 leading-snug">
+                  <h2 className="collegium-display text-3xl sm:text-4xl mb-3 sm:mb-4">{m.label}</h2>
+                  <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] mb-5 sm:mb-6 leading-snug">
                     {d.headline}
                   </p>
-                  <div className="space-y-3 mb-6">
+                  <div className="space-y-3 mb-5 sm:mb-6">
                     {d.body.map((p, i) => (
                       <p key={i} className="text-[hsl(var(--c-slate))] leading-relaxed">
                         {p}
                       </p>
                     ))}
                   </div>
-                  <div className="collegium-card-warm p-5">
+                  <div className="collegium-card-warm p-4 sm:p-5">
                     <div className="collegium-latin text-xs mb-2 text-[hsl(var(--c-wine))]">
                       In the demo
                     </div>
@@ -146,15 +146,15 @@ export function Modules() {
       </section>
 
       <section className="bg-[hsl(var(--c-cream-warm))]">
-        <div className="max-w-3xl mx-auto px-5 py-16 text-center">
-          <h3 className="collegium-display text-3xl mb-4">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
+          <h3 className="collegium-display text-2xl sm:text-3xl mb-4">
             Walk through it
           </h3>
-          <p className="text-[hsl(var(--c-slate-soft))] mb-8">
+          <p className="text-[hsl(var(--c-slate-soft))] mb-6 sm:mb-8">
             The demo is fully functional with illustrative seed data across all
             six modules. Pick a role and enter.
           </p>
-          <Link to="/demo" className="collegium-btn-primary inline-flex items-center gap-2">
+          <Link to="/demo" className="collegium-btn-primary inline-flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs mx-auto">
             Enter the demo <ArrowRight size={16} />
           </Link>
         </div>

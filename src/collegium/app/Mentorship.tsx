@@ -2,17 +2,17 @@ import { mentorPairs, people, chapters } from "../data/demo";
 
 export function Mentorship() {
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
       <div className="mb-8">
         <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Tirocinium</div>
-        <h1 className="collegium-display text-4xl">Mentorship</h1>
+        <h1 className="collegium-display text-3xl sm:text-4xl">Mentorship</h1>
         <p className="text-[hsl(var(--c-slate-soft))] mt-1">
           Active pairings across the network. NRI tone reflects what the
           relationship needs this month.
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 sm:mb-8">
         <Stat label="Active pairs" value={mentorPairs.length} />
         <Stat label="Thriving" value={mentorPairs.filter((p) => p.status === "thriving").length} />
         <Stat label="Steady" value={mentorPairs.filter((p) => p.status === "steady").length} />
@@ -27,8 +27,8 @@ export function Mentorship() {
           const monthsActive = monthsSince(pair.startedOn);
 
           return (
-            <div key={pair.id} className="collegium-card p-6">
-              <div className="flex flex-col md:flex-row md:items-start gap-5">
+            <div key={pair.id} className="collegium-card p-5 sm:p-6">
+              <div className="flex flex-col md:flex-row md:items-start gap-4 sm:gap-5">
                 <div className="flex items-center gap-3 md:w-1/3">
                   <div className="flex -space-x-2">
                     <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.12)] flex items-center justify-center text-sm font-medium text-[hsl(var(--c-wine))] border-2 border-white">
@@ -72,7 +72,7 @@ export function Mentorship() {
         })}
       </div>
 
-      <div className="mt-10 collegium-card-warm p-6">
+      <div className="mt-8 sm:mt-10 collegium-card-warm p-5 sm:p-6 collegium-safe-bottom">
         <h3 className="collegium-display text-xl mb-2">How NRI reads these</h3>
         <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed max-w-3xl">
           "Drifting" is not failure. Two missed meetings during bar prep is

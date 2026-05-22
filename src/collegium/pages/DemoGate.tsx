@@ -44,10 +44,10 @@ export function DemoGate() {
   return (
     <div className="collegium-theme">
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-3xl mx-auto px-5 py-16 text-center">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <div className="collegium-latin text-sm mb-2">Aditus · Entry</div>
-          <h1 className="collegium-display-xl text-5xl mb-5">Step into the demo</h1>
-          <p className="text-lg text-[hsl(var(--c-slate))] max-w-xl mx-auto leading-relaxed">
+          <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-4 sm:mb-5">Step into the demo</h1>
+          <p className="text-base sm:text-lg text-[hsl(var(--c-slate))] max-w-xl mx-auto leading-relaxed">
             Pick a role. The same data is visible from each perspective, but the
             home view, suggestions, and NRI briefings shift to match what that
             person would actually see.
@@ -56,8 +56,8 @@ export function DemoGate() {
       </section>
 
       <section className="bg-white">
-        <div className="max-w-3xl mx-auto px-5 py-12">
-          <div className="grid sm:grid-cols-2 gap-4 mb-8">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-12 collegium-safe-bottom">
+          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
             {ROLE_PRESETS.map((p, i) => {
               const r = roleLabel[p.role];
               const isSelected = selected === i;
@@ -86,11 +86,11 @@ export function DemoGate() {
             })}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex justify-center sticky bottom-0 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 sm:py-0 bg-[hsl(var(--c-cream)/0.96)] backdrop-blur sm:bg-transparent sm:backdrop-blur-none border-t sm:border-0 border-[hsl(var(--c-border))]">
             <button
               onClick={enter}
               disabled={selected === null}
-              className="collegium-btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="collegium-btn-primary inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               Enter as {selected !== null ? ROLE_PRESETS[selected].name.split(" ")[0] : "…"}{" "}
               <ArrowRight size={16} />

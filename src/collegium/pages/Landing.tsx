@@ -26,35 +26,36 @@ export function Landing() {
     <div className="collegium-theme">
       {/* ─────────────────── Hero ─────────────────── */}
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-5xl mx-auto px-5 pt-20 sm:pt-28 pb-20 text-center">
-          <div className="collegium-latin text-sm mb-5 tracking-wider">
-            Collegium · Capitula · Tirocinium · Ministerium · Eruditio · Provectio
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 md:pt-28 pb-14 sm:pb-20 text-center">
+          <div className="collegium-latin text-xs sm:text-sm mb-4 sm:mb-5 tracking-wider px-2">
+            <span className="hidden sm:inline">Collegium · Capitula · Tirocinium · Ministerium · Eruditio · Provectio</span>
+            <span className="sm:hidden">Capitula · Tirocinium · Ministerium</span>
           </div>
-          <h1 className="collegium-display-xl text-5xl sm:text-6xl md:text-7xl text-[hsl(var(--c-ink))] mb-8 max-w-4xl mx-auto">
+          <h1 className="collegium-display-xl text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[hsl(var(--c-ink))] mb-6 sm:mb-8 max-w-4xl mx-auto">
             A guild for those who practice{" "}
             <span className="collegium-mark">law as a calling.</span>
           </h1>
-          <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] max-w-2xl mx-auto leading-relaxed mb-6">
+          <p className="text-base sm:text-lg md:text-xl text-[hsl(var(--c-slate))] max-w-2xl mx-auto leading-relaxed mb-5 sm:mb-6">
             Collegium is a guild operating system for Christian and Catholic legal
             communities — chapters, students, mentors, canonists, clinics, and the
             stewards who hold them together.
           </p>
-          <p className="collegium-latin text-base text-[hsl(var(--c-wine))] mb-12">
+          <p className="collegium-latin text-sm sm:text-base text-[hsl(var(--c-wine))] mb-10 sm:mb-12">
             {brand.motto}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/demo" className="collegium-btn-primary inline-flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-sm sm:max-w-none mx-auto">
+            <Link to="/demo" className="collegium-btn-primary inline-flex items-center justify-center gap-2">
               Enter the demo <ArrowRight size={16} />
             </Link>
-            <Link to="/manifesto" className="collegium-btn-ghost">
+            <Link to="/manifesto" className="collegium-btn-ghost justify-center">
               Read the manifesto
             </Link>
           </div>
-          <div className="collegium-divider-ornament mt-16">⁂</div>
-          <blockquote className="collegium-quote max-w-2xl mx-auto text-left">
+          <div className="collegium-divider-ornament mt-12 sm:mt-16">⁂</div>
+          <blockquote className="collegium-quote max-w-2xl mx-auto text-left text-base sm:text-lg md:text-xl">
             "Law is nothing else than an ordinance of reason for the common good,
             made by him who has care of the community, and promulgated."
-            <footer className="text-sm not-italic text-[hsl(var(--c-slate-soft))] mt-3 font-sans">
+            <footer className="text-xs sm:text-sm not-italic text-[hsl(var(--c-slate-soft))] mt-3 font-sans">
               — Thomas Aquinas, Summa Theologiae I-II, q. 90, a. 4
             </footer>
           </blockquote>
@@ -63,11 +64,11 @@ export function Landing() {
 
       {/* ─────────────────── What it is ─────────────────── */}
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-5xl mx-auto px-5 py-20">
-          <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
             <div>
               <div className="collegium-latin text-sm mb-2">Quid est Collegium?</div>
-              <h2 className="collegium-display text-4xl mb-6 leading-tight">
+              <h2 className="collegium-display text-3xl sm:text-4xl mb-4 sm:mb-6 leading-tight">
                 Not a CRM. Not a directory.{" "}
                 <span className="text-[hsl(var(--c-wine))]">A common life.</span>
               </h2>
@@ -100,16 +101,16 @@ export function Landing() {
 
       {/* ─────────────────── Six modules ─────────────────── */}
       <section className="bg-[hsl(var(--c-cream-warm))] border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-6xl mx-auto px-5 py-20">
-          <div className="text-center mb-14">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+          <div className="text-center mb-10 sm:mb-14">
             <div className="collegium-latin text-sm mb-2">Sex officia</div>
-            <h2 className="collegium-display text-4xl mb-3">Six functions, one common life</h2>
-            <p className="text-[hsl(var(--c-slate-soft))] max-w-2xl mx-auto">
+            <h2 className="collegium-display text-3xl sm:text-4xl mb-3">Six functions, one common life</h2>
+            <p className="text-[hsl(var(--c-slate-soft))] max-w-2xl mx-auto px-2">
               Each module is a window on the same community. A student moves through
               all of them in time.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {moduleOrder.map((m) => {
               const Icon = moduleIcons[m.slug] ?? Users;
               return (
@@ -137,17 +138,17 @@ export function Landing() {
 
       {/* ─────────────────── Principles ─────────────────── */}
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-5xl mx-auto px-5 py-20">
-          <div className="text-center mb-14">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+          <div className="text-center mb-10 sm:mb-14">
             <div className="collegium-latin text-sm mb-2">Principia</div>
-            <h2 className="collegium-display text-4xl mb-4">
+            <h2 className="collegium-display text-3xl sm:text-4xl mb-3 sm:mb-4">
               Built on Catholic Social Teaching
             </h2>
-            <p className="text-[hsl(var(--c-slate-soft))] max-w-2xl mx-auto">
+            <p className="text-[hsl(var(--c-slate-soft))] max-w-2xl mx-auto px-2">
               The architecture follows the principles, not the other way around.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {principles.map((p) => (
               <div key={p.key} className="border-l-2 border-[hsl(var(--c-gold))] pl-5 py-1">
                 <div className="collegium-latin text-xs mb-1">{p.latin}</div>
@@ -161,12 +162,12 @@ export function Landing() {
 
       {/* ─────────────────── For ─────────────────── */}
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-5xl mx-auto px-5 py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
           <div className="collegium-latin text-sm mb-2 text-center">Pro quibus?</div>
-          <h2 className="collegium-display text-4xl mb-12 text-center">
+          <h2 className="collegium-display text-3xl sm:text-4xl mb-8 sm:mb-12 text-center">
             For the communities that already exist
           </h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
             {[
               {
                 t: "St. Thomas More societies",
@@ -204,13 +205,13 @@ export function Landing() {
 
       {/* ─────────────────── NRI ─────────────────── */}
       <section className="bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)]">
-        <div className="max-w-5xl mx-auto px-5 py-24">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
               <div className="text-[hsl(38_60%_70%)] collegium-latin text-sm mb-2">
                 Concentus
               </div>
-              <h2 className="collegium-display text-4xl mb-6 text-[hsl(40_40%_94%)]">
+              <h2 className="collegium-display text-3xl sm:text-4xl mb-5 sm:mb-6 text-[hsl(40_40%_94%)]">
                 A narrative intelligence that <em>helps stewards notice.</em>
               </h2>
               <p className="text-[hsl(40_20%_82%)] mb-4 leading-relaxed">
@@ -225,7 +226,7 @@ export function Landing() {
                 <span className="text-[hsl(38_60%_70%)]"> That's NRI.</span>
               </p>
             </div>
-            <div className="bg-[hsl(220_20%_18%)] rounded-lg p-7 border border-[hsl(220_20%_28%)]">
+            <div className="bg-[hsl(220_20%_18%)] rounded-lg p-5 sm:p-7 border border-[hsl(220_20%_28%)]">
               <div className="flex items-center gap-2 mb-3 text-[hsl(38_60%_70%)]">
                 <Activity size={16} />
                 <span className="text-xs uppercase tracking-widest">NRI Briefing</span>
@@ -254,29 +255,29 @@ export function Landing() {
 
       {/* ─────────────────── Aquinas closing ─────────────────── */}
       <section className="bg-white">
-        <div className="max-w-3xl mx-auto px-5 py-24 text-center">
-          <Quote className="mx-auto text-[hsl(var(--c-gold))] mb-6" size={32} />
-          <blockquote className="collegium-display text-3xl sm:text-4xl text-[hsl(var(--c-ink))] leading-tight mb-6">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
+          <Quote className="mx-auto text-[hsl(var(--c-gold))] mb-5 sm:mb-6" size={32} />
+          <blockquote className="collegium-display text-2xl sm:text-3xl md:text-4xl text-[hsl(var(--c-ink))] leading-tight mb-5 sm:mb-6">
             "To live well is to work well,
             <br />
             or display a good activity,
             <br />
             for virtue is concerned with conduct."
           </blockquote>
-          <p className="text-sm text-[hsl(var(--c-slate-soft))] mb-12">
+          <p className="text-xs sm:text-sm text-[hsl(var(--c-slate-soft))] mb-10 sm:mb-12">
             Thomas Aquinas · Commentary on Aristotle's Nicomachean Ethics
           </p>
           <hr className="collegium-gold-rule" />
-          <p className="text-lg text-[hsl(var(--c-slate))] mb-8 mt-8">
+          <p className="text-base sm:text-lg text-[hsl(var(--c-slate))] mb-6 sm:mb-8 mt-6 sm:mt-8">
             If you steward a Catholic lawyers guild, a St. Thomas More chapter, a
             Christian student fellowship, or a parish legal-aid program — we built
             Collegium for you.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/demo" className="collegium-btn-primary inline-flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-sm sm:max-w-none mx-auto">
+            <Link to="/demo" className="collegium-btn-primary inline-flex items-center justify-center gap-2">
               Enter the demo <ArrowRight size={16} />
             </Link>
-            <Link to="/contact" className="collegium-btn-ghost">
+            <Link to="/contact" className="collegium-btn-ghost justify-center">
               Start a conversation
             </Link>
           </div>

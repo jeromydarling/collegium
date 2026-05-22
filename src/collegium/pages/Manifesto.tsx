@@ -5,12 +5,12 @@ export function Manifesto() {
   return (
     <div className="collegium-theme">
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-3xl mx-auto px-5 py-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
           <div className="collegium-latin text-sm mb-2">Manifestum</div>
-          <h1 className="collegium-display-xl text-5xl mb-6">
+          <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-5 sm:mb-6">
             Law as a calling, not a market.
           </h1>
-          <p className="text-xl text-[hsl(var(--c-slate))] leading-relaxed">
+          <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] leading-relaxed">
             Collegium begins from a conviction that the practice of law is, at its
             best, a vocation ordered to the common good — and that the
             communities which have sustained that conviction for a thousand years
@@ -20,7 +20,7 @@ export function Manifesto() {
       </section>
 
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-3xl mx-auto px-5 py-20 collegium-prose">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20 collegium-prose">
           <p>
             Thomas Aquinas, writing in the thirteenth century, defined law as{" "}
             <em>an ordinance of reason for the common good, made by him who has
@@ -37,7 +37,7 @@ export function Manifesto() {
             shaping of a community toward its real good.
           </p>
           <hr className="collegium-gold-rule" />
-          <h2 className="collegium-display text-3xl">What Collegium is for</h2>
+          <h2 className="collegium-display text-2xl sm:text-3xl">What Collegium is for</h2>
           <p>
             Christian and Catholic legal communities already exist in considerable
             number. The Catholic Bar Association lists dozens of diocesan and
@@ -61,7 +61,7 @@ export function Manifesto() {
             the steward notice what the spreadsheet was never going to surface.
           </p>
           <hr className="collegium-gold-rule" />
-          <h2 className="collegium-display text-3xl">The principles that shaped the product</h2>
+          <h2 className="collegium-display text-2xl sm:text-3xl">The principles that shaped the product</h2>
           <p>
             Catholic Social Teaching is not decorative here. It is the architecture.
             Seven principles, each load-bearing.
@@ -70,15 +70,15 @@ export function Manifesto() {
       </section>
 
       <section className="bg-[hsl(var(--c-cream-warm))] border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-3xl mx-auto px-5 py-16 space-y-10">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16 space-y-8 sm:space-y-10">
           {cstPrinciples.map((p, i) => (
-            <article key={p.key} className="grid grid-cols-[3rem_1fr] gap-5">
-              <div className="collegium-display text-3xl text-[hsl(var(--c-gold))]">
+            <article key={p.key} className="grid grid-cols-[2.5rem_1fr] sm:grid-cols-[3rem_1fr] gap-4 sm:gap-5">
+              <div className="collegium-display text-2xl sm:text-3xl text-[hsl(var(--c-gold))]">
                 {String(i + 1).padStart(2, "0")}
               </div>
               <div>
                 <div className="collegium-latin text-sm mb-1">{p.latin}</div>
-                <h3 className="collegium-display text-2xl mb-3">{p.title}</h3>
+                <h3 className="collegium-display text-xl sm:text-2xl mb-3 leading-tight">{p.title}</h3>
                 <p className="text-[hsl(var(--c-slate))] leading-relaxed mb-3">{p.summary}</p>
                 <p className="text-sm text-[hsl(var(--c-slate-soft))] italic mb-2">
                   {p.for_lawyers}
@@ -91,8 +91,8 @@ export function Manifesto() {
       </section>
 
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-3xl mx-auto px-5 py-20 collegium-prose">
-          <h2 className="collegium-display text-3xl">A guild, not a network</h2>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20 collegium-prose">
+          <h2 className="collegium-display text-2xl sm:text-3xl">A guild, not a network</h2>
           <p>
             The word <em>collegium</em> in canon law denotes a collection of
             persons united for a common object — older, more particular, and more
@@ -106,7 +106,7 @@ export function Manifesto() {
             transactional members; they are guilds of people who share a calling.
             The platform should reflect that, in language and in design.
           </p>
-          <h2 className="collegium-display text-3xl">An ecumenical product with Catholic depth</h2>
+          <h2 className="collegium-display text-2xl sm:text-3xl">An ecumenical product with Catholic depth</h2>
           <p>
             Most of what we are building works just as well for a Christian Legal
             Society chapter as for a Catholic guild. The shared Christian year,
@@ -122,7 +122,7 @@ export function Manifesto() {
             Penyafort — appear in the rhythm. None of it is required. All of it
             is available.
           </p>
-          <h2 className="collegium-display text-3xl">What we will not do</h2>
+          <h2 className="collegium-display text-2xl sm:text-3xl">What we will not do</h2>
           <ul>
             <li>We will not turn members into rows in a sales pipeline.</li>
             <li>

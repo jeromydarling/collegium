@@ -14,10 +14,10 @@ export function CalendarPage() {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
       <div className="mb-8">
         <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Calendarium</div>
-        <h1 className="collegium-display text-4xl">Calendar</h1>
+        <h1 className="collegium-display text-3xl sm:text-4xl">Calendar</h1>
         <p className="text-[hsl(var(--c-slate-soft))] mt-1 max-w-2xl">
           An ecumenical legal-liturgical year. The shared Christian seasons in
           plain language; saints and civic observances in their own register;
@@ -25,7 +25,7 @@ export function CalendarPage() {
         </p>
       </div>
 
-      <div className="collegium-card p-6 mb-8 bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))]">
+      <div className="collegium-card p-5 sm:p-6 mb-6 sm:mb-8 bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))]">
         <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-wine))] mb-1">
           Current season
         </div>
@@ -41,8 +41,8 @@ export function CalendarPage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-5">
-        <div className="collegium-card p-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 collegium-safe-bottom">
+        <div className="collegium-card p-5 sm:p-6">
           <h3 className="collegium-display text-xl mb-4">The Christian year</h3>
           <ul className="space-y-3">
             {christianYear.map((s) => (
@@ -62,8 +62,8 @@ export function CalendarPage() {
           </ul>
         </div>
 
-        <div className="collegium-card p-6">
-          <h3 className="collegium-display text-xl mb-4">Saints & observances</h3>
+        <div className="collegium-card p-5 sm:p-6">
+          <h3 className="collegium-display text-xl mb-4">Saints &amp; observances</h3>
           <ul className="space-y-3">
             {sortedObservances.map((o) => (
               <li key={o.key} className="border-l-2 border-[hsl(var(--c-wine)/0.3)] pl-3 py-0.5">
@@ -86,7 +86,7 @@ export function CalendarPage() {
           </ul>
         </div>
 
-        <div className="collegium-card p-6">
+        <div className="collegium-card p-5 sm:p-6 md:col-span-2 lg:col-span-1">
           <h3 className="collegium-display text-xl mb-4">Upcoming chapter events</h3>
           <ul className="space-y-3">
             {upcoming.map((e) => {

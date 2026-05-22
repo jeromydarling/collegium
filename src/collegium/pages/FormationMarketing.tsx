@@ -7,10 +7,10 @@ export function FormationMarketing() {
   return (
     <div className="collegium-theme">
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-3xl mx-auto px-5 py-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
           <div className="collegium-latin text-sm mb-2">Eruditio</div>
-          <h1 className="collegium-display-xl text-5xl mb-6">Formation</h1>
-          <p className="text-xl text-[hsl(var(--c-slate))] leading-relaxed">
+          <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-5 sm:mb-6">Formation</h1>
+          <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] leading-relaxed">
             A curated library of public-domain legal, civic, and theological texts —
             organized for chapter discussion, mentor prompts, and daily devotion.
           </p>
@@ -18,8 +18,8 @@ export function FormationMarketing() {
       </section>
 
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-4xl mx-auto px-5 py-16">
-          <h2 className="collegium-display text-3xl mb-3">The library</h2>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <h2 className="collegium-display text-2xl sm:text-3xl mb-3">The library</h2>
           <p className="text-[hsl(var(--c-slate-soft))] mb-10 max-w-2xl">
             Every work below is in the public domain and verifiably sourced from
             Project Gutenberg, Internet Archive, or the Vatican magisterial archive.
@@ -53,8 +53,8 @@ export function FormationMarketing() {
       </section>
 
       <section className="bg-[hsl(var(--c-cream-warm))] border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-4xl mx-auto px-5 py-16">
-          <h2 className="collegium-display text-3xl mb-3">Formation tracks</h2>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <h2 className="collegium-display text-2xl sm:text-3xl mb-3">Formation tracks</h2>
           <p className="text-[hsl(var(--c-slate-soft))] mb-10 max-w-2xl">
             Multi-week sequences for personal reading, mentor pairs, or chapter
             study groups. Each track ships with discussion guides.
@@ -77,8 +77,8 @@ export function FormationMarketing() {
       </section>
 
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-4xl mx-auto px-5 py-16">
-          <h2 className="collegium-display text-3xl mb-3">An ecumenical legal year</h2>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <h2 className="collegium-display text-2xl sm:text-3xl mb-3">An ecumenical legal year</h2>
           <p className="text-[hsl(var(--c-slate-soft))] mb-10 max-w-2xl">
             Two layers. The Christian year that any tradition can name; legal and
             civic observances that overlay it; and an optional Catholic depth mode
@@ -118,8 +118,8 @@ export function FormationMarketing() {
       </section>
 
       <section className="bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)]">
-        <div className="max-w-3xl mx-auto px-5 py-20 text-center">
-          <h2 className="collegium-display text-4xl mb-6 text-[hsl(40_40%_94%)]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
+          <h2 className="collegium-display text-3xl sm:text-4xl mb-5 sm:mb-6 text-[hsl(40_40%_94%)]">
             Read the Daily Office
           </h2>
           <p className="text-[hsl(40_20%_82%)] mb-8 max-w-xl mx-auto leading-relaxed">

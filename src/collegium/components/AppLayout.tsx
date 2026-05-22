@@ -34,9 +34,11 @@ export function AppLayout() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Close mobile sidebar on navigation.
+  // Close mobile sidebar on navigation and scroll the page to the top — page
+  // scroll (not an inner container) so the address bar can collapse on iOS.
   useEffect(() => {
     setMobileOpen(false);
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [location.pathname]);
 
   const sidebar = (
@@ -100,8 +102,9 @@ export function AppLayout() {
 
   return (
     <div className="collegium-theme min-h-screen md:flex">
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-64 shrink-0 bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)] flex-col">
+      {/* Desktop sidebar — sticky to viewport so it stays visible while the
+       * right pane scrolls naturally. */}
+      <aside className="hidden md:flex md:sticky md:top-0 md:h-screen w-64 shrink-0 bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)] flex-col">
         {sidebar}
       </aside>
 
@@ -113,32 +116,40 @@ export function AppLayout() {
             onClick={() => setMobileOpen(false)}
             aria-hidden
           />
-          <aside className="md:hidden fixed inset-y-0 left-0 z-50 w-64 bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)] flex flex-col shadow-2xl">
+          <aside className="md:hidden fixed inset-y-0 left-0 z-50 w-64 bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)] flex flex-col shadow-2xl collegium-safe-top">
             {sidebar}
           </aside>
         </>
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="h-12 bg-[hsl(354_55%_26%)] text-[hsl(40_35%_94%)] flex items-center justify-center px-4 text-[11px] sm:text-xs font-medium tracking-wide text-center">
-          You are exploring the Collegium demo · all data is illustrative · nothing is saved beyond your browser
-        </div>
-        {/* Mobile header bar with hamburger */}
-        <div className="md:hidden flex items-center justify-between px-4 h-14 border-b border-[hsl(var(--c-border))] bg-[hsl(var(--c-cream))]">
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="p-2 -ml-2 text-[hsl(var(--c-wine))]"
-            aria-label="Open navigation"
-          >
-            <Menu size={22} />
-          </button>
-          <div className="flex items-center gap-2">
-            <CollegiumLogo size={22} />
-            <span className="collegium-display text-base">Collegium</span>
+        {/* Sticky top group — demo banner + (on mobile) header with hamburger. */}
+        <div className="sticky top-0 z-30 collegium-safe-top">
+          <div className="bg-[hsl(354_55%_26%)] text-[hsl(40_35%_94%)] px-4 py-2 text-[11px] sm:text-xs font-medium tracking-wide text-center leading-tight">
+            <span className="hidden sm:inline">You are exploring the Collegium demo · all data is illustrative · nothing is saved beyond your browser</span>
+            <span className="sm:hidden">Collegium demo · illustrative data only</span>
           </div>
-          <div className="w-9" />
+          <div className="md:hidden flex items-center justify-between px-2 h-14 border-b border-[hsl(var(--c-border))] bg-[hsl(var(--c-cream))]">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="w-12 h-12 inline-flex items-center justify-center text-[hsl(var(--c-wine))] rounded-md hover:bg-[hsl(var(--c-wine)/0.05)]"
+              aria-label="Open navigation"
+            >
+              <Menu size={24} />
+            </button>
+            <div className="flex items-center gap-2 min-w-0">
+              <CollegiumLogo size={22} className="shrink-0" />
+              <div className="leading-none min-w-0">
+                <div className="collegium-display text-base">Collegium</div>
+                <div className="text-[9px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))] truncate">
+                  {state.identityName}
+                </div>
+              </div>
+            </div>
+            <div className="w-12" />
+          </div>
         </div>
-        <main className="flex-1 overflow-y-auto bg-[hsl(var(--c-cream))]" key={location.pathname}>
+        <main className="flex-1 bg-[hsl(var(--c-cream))]" key={location.pathname}>
           <Outlet />
         </main>
       </div>

@@ -1,5 +1,5 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
-import { useState } from "react";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { CollegiumLogo } from "./Logo";
 import { brand } from "../brand";
 import { Menu, X } from "lucide-react";
@@ -14,20 +14,29 @@ const nav = [
   { to: "/contact", label: "Contact" },
 ];
 
+function ScrollToTopOnRouteChange() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [pathname]);
+  return null;
+}
+
 export function PublicLayout() {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="collegium-theme min-h-screen flex flex-col">
-      <header className="sticky top-0 z-40 bg-[hsl(40_35%_96%/0.92)] backdrop-blur border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <CollegiumLogo size={36} />
-            <div className="flex flex-col leading-none">
-              <span className="collegium-display text-xl text-[hsl(var(--c-ink))]">
+      <ScrollToTopOnRouteChange />
+      <header className="sticky top-0 z-40 bg-[hsl(40_35%_96%/0.92)] backdrop-blur border-b border-[hsl(var(--c-border))] collegium-safe-top">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <CollegiumLogo size={36} className="shrink-0" />
+            <div className="flex flex-col leading-none min-w-0">
+              <span className="collegium-display text-lg sm:text-xl text-[hsl(var(--c-ink))] truncate">
                 {brand.appName}
               </span>
-              <span className="collegium-latin text-[11px] text-[hsl(var(--c-wine))]">
+              <span className="collegium-latin text-[10px] sm:text-[11px] text-[hsl(var(--c-wine))] truncate">
                 A guild for legal vocation
               </span>
             </div>
@@ -52,17 +61,18 @@ export function PublicLayout() {
           </nav>
 
           <button
-            className="md:hidden p-2 text-[hsl(var(--c-wine))]"
+            className="md:hidden -mr-2 w-12 h-12 inline-flex items-center justify-center text-[hsl(var(--c-wine))] rounded-md hover:bg-[hsl(var(--c-wine)/0.05)]"
             onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
           >
-            {open ? <X size={22} /> : <Menu size={22} />}
+            {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
         {open && (
-          <div className="md:hidden border-t border-[hsl(var(--c-border))] bg-[hsl(var(--c-cream))]">
-            <div className="max-w-6xl mx-auto px-5 py-3 flex flex-col gap-3">
+          <div className="md:hidden border-t border-[hsl(var(--c-border))] bg-[hsl(var(--c-cream))] collegium-safe-bottom">
+            <div className="max-w-6xl mx-auto px-4 py-2 flex flex-col">
               {nav.map((n) => (
                 <NavLink
                   key={n.to}
@@ -70,7 +80,9 @@ export function PublicLayout() {
                   end={n.end}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `collegium-nav-link py-1 ${isActive ? "active" : ""}`
+                    `collegium-nav-link py-3 px-1 border-b border-[hsl(var(--c-border)/0.6)] last:border-0 text-base ${
+                      isActive ? "active" : ""
+                    }`
                   }
                 >
                   {n.label}
@@ -79,7 +91,7 @@ export function PublicLayout() {
               <Link
                 to="/demo"
                 onClick={() => setOpen(false)}
-                className="collegium-btn-primary text-sm w-fit mt-1"
+                className="collegium-btn-primary text-sm mt-3 mb-2 w-full"
               >
                 Try the demo
               </Link>
@@ -92,10 +104,10 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-[hsl(var(--c-border))] bg-[hsl(var(--c-cream-warm))]">
-        <div className="max-w-6xl mx-auto px-5 py-12">
-          <div className="grid md:grid-cols-4 gap-10">
-            <div className="md:col-span-2">
+      <footer className="border-t border-[hsl(var(--c-border))] bg-[hsl(var(--c-cream-warm))] collegium-safe-bottom">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+            <div className="sm:col-span-2 md:col-span-2">
               <div className="flex items-center gap-2 mb-3">
                 <CollegiumLogo size={28} />
                 <span className="collegium-display text-lg">{brand.appName}</span>
@@ -128,7 +140,7 @@ export function PublicLayout() {
             </div>
           </div>
           <hr className="collegium-gold-rule mt-10" />
-          <p className="text-xs text-[hsl(var(--c-slate-soft))] text-center">
+          <p className="text-xs text-[hsl(var(--c-slate-soft))] text-center leading-relaxed px-2">
             © {new Date().getFullYear()} Collegium. Built with reverence for those who practice law as a calling.
           </p>
         </div>

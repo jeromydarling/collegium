@@ -39,12 +39,12 @@ export function Dashboard() {
     .slice(0, 3);
 
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
       <div className="mb-8">
         <div className="collegium-latin text-sm text-[hsl(var(--c-wine))] mb-1">
           Salve, {state.identityName.split(" ")[0]}
         </div>
-        <h1 className="collegium-display text-4xl">
+        <h1 className="collegium-display text-3xl sm:text-4xl">
           {greeting(today)}, {state.identityName.split(" ")[0]}.
         </h1>
         <p className="text-[hsl(var(--c-slate-soft))] mt-1">
@@ -53,8 +53,8 @@ export function Dashboard() {
       </div>
 
       {/* ── Top row: NRI + Today's Office ── */}
-      <div className="grid lg:grid-cols-3 gap-5 mb-8">
-        <div className="lg:col-span-2 collegium-card p-6">
+      <div className="grid lg:grid-cols-3 gap-4 sm:gap-5 mb-6 sm:mb-8">
+        <div className="lg:col-span-2 collegium-card p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Activity size={16} className="text-[hsl(var(--c-wine))]" />
@@ -87,7 +87,7 @@ export function Dashboard() {
 
         <Link
           to="/app/office"
-          className="collegium-card p-6 hover:shadow-md transition-shadow group block bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))]"
+          className="collegium-card p-5 sm:p-6 hover:shadow-md transition-shadow group block bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))]"
         >
           <div className="flex items-center gap-2 mb-3 text-[hsl(var(--c-wine))]">
             <Sun size={16} />
@@ -106,7 +106,7 @@ export function Dashboard() {
       </div>
 
       {/* ── Modules quick-access ── */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
         <ModuleTile to="/app/chapters" icon={Users} label="Chapters" count={chapters.length} />
         <ModuleTile to="/app/mentorship" icon={Compass} label="Mentorship" count={mentorPairs.length} />
         <ModuleTile to="/app/service" icon={Scale} label="Service" count={serviceMatters.filter((s) => s.status !== "closed").length} />
@@ -116,9 +116,9 @@ export function Dashboard() {
       </div>
 
       {/* ── Network pulse + upcoming ── */}
-      <div className="grid lg:grid-cols-2 gap-5">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-5 collegium-safe-bottom">
         {networkPulse && (
-          <div className="collegium-card p-6 bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)]">
+          <div className="collegium-card p-5 sm:p-6 bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)]">
             <div className="flex items-center gap-2 mb-3 text-[hsl(38_60%_70%)]">
               <Activity size={14} />
               <span className="text-[10px] uppercase tracking-widest">Network pulse</span>
@@ -137,7 +137,7 @@ export function Dashboard() {
             </p>
           </div>
         )}
-        <div className="collegium-card p-6">
+        <div className="collegium-card p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <CalendarDays size={16} className="text-[hsl(var(--c-wine))]" />

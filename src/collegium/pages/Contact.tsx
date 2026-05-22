@@ -4,10 +4,10 @@ export function Contact() {
   return (
     <div className="collegium-theme">
       <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
-        <div className="max-w-3xl mx-auto px-5 py-20 text-center">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
           <div className="collegium-latin text-sm mb-2">Salutatio</div>
-          <h1 className="collegium-display-xl text-5xl mb-6">Get in touch</h1>
-          <p className="text-xl text-[hsl(var(--c-slate))] leading-relaxed">
+          <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-5 sm:mb-6">Get in touch</h1>
+          <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] leading-relaxed">
             We are looking for pilot partners. If you steward a chapter, guild,
             or clinic that resonates with what we are building, write to us.
           </p>
@@ -15,7 +15,7 @@ export function Contact() {
       </section>
 
       <section className="bg-white">
-        <div className="max-w-2xl mx-auto px-5 py-20">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
           <div className="grid sm:grid-cols-2 gap-5">
             <a
               href="mailto:hello@collegium.app"
@@ -44,7 +44,7 @@ export function Contact() {
           <hr className="collegium-gold-rule my-12" />
 
           <div className="collegium-prose">
-            <h2 className="collegium-display text-2xl">
+            <h2 className="collegium-display text-xl sm:text-2xl">
               What helps us most in a first conversation
             </h2>
             <ul>

@@ -11,22 +11,22 @@ export function Formation() {
   const state = useDemoState();
 
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
       <div className="mb-8">
         <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Eruditio</div>
-        <h1 className="collegium-display text-4xl">Formation</h1>
+        <h1 className="collegium-display text-3xl sm:text-4xl">Formation</h1>
         <p className="text-[hsl(var(--c-slate-soft))] mt-1">
           Public-domain readings, multi-week tracks, and the texts that have
           shaped legal vocation for two millennia.
         </p>
       </div>
 
-      <div className="flex border-b border-[hsl(var(--c-border))] mb-6">
+      <div className="flex border-b border-[hsl(var(--c-border))] mb-5 sm:mb-6">
         {tabs.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px min-h-[44px] ${
               tab === t
                 ? "border-[hsl(var(--c-wine))] text-[hsl(var(--c-wine))]"
                 : "border-transparent text-[hsl(var(--c-slate-soft))] hover:text-[hsl(var(--c-slate))]"
@@ -38,12 +38,12 @@ export function Formation() {
       </div>
 
       {tab === "Excerpts" && (
-        <div className="space-y-4">
+        <div className="space-y-4 collegium-safe-bottom">
           {libraryExcerpts.map((ex) => {
             const work = libraryWorks.find((w) => w.id === ex.workId);
             const saved = state.savedExcerpts.includes(ex.id);
             return (
-              <article key={ex.id} className="collegium-card p-6">
+              <article key={ex.id} className="collegium-card p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
                     <div className="text-xs text-[hsl(var(--c-slate-soft))] mb-0.5">
@@ -86,7 +86,7 @@ export function Formation() {
       )}
 
       {tab === "Works" && (
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-5 collegium-safe-bottom">
           {libraryWorks.map((w) => (
             <a
               key={w.id}
@@ -122,14 +122,14 @@ export function Formation() {
       )}
 
       {tab === "Tracks" && (
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5 collegium-safe-bottom">
           {tracksSeed.map((t) => {
             const enrolled = state.enrolledTracks.includes(t.id);
             return (
-              <div key={t.id} className="collegium-card p-6">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <h3 className="collegium-display text-2xl mb-1">{t.title}</h3>
+              <div key={t.id} className="collegium-card p-5 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3">
+                  <div className="flex-1">
+                    <h3 className="collegium-display text-xl sm:text-2xl mb-1 leading-tight">{t.title}</h3>
                     <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed mb-2">{t.blurb}</p>
                     <div className="text-xs text-[hsl(var(--c-slate-soft))]">
                       {t.items.length} readings · audience: {t.audience}
@@ -140,8 +140,8 @@ export function Formation() {
                     disabled={enrolled}
                     className={
                       enrolled
-                        ? "collegium-btn-ghost text-sm cursor-default"
-                        : "collegium-btn-primary text-sm"
+                        ? "collegium-btn-ghost text-sm cursor-default w-full sm:w-auto"
+                        : "collegium-btn-primary text-sm w-full sm:w-auto"
                     }
                   >
                     {enrolled ? "Enrolled ✓" : "Enroll"}

@@ -4,21 +4,21 @@ import { MapPin, Users, Calendar, ArrowRight, ChevronLeft } from "lucide-react";
 
 export function ChaptersList() {
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
       <div className="mb-8">
         <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Capitula</div>
-        <h1 className="collegium-display text-4xl">Chapters</h1>
+        <h1 className="collegium-display text-3xl sm:text-4xl">Chapters</h1>
         <p className="text-[hsl(var(--c-slate-soft))] mt-1">
           The local guilds, affiliates, and student fellowships that hold the
           network together.
         </p>
       </div>
-      <div className="grid md:grid-cols-2 gap-5">
+      <div className="grid md:grid-cols-2 gap-4 sm:gap-5 collegium-safe-bottom">
         {chapters.map((c) => (
           <Link
             to={`/app/chapters/${c.slug}`}
             key={c.id}
-            className="collegium-card p-6 hover:shadow-md transition-shadow block"
+            className="collegium-card p-5 sm:p-6 hover:shadow-md transition-shadow block"
           >
             <div className="flex items-baseline justify-between gap-3 mb-1">
               <h2 className="collegium-display text-xl leading-tight">{c.name}</h2>
@@ -49,15 +49,15 @@ export function ChapterDetail() {
   const chapterEvents = events.filter((e) => e.chapterId === c.id);
 
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
       <Link to="/app/chapters" className="text-xs collegium-link mb-4 inline-flex items-center gap-1">
         <ChevronLeft size={12} /> All chapters
       </Link>
 
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <span className="collegium-tag-soft mb-2 inline-block">{c.type.replace("-", " ")}</span>
-        <h1 className="collegium-display text-4xl mb-2">{c.name}</h1>
-        <div className="flex items-center gap-4 text-sm text-[hsl(var(--c-slate-soft))]">
+        <h1 className="collegium-display text-3xl sm:text-4xl mb-2 leading-tight">{c.name}</h1>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[hsl(var(--c-slate-soft))]">
           <span className="flex items-center gap-1"><MapPin size={13} /> {c.city}, {c.state}</span>
           <span className="flex items-center gap-1"><Users size={13} /> {c.membersCount} members</span>
           <span>Founded {c.founded}</span>
@@ -65,8 +65,8 @@ export function ChapterDetail() {
         <p className="mt-4 text-[hsl(var(--c-slate))] leading-relaxed max-w-3xl">{c.blurb}</p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-5 mb-8">
-        <div className="lg:col-span-2 collegium-card p-6">
+      <div className="grid lg:grid-cols-3 gap-4 sm:gap-5 mb-6 sm:mb-8">
+        <div className="lg:col-span-2 collegium-card p-5 sm:p-6">
           <h3 className="collegium-display text-xl mb-1">Chapter health</h3>
           <p className="text-sm text-[hsl(var(--c-slate-soft))] mb-5">
             NRI-synthesized score across four indices. Hover to see what's behind each.
@@ -83,7 +83,7 @@ export function ChapterDetail() {
           </div>
         </div>
 
-        <div className="collegium-card p-6">
+        <div className="collegium-card p-5 sm:p-6">
           <h3 className="collegium-display text-xl mb-4">Officers</h3>
           <ul className="space-y-3">
             {c.officers.map((o) => (
@@ -96,8 +96,8 @@ export function ChapterDetail() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-5">
-        <div className="collegium-card p-6">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-5 collegium-safe-bottom">
+        <div className="collegium-card p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="collegium-display text-xl">Upcoming events</h3>
             <Link to="/app/advancement" className="text-xs collegium-link">All</Link>
@@ -124,7 +124,7 @@ export function ChapterDetail() {
           </ul>
         </div>
 
-        <div className="collegium-card p-6">
+        <div className="collegium-card p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="collegium-display text-xl">Members</h3>
             <span className="text-xs text-[hsl(var(--c-slate-soft))]">{members.length} shown · {c.membersCount} total</span>
