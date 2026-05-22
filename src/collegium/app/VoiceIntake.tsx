@@ -20,6 +20,8 @@ import {
   type VoiceAppeal,
 } from "../data/voiceAppeals";
 import { defaultTenant } from "../data/tenants";
+import { demoStore } from "../lib/demoStore";
+import { Link } from "react-router-dom";
 import {
   getTwilioCreds,
   setTwilioCreds,
@@ -281,26 +283,7 @@ function VoicemailCard({
           )}
 
           {appeal.status === "new" && (
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                className="collegium-btn-primary text-xs inline-flex items-center gap-1.5"
-              >
-                Promote to matter
-              </button>
-              <button
-                type="button"
-                className="collegium-btn-ghost text-xs"
-              >
-                Mark reviewed
-              </button>
-              <button
-                type="button"
-                className="collegium-btn-ghost text-xs text-[hsl(8_55%_42%)]"
-              >
-                Archive
-              </button>
-            </div>
+            <PromoteActions appeal={appeal} />
           )}
 
           {appeal.status === "promoted" && appeal.promotedToMatterId && (
@@ -496,4 +479,58 @@ function formatTimestamp(iso: string): string {
     hour: "numeric",
     minute: "2-digit",
   });
+}
+
+function PromoteActions({ appeal }: { appeal: VoiceAppeal }) {
+  const [promoted, setPromoted] = useState(false);
+
+  function handlePromote() {
+    demoStore.submitMatterDraft({
+      requesterFirstName: appeal.callerFirstName ?? "Anonymous",
+      category: "other",
+      region: "(needs review)",
+      languages: appeal.detectedLanguage ? [appeal.detectedLanguage] : ["en"],
+      summary: appeal.translation ?? appeal.transcript,
+      appealText: appeal.translation ?? appeal.transcript,
+      appealConsents: {
+        showToAdvocates: false,
+        shareCommunio: false,
+        publicAdvocacy: false,
+      },
+      source: "voice-intake",
+    });
+    setPromoted(true);
+  }
+
+  if (promoted) {
+    return (
+      <div className="text-xs text-[hsl(145_40%_28%)] inline-flex items-center gap-1.5">
+        <Check size={11} /> Promoted to intake-triage queue.{" "}
+        <Link to="/app/intake-triage" className="collegium-link font-medium">
+          Review →
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      <button
+        type="button"
+        onClick={handlePromote}
+        className="collegium-btn-primary text-xs inline-flex items-center gap-1.5"
+      >
+        Promote to matter
+      </button>
+      <button type="button" className="collegium-btn-ghost text-xs">
+        Mark reviewed
+      </button>
+      <button
+        type="button"
+        className="collegium-btn-ghost text-xs text-[hsl(8_55%_42%)]"
+      >
+        Archive
+      </button>
+    </div>
+  );
 }

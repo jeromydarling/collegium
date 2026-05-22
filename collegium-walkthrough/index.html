@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #f6f0e4;
+        font-family: "Georgia", "Times New Roman", serif;
+        color: #19161c;
+      }
+      .stage {
+        position: absolute;
+        inset: 0;
+      }
+      .clip {
+        position: absolute;
+        opacity: 0;
+      }
+      .latin {
+        font-style: italic;
+        letter-spacing: 0.06em;
+        text-transform: lowercase;
+      }
+      .display {
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        line-height: 1.05;
+      }
+      .wine { color: #801a31; }
+      .gold { color: #c89a4a; }
+      .ink  { color: #19161c; }
+      .slate { color: #50525a; }
+      .cream-bg { background: #f6f0e4; }
+      .cream-warm-bg { background: #f0e4d0; }
+      .dark-bg { background: #1a2333; color: #f0e8d8; }
+
+      .card {
+        background: #ffffff;
+        border: 1px solid #e6dccc;
+        border-radius: 12px;
+        box-shadow: 0 1px 2px rgba(25, 22, 28, 0.04);
+      }
+      .accent-bar {
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 6px;
+        border-radius: 12px 0 0 12px;
+      }
+      .pill {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 18px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .pill-wine { background: rgba(128, 26, 49, 0.10); color: #801a31; }
+      .pill-gold { background: rgba(200, 154, 74, 0.18); color: #8a6520; }
+      .pill-green { background: rgba(64, 130, 84, 0.14); color: #1e5536; }
+
+      .door {
+        border-radius: 16px;
+        padding: 36px;
+        height: 320px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .door h3 { font-size: 38px; font-weight: 500; line-height: 1.05; margin-bottom: 8px; }
+      .door p  { font-size: 22px; color: #50525a; line-height: 1.4; }
+      .door .label { font-size: 20px; letter-spacing: 0.08em; }
+
+      .quote-glyph {
+        font-size: 100px;
+        line-height: 1;
+        font-family: "Georgia", serif;
+        color: #c89a4a;
+      }
+
+      .arrow {
+        font-size: 70px;
+        color: #801a31;
+        font-weight: 300;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="92"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- SCENE 1 · Hero (0-12s)                                    -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div
+        id="scene-hero"
+        class="clip stage"
+        data-start="0"
+        data-duration="12"
+        data-track-index="1"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px; background: linear-gradient(180deg, #f6f0e4 0%, #f0e4d0 100%);"
+      >
+        <div class="latin wine" id="hero-latin" style="font-size: 30px; margin-bottom: 28px;">
+          Collegium · Capitula · Tirocinium · Ministerium
+        </div>
+        <h1 id="hero-title" class="display ink" style="font-size: 130px; max-width: 1500px; text-align: center; margin-bottom: 32px;">
+          A guild for those who practice law as a <span class="wine" style="border-bottom: 4px solid #c89a4a; padding-bottom: 6px;">calling.</span>
+        </h1>
+        <p id="hero-sub" class="slate" style="font-size: 36px; max-width: 1300px; text-align: center; line-height: 1.4;">
+          Pro bono coordination, hours export, and a network of advocates —
+          for Christian and Catholic legal communities.
+        </p>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- SCENE 2 · Three doors (12-25s)                            -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div
+        id="scene-doors"
+        class="clip stage"
+        data-start="12"
+        data-duration="13"
+        data-track-index="1"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px;"
+      >
+        <div class="latin wine" style="font-size: 26px; margin-bottom: 16px;">Three doors</div>
+        <h2 id="doors-title" class="display ink" style="font-size: 78px; margin-bottom: 56px; text-align: center;">
+          One network, three audiences.
+        </h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; max-width: 1640px;">
+          <div id="door-collegium" class="door" style="background: #801a31; color: #f6f0e4;">
+            <div>
+              <div class="label latin gold">Collegium</div>
+              <h3 style="color: #f6f0e4;">Steward, mentor, member?</h3>
+              <p style="color: #f0e0c8;">
+                Enter the resource network. Chapters, mentorship, NRI, Communio.
+              </p>
+            </div>
+            <div class="latin gold" style="font-size: 20px;">/app →</div>
+          </div>
+          <div id="door-auxilium" class="door card">
+            <div>
+              <div class="label latin wine">Auxilium</div>
+              <h3>Need legal help?</h3>
+              <p>
+                Plain-English guide so you walk into help prepared.
+              </p>
+            </div>
+            <div class="latin wine" style="font-size: 20px;">/auxilium →</div>
+          </div>
+          <div id="door-patrocinium" class="door cream-warm-bg" style="border: 2px solid #c89a4a;">
+            <div>
+              <div class="label latin wine">Patrocinium</div>
+              <h3>A lawyer ready to give an hour?</h3>
+              <p>
+                Pre-vetted pro bono cases. Five minutes from sign-in.
+              </p>
+            </div>
+            <div class="latin wine" style="font-size: 20px;">/patrocinium →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- SCENE 3 · A client tells her story (25-40s)               -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div
+        id="scene-story"
+        class="clip stage"
+        data-start="25"
+        data-duration="15"
+        data-track-index="1"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px;"
+      >
+        <div class="latin wine" style="font-size: 26px; margin-bottom: 12px;">Esperanza, Boston</div>
+        <h2 id="story-title" class="display ink" style="font-size: 60px; margin-bottom: 48px; text-align: center; max-width: 1400px;">
+          A client tells her story.
+        </h2>
+        <div class="card" style="max-width: 1300px; padding: 56px; position: relative; border-left: 6px solid #c89a4a;">
+          <div id="story-quote" class="quote-glyph" style="position: absolute; top: 24px; left: 48px;">"</div>
+          <p id="story-text" class="ink" style="font-size: 38px; font-style: italic; line-height: 1.45; padding-left: 80px;">
+            I have lived in my apartment for seventeen years. When I came to Boston from Phoenix last fall my Section-8 papers got stuck somewhere. The new landlord says he wants me out before the summer. My grandchildren go to St. Anthony's school three blocks away. I am asking for help so I do not lose my home.
+          </p>
+          <div id="story-attr" class="wine" style="font-size: 26px; margin-top: 28px; padding-left: 80px; font-weight: 500;">
+            — Esperanza
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- SCENE 4 · The lifecycle ribbon (40-65s)                   -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div
+        id="scene-lifecycle"
+        class="clip stage"
+        data-start="40"
+        data-duration="25"
+        data-track-index="1"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px;"
+      >
+        <div class="latin wine" style="font-size: 26px; margin-bottom: 12px;">Quomodo</div>
+        <h2 class="display ink" style="font-size: 56px; margin-bottom: 56px; text-align: center;">
+          How help moves through the network.
+        </h2>
+
+        <div style="display: flex; align-items: center; gap: 12px; max-width: 1780px;">
+          <div id="lifecycle-step1" class="card" style="padding: 28px; width: 280px; height: 220px;">
+            <div class="pill pill-wine" style="margin-bottom: 12px;">1 · Auxilium</div>
+            <div style="font-size: 24px; font-weight: 500; margin-bottom: 8px;">Client tells her story</div>
+            <div style="font-size: 18px; color: #50525a;">Interview · matter file · personal appeal (consent-gated)</div>
+          </div>
+          <div id="lifecycle-arrow1" class="arrow">→</div>
+          <div id="lifecycle-step2" class="card" style="padding: 28px; width: 280px; height: 220px;">
+            <div class="pill pill-gold" style="margin-bottom: 12px;">2 · Steward</div>
+            <div style="font-size: 24px; font-weight: 500; margin-bottom: 8px;">Triage + publish</div>
+            <div style="font-size: 18px; color: #50525a;">Steward reviews, sets conflict + malpractice, publishes to Patrocinium</div>
+          </div>
+          <div id="lifecycle-arrow2" class="arrow">→</div>
+          <div id="lifecycle-step3" class="card" style="padding: 28px; width: 280px; height: 220px;">
+            <div class="pill pill-wine" style="margin-bottom: 12px;">3 · Patrocinium</div>
+            <div style="font-size: 24px; font-weight: 500; margin-bottom: 8px;">Advocate accepts</div>
+            <div style="font-size: 18px; color: #50525a;">5-minute decision · engagement letter · workspace opens</div>
+          </div>
+          <div id="lifecycle-arrow3" class="arrow">→</div>
+          <div id="lifecycle-step4" class="card" style="padding: 28px; width: 280px; height: 220px;">
+            <div class="pill pill-green" style="margin-bottom: 12px;">4 · Closure</div>
+            <div style="font-size: 24px; font-weight: 500; margin-bottom: 8px;">Loop returns to parish</div>
+            <div style="font-size: 18px; color: #50525a;">Pastoral summary back to referring chapter · hours logged · bar-ready export</div>
+          </div>
+        </div>
+
+        <div id="lifecycle-note" class="slate" style="font-size: 22px; margin-top: 60px; max-width: 1500px; text-align: center; line-height: 1.5;">
+          Esperanza's last name never leaves Boston. Her story does — sanitized,
+          dignified, in her own words.
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- SCENE 5 · The lawyer's surface (65-80s)                    -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div
+        id="scene-lawyer"
+        class="clip stage"
+        data-start="65"
+        data-duration="15"
+        data-track-index="1"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px;"
+      >
+        <div class="latin wine" style="font-size: 26px; margin-bottom: 12px;">Five minutes to your next case</div>
+        <h2 class="display ink" style="font-size: 56px; margin-bottom: 48px; text-align: center;">
+          What the lawyer sees.
+        </h2>
+        <div class="card" style="width: 1400px; padding: 48px; position: relative;">
+          <div id="lawyer-tags" style="display: flex; gap: 12px; margin-bottom: 24px;">
+            <span class="pill pill-wine">Housing</span>
+            <span class="pill pill-gold">Urgent</span>
+            <span style="font-size: 18px; color: #50525a; align-self: center;">· Limited-scope · ~6 hr · Boston Housing Court</span>
+            <span class="pill pill-green" style="margin-left: auto;">✓ Conflicts cleared</span>
+          </div>
+          <h3 id="lawyer-goal" class="display ink" style="font-size: 44px; line-height: 1.15; margin-bottom: 28px;">
+            Answer notice-to-quit; preserve voucher transfer; avoid summary process.
+          </h3>
+          <div id="lawyer-meta" class="slate" style="font-size: 22px; margin-bottom: 28px;">
+            Boston, MA · Deadline June 4 · Spanish-fluent client · Section-8 portability stalled
+          </div>
+          <div id="lawyer-safety" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div class="cream-warm-bg" style="padding: 20px; border-radius: 8px;">
+              <div class="pill pill-green" style="font-size: 14px; padding: 4px 10px;">Malpractice</div>
+              <div style="font-size: 22px; font-weight: 500; color: #1e5536; margin-top: 8px;">Covered</div>
+            </div>
+            <div class="cream-warm-bg" style="padding: 20px; border-radius: 8px;">
+              <div class="pill pill-green" style="font-size: 14px; padding: 4px 10px;">Conflicts</div>
+              <div style="font-size: 22px; font-weight: 500; color: #1e5536; margin-top: 8px;">Auto-cleared</div>
+            </div>
+            <div class="cream-warm-bg" style="padding: 20px; border-radius: 8px;">
+              <div class="pill pill-wine" style="font-size: 14px; padding: 4px 10px;">Templates</div>
+              <div style="font-size: 22px; font-weight: 500; color: #801a31; margin-top: 8px;">Eviction answer + voucher letter</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- SCENE 6 · Closing card (80-92s)                            -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div
+        id="scene-close"
+        class="clip stage dark-bg"
+        data-start="80"
+        data-duration="12"
+        data-track-index="1"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px;"
+      >
+        <div id="close-latin" class="latin" style="font-size: 30px; color: #d4b07a; margin-bottom: 32px;">
+          Tibi datum est
+        </div>
+        <h2 id="close-title" class="display" style="font-size: 96px; color: #f0e8d8; text-align: center; max-width: 1500px; margin-bottom: 32px; line-height: 1.05;">
+          One case this month is more than nothing.
+        </h2>
+        <p id="close-sub" style="font-size: 32px; color: #d4b07a; text-align: center; max-width: 1300px; line-height: 1.4; margin-bottom: 56px;">
+          The work between people is finally small enough to cross during lunch.
+        </p>
+        <div id="close-cta" style="font-size: 28px; color: #d4b07a; letter-spacing: 0.12em;">
+          collegium.network
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // SCENE 1 · Hero (0-12s)
+      tl.from("#hero-latin", { opacity: 0, y: 20, duration: 1.2 }, 0)
+        .from("#hero-title", { opacity: 0, y: 40, duration: 1.6 }, 0.4)
+        .from("#hero-sub",   { opacity: 0, y: 20, duration: 1.4 }, 1.6)
+        .to("#scene-hero",   { opacity: 0, duration: 0.8 }, 11.2);
+
+      // SCENE 2 · Three doors (12-25s)
+      tl.from("#doors-title", { opacity: 0, y: 30, duration: 1.2 }, 12.4)
+        .from("#door-collegium",   { opacity: 0, y: 40, duration: 1.0 }, 13.2)
+        .from("#door-auxilium",    { opacity: 0, y: 40, duration: 1.0 }, 13.6)
+        .from("#door-patrocinium", { opacity: 0, y: 40, duration: 1.0 }, 14.0)
+        .to("#scene-doors", { opacity: 0, duration: 0.8 }, 24.2);
+
+      // SCENE 3 · Esperanza's story (25-40s)
+      tl.from("#story-title", { opacity: 0, y: 30, duration: 1.2 }, 25.4)
+        .from("#story-quote", { opacity: 0, scale: 0.7, duration: 1.0 }, 26.0)
+        .from("#story-text",  { opacity: 0, y: 20, duration: 1.4 }, 26.4)
+        .from("#story-attr",  { opacity: 0, y: 12, duration: 1.0 }, 30.0)
+        .to("#scene-story", { opacity: 0, duration: 0.8 }, 39.2);
+
+      // SCENE 4 · Lifecycle ribbon (40-65s)
+      tl.from("#scene-lifecycle h2", { opacity: 0, y: 30, duration: 1.2 }, 40.4)
+        .from("#lifecycle-step1",  { opacity: 0, x: -30, duration: 1.0 }, 41.6)
+        .from("#lifecycle-arrow1", { opacity: 0, scale: 0.5, duration: 0.6 }, 43.2)
+        .from("#lifecycle-step2",  { opacity: 0, x: -30, duration: 1.0 }, 43.8)
+        .from("#lifecycle-arrow2", { opacity: 0, scale: 0.5, duration: 0.6 }, 45.4)
+        .from("#lifecycle-step3",  { opacity: 0, x: -30, duration: 1.0 }, 46.0)
+        .from("#lifecycle-arrow3", { opacity: 0, scale: 0.5, duration: 0.6 }, 47.6)
+        .from("#lifecycle-step4",  { opacity: 0, x: -30, duration: 1.0 }, 48.2)
+        .from("#lifecycle-note",   { opacity: 0, y: 16, duration: 1.4 }, 52.0)
+        .to("#scene-lifecycle", { opacity: 0, duration: 0.8 }, 64.2);
+
+      // SCENE 5 · Lawyer's surface (65-80s)
+      tl.from("#scene-lawyer h2", { opacity: 0, y: 30, duration: 1.2 }, 65.4)
+        .from("#lawyer-tags",   { opacity: 0, y: 16, duration: 1.0 }, 66.6)
+        .from("#lawyer-goal",   { opacity: 0, y: 20, duration: 1.2 }, 67.6)
+        .from("#lawyer-meta",   { opacity: 0, y: 14, duration: 1.0 }, 69.2)
+        .from("#lawyer-safety", { opacity: 0, y: 20, duration: 1.2 }, 70.4)
+        .to("#scene-lawyer", { opacity: 0, duration: 0.8 }, 79.2);
+
+      // SCENE 6 · Closing card (80-92s)
+      tl.from("#close-latin", { opacity: 0, y: 14, duration: 1.0 }, 80.4)
+        .from("#close-title", { opacity: 0, y: 40, duration: 1.6 }, 81.2)
+        .from("#close-sub",   { opacity: 0, y: 20, duration: 1.2 }, 83.4)
+        .from("#close-cta",   { opacity: 0, y: 14, duration: 1.2 }, 85.0);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

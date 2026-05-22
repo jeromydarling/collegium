@@ -11,6 +11,9 @@ import {
 import { complete } from "../lib/ai/client";
 import { hasAIConfigured } from "../lib/ai/settings";
 import { IntegrationsPanel } from "../components/IntegrationsPanel";
+import { demoStore } from "../lib/demoStore";
+import { Link } from "react-router-dom";
+import { CheckCircle2, ArrowRight, Send } from "lucide-react";
 
 const SYSTEM_PROMPT = `You are an intake analyst for a Catholic legal-aid network. You convert unstructured intake-call notes from a parish or clinic steward into a structured pro bono case brief.
 
@@ -319,10 +322,7 @@ function BriefPreview({ brief }: { brief: ParsedBrief }) {
         </div>
       )}
 
-      <p className="text-[11px] text-[hsl(var(--c-slate-soft))] mt-4 italic">
-        Demo workflow ends here. In production, this proposal would land in
-        the steward's review queue for one-click publication or edit.
-      </p>
+      <PublishToTriage brief={brief} />
     </div>
   );
 }
@@ -380,4 +380,65 @@ function tryParseJSON(text: string): ParsedBrief | null {
     /* fall through to null */
   }
   return null;
+}
+
+function PublishToTriage({ brief }: { brief: ParsedBrief }) {
+  const [published, setPublished] = useState(false);
+
+  function handlePublish() {
+    demoStore.submitMatterDraft({
+      requesterFirstName: extractFirstName(brief.goal) ?? "Anonymous",
+      category: brief.category,
+      region: brief.forum ?? "(region from brief)",
+      languages: brief.languages.length > 0 ? brief.languages : ["en"],
+      summary: brief.postureNotes,
+      source: "intake-assist",
+    });
+    setPublished(true);
+  }
+
+  if (published) {
+    return (
+      <div className="mt-4 p-3 bg-[hsl(145_30%_45%/0.08)] border border-[hsl(145_30%_45%/0.30)] rounded">
+        <div className="flex items-start gap-2 text-sm text-[hsl(145_40%_28%)]">
+          <CheckCircle2 size={14} className="mt-0.5 shrink-0" />
+          <div>
+            <div className="font-medium mb-1">
+              Draft sent to intake triage
+            </div>
+            <p className="text-xs leading-relaxed text-[hsl(var(--c-slate))]">
+              Review and publish from the{" "}
+              <Link to="/app/intake-triage" className="collegium-link font-medium">
+                Intake Triage
+              </Link>{" "}
+              queue. Once published it appears in Patrocinium for advocates
+              to pick up.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 pt-4 border-t border-[hsl(var(--c-border))] flex items-center justify-between gap-3">
+      <p className="text-[11px] text-[hsl(var(--c-slate-soft))] italic flex-1">
+        Looks right? Send this draft to the steward's intake-triage queue. A
+        steward reviews + publishes it to Patrocinium.
+      </p>
+      <button
+        type="button"
+        onClick={handlePublish}
+        className="collegium-btn-primary text-xs inline-flex items-center gap-1.5 shrink-0"
+      >
+        <Send size={11} /> Send to triage <ArrowRight size={11} />
+      </button>
+    </div>
+  );
+}
+
+function extractFirstName(goal: string): string | null {
+  // Best-effort: pull the first capitalized word from the goal.
+  const m = goal.match(/\b([A-Z][a-z]{2,})\b/);
+  return m ? m[1] : null;
 }

@@ -33,6 +33,7 @@ import { HoursDashboard } from "./app/HoursDashboard";
 import { TenantRevenue } from "./app/TenantRevenue";
 import { VoiceIntake } from "./app/VoiceIntake";
 import { AppealManagement } from "./app/AppealManagement";
+import { MatterInbox } from "./app/MatterInbox";
 
 import { AuxiliumLanding } from "./auxilium/AuxiliumLanding";
 import { MatterPicker } from "./auxilium/MatterPicker";
@@ -140,6 +141,7 @@ export default function CollegiumApp() {
           <Route path="hours" element={<HoursDashboard />} />
           <Route path="revenue" element={<TenantRevenue />} />
           <Route path="voice-intake" element={<VoiceIntake />} />
+          <Route path="intake-triage" element={<MatterInbox />} />
           <Route path="appeals" element={<AppealManagement />} />
           <Route path="intake-assist" element={<IntakeAssist />} />
           <Route path="office" element={<DailyOffice />} />

@@ -12,6 +12,74 @@ const STORAGE_KEY = "collegium_demo_state_v1";
 
 export type DemoRole = "national-steward" | "local-steward" | "mentor" | "member" | "student";
 
+export type MatterLifecycleState =
+  | "intake-scheduled"
+  | "intake-complete"
+  | "active"
+  | "filing-pending"
+  | "client-response-pending"
+  | "closed";
+
+export type MatterMessage = {
+  id: string;
+  matterId: string;
+  /** Who authored the message in the demo simulation. */
+  from: "lawyer" | "client" | "steward" | "system";
+  /** ISO timestamp. */
+  sentAt: string;
+  body: string;
+  /** Channel hint — affects how the message renders. */
+  channel?: "platform" | "sms" | "email" | "in-person";
+};
+
+export type MatterDocument = {
+  id: string;
+  matterId: string;
+  filename: string;
+  /** Kind hint — e.g. "Engagement letter", "Draft answer". */
+  kind: string;
+  /** Size in KB; placeholder for real uploads. */
+  sizeKb?: number;
+  uploadedAt: string;
+  uploadedBy: "lawyer" | "client" | "steward";
+};
+
+export type ClosureSummary = {
+  matterId: string;
+  summary: string;
+  consentVerified: boolean;
+  sentToReferrer: boolean;
+  signedAt: string;
+};
+
+/** Drafts of matters submitted from Auxilium awaiting steward review. */
+export type MatterDraft = {
+  id: string;
+  /** First name only — never last name. */
+  requesterFirstName: string;
+  category: string;
+  region: string;
+  languages: string[];
+  /** Plain-English summary the client provided. */
+  summary: string;
+  /** Optional personal-appeal text. */
+  appealText?: string;
+  /** Optional appeal consent flags. */
+  appealConsents?: {
+    showToAdvocates: boolean;
+    shareCommunio: boolean;
+    publicAdvocacy: boolean;
+  };
+  /** Where this came from. */
+  source: "auxilium" | "voice-intake" | "intake-assist" | "manual";
+  /** ISO timestamp of submission. */
+  submittedAt: string;
+  /** Current state in the steward triage flow. */
+  status: "new" | "in-review" | "published" | "declined";
+  /** When published, the resulting ServiceMatter id. */
+  publishedMatterId?: string;
+};
+
 export type DemoState = {
   role: DemoRole;
   identityName: string;
@@ -22,6 +90,16 @@ export type DemoState = {
   acceptedCases: string[]; // Patrocinium matter IDs accepted by the visitor
   savedCases: string[]; // Patrocinium matter IDs saved for later
   loggedHours: { matterId: string; hours: number; date: string; note?: string }[];
+  /** Per-matter lifecycle state for cases the visitor has accepted. */
+  matterLifecycle: Record<string, MatterLifecycleState>;
+  /** Conversation log per matter. */
+  matterMessages: MatterMessage[];
+  /** Document references per matter. */
+  matterDocuments: MatterDocument[];
+  /** Closure summaries per matter. */
+  closureSummaries: Record<string, ClosureSummary>;
+  /** Drafts submitted from Auxilium awaiting steward triage. */
+  matterDrafts: MatterDraft[];
 };
 
 const defaultState: DemoState = {
@@ -34,6 +112,11 @@ const defaultState: DemoState = {
   acceptedCases: [],
   savedCases: [],
   loggedHours: [],
+  matterLifecycle: {},
+  matterMessages: [],
+  matterDocuments: [],
+  closureSummaries: {},
+  matterDrafts: [],
 };
 
 function load(): DemoState {
@@ -106,8 +189,99 @@ export const demoStore = {
             acceptedCases: [...s.acceptedCases, id],
             // accepting clears the saved-for-later mark, if present
             savedCases: s.savedCases.filter((x) => x !== id),
+            // accepting moves the matter into "intake-scheduled"
+            matterLifecycle: {
+              ...s.matterLifecycle,
+              [id]: "intake-scheduled",
+            },
+            // accepting drops a system event into the message log
+            matterMessages: [
+              ...s.matterMessages,
+              {
+                id: `mm-accept-${id}-${Date.now()}`,
+                matterId: id,
+                from: "system",
+                sentAt: new Date().toISOString(),
+                body: "Matter accepted. Lawyer has 48 hours to send an engagement letter.",
+                channel: "platform",
+              },
+            ],
           }
     ),
+  setMatterState: (id: string, state: MatterLifecycleState) =>
+    setState((s) => ({
+      ...s,
+      matterLifecycle: { ...s.matterLifecycle, [id]: state },
+      matterMessages: [
+        ...s.matterMessages,
+        {
+          id: `mm-state-${id}-${Date.now()}`,
+          matterId: id,
+          from: "system",
+          sentAt: new Date().toISOString(),
+          body: `Status changed to "${state.replace(/-/g, " ")}".`,
+          channel: "platform",
+        },
+      ],
+    })),
+  postMessage: (msg: Omit<MatterMessage, "id" | "sentAt">) =>
+    setState((s) => ({
+      ...s,
+      matterMessages: [
+        ...s.matterMessages,
+        {
+          ...msg,
+          id: `mm-${msg.matterId}-${Date.now()}`,
+          sentAt: new Date().toISOString(),
+        },
+      ],
+    })),
+  addDocument: (doc: Omit<MatterDocument, "id" | "uploadedAt">) =>
+    setState((s) => ({
+      ...s,
+      matterDocuments: [
+        ...s.matterDocuments,
+        {
+          ...doc,
+          id: `md-${doc.matterId}-${Date.now()}`,
+          uploadedAt: new Date().toISOString(),
+        },
+      ],
+    })),
+  removeDocument: (docId: string) =>
+    setState((s) => ({
+      ...s,
+      matterDocuments: s.matterDocuments.filter((d) => d.id !== docId),
+    })),
+  saveClosureSummary: (cs: ClosureSummary) =>
+    setState((s) => ({
+      ...s,
+      closureSummaries: { ...s.closureSummaries, [cs.matterId]: cs },
+      matterLifecycle: { ...s.matterLifecycle, [cs.matterId]: "closed" },
+    })),
+  submitMatterDraft: (draft: Omit<MatterDraft, "id" | "submittedAt" | "status">) =>
+    setState((s) => {
+      const id = `draft-${Date.now()}`;
+      return {
+        ...s,
+        matterDrafts: [
+          ...s.matterDrafts,
+          {
+            ...draft,
+            id,
+            submittedAt: new Date().toISOString(),
+            status: "new",
+          },
+        ],
+      };
+    }),
+  updateMatterDraft: (id: string, patch: Partial<MatterDraft>) =>
+    setState((s) => ({
+      ...s,
+      matterDrafts: s.matterDrafts.map((d) =>
+        d.id === id ? { ...d, ...patch } : d
+      ),
+    })),
   declineCase: (id: string) =>
     setState((s) => ({
       ...s,

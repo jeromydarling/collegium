@@ -5,6 +5,7 @@ import { ssiReconsiderationTemplate } from "./ssiReconsideration";
 import { voucherPreservationTemplate } from "./voucherPreservation";
 import { padillaAdvisalTemplate } from "./padillaAdvisal";
 import { familyLawMotionTemplate } from "./familyLawMotion";
+import { engagementLetterTemplate } from "./engagementLetter";
 
 /**
  * Registry of guided templates. Adding a new template = drop the
@@ -17,6 +18,7 @@ export const templateRegistry: Record<string, TemplateDefinition> = {
   [voucherPreservationTemplate.slug]: voucherPreservationTemplate,
   [padillaAdvisalTemplate.slug]: padillaAdvisalTemplate,
   [familyLawMotionTemplate.slug]: familyLawMotionTemplate,
+  [engagementLetterTemplate.slug]: engagementLetterTemplate,
 };
 
 export function getTemplate(slug: string): TemplateDefinition | null {

@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "video:dev": "cd collegium-walkthrough && npm run dev",
+    "video:lint": "cd collegium-walkthrough && npx hyperframes lint",
+    "video:render": "cd collegium-walkthrough && npx hyperframes render --output ../public/intro.mp4"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -101,6 +104,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
+    "hyperframes": "^0.6.36",
     "jsdom": "^20.0.3",
     "lovable-tagger": "^1.1.13",
     "postcss": "^8.5.6",

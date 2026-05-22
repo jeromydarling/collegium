@@ -35,10 +35,14 @@ export function Landing() {
             A guild for those who practice{" "}
             <span className="collegium-mark">law as a calling.</span>
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-[hsl(var(--c-slate))] max-w-2xl mx-auto leading-relaxed mb-5 sm:mb-6">
-            Collegium is a guild operating system for Christian and Catholic legal
-            communities — chapters, students, mentors, canonists, clinics, and the
-            stewards who hold them together.
+          <p className="text-lg sm:text-xl md:text-2xl text-[hsl(var(--c-ink))] max-w-2xl mx-auto leading-snug mb-3 sm:mb-4 font-medium">
+            Pro bono coordination, hours export, and a network of advocates —
+            for Christian and Catholic legal communities.
+          </p>
+          <p className="text-base sm:text-lg text-[hsl(var(--c-slate))] max-w-2xl mx-auto leading-relaxed mb-5 sm:mb-6">
+            Collegium is a guild operating system for chapters, students,
+            mentors, canonists, clinics, and the stewards who hold them
+            together.
           </p>
           <p className="collegium-latin text-sm sm:text-base text-[hsl(var(--c-wine))] mb-10 sm:mb-12">
             {brand.motto}
@@ -142,6 +146,34 @@ export function Landing() {
                 The 92% justice gap, mapped state by state →
               </Link>
             </p>
+          </div>
+
+          {/* Walkthrough video — 90s end-to-end demo. Built with hyperframes;
+              gracefully degrades when /intro.mp4 isn't rendered yet. */}
+          <div className="mt-10 sm:mt-14 max-w-4xl mx-auto px-2">
+            <div className="text-center mb-4">
+              <div className="collegium-latin text-xs text-[hsl(var(--c-wine))] mb-1">
+                Quomodo · in 90 seconds
+              </div>
+              <div className="text-sm text-[hsl(var(--c-slate-soft))]">
+                See it in action.
+              </div>
+            </div>
+            <div className="relative rounded-xl overflow-hidden border border-[hsl(var(--c-border))] shadow-sm bg-[hsl(var(--c-cream-warm))] aspect-video">
+              <video
+                src="/intro.mp4"
+                poster="/intro-poster.svg"
+                controls
+                preload="metadata"
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              >
+                <p className="absolute inset-0 flex items-center justify-center text-sm text-[hsl(var(--c-slate-soft))] p-6 text-center">
+                  Your browser doesn't support the video tag. The walkthrough
+                  shows the full lifecycle from intake to closure.
+                </p>
+              </video>
+            </div>
           </div>
 
           <div className="collegium-divider-ornament mt-12 sm:mt-16">⁂</div>
