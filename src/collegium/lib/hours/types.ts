@@ -77,9 +77,10 @@ export const SUPPORTED_JURISDICTIONS = [
   { code: "US-MA", name: "Massachusetts", threshold: 25, mandatory: false },
   { code: "US-CA", name: "California", threshold: 0, mandatory: false },
   { code: "US-NJ", name: "New Jersey", threshold: 50, mandatory: false },
-  { code: "US-IL", name: "Illinois", threshold: 0, mandatory: false },
-  { code: "US-MD", name: "Maryland", threshold: 50, mandatory: false },
-  { code: "US-FL", name: "Florida", threshold: 0, mandatory: false },
+  { code: "US-IL", name: "Illinois", threshold: 0, mandatory: true },
+  { code: "US-MD", name: "Maryland", threshold: 50, mandatory: true },
+  { code: "US-DC", name: "District of Columbia", threshold: 50, mandatory: false },
+  { code: "US-FL", name: "Florida", threshold: 0, mandatory: true },
   { code: "US-TX", name: "Texas", threshold: 50, mandatory: false },
 ] as const;
 

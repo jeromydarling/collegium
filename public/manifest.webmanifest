@@ -1,0 +1,50 @@
+{
+  "name": "Collegium — A guild for those who practice law as a calling",
+  "short_name": "Collegium",
+  "description": "Pro bono coordination for Christian and Catholic legal communities. Network of guilds, intake, hours export, low-bono payment routing.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f0e4",
+  "theme_color": "#5a1a2b",
+  "lang": "en",
+  "categories": ["productivity", "business", "social"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Auxilium",
+      "short_name": "Auxilium",
+      "description": "Plain-English legal-help guide",
+      "url": "/auxilium",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Open Patrocinium",
+      "short_name": "Patrocinium",
+      "description": "Pro bono case browser for advocates",
+      "url": "/patrocinium",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Open the network",
+      "short_name": "App",
+      "description": "Steward dashboard",
+      "url": "/app",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

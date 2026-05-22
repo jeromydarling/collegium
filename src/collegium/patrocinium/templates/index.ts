@@ -3,6 +3,8 @@ import { evictionAnswerTemplate } from "./evictionAnswer";
 import { sealingPetitionTemplate } from "./sealingPetition";
 import { ssiReconsiderationTemplate } from "./ssiReconsideration";
 import { voucherPreservationTemplate } from "./voucherPreservation";
+import { padillaAdvisalTemplate } from "./padillaAdvisal";
+import { familyLawMotionTemplate } from "./familyLawMotion";
 
 /**
  * Registry of guided templates. Adding a new template = drop the
@@ -13,6 +15,8 @@ export const templateRegistry: Record<string, TemplateDefinition> = {
   [sealingPetitionTemplate.slug]: sealingPetitionTemplate,
   [ssiReconsiderationTemplate.slug]: ssiReconsiderationTemplate,
   [voucherPreservationTemplate.slug]: voucherPreservationTemplate,
+  [padillaAdvisalTemplate.slug]: padillaAdvisalTemplate,
+  [familyLawMotionTemplate.slug]: familyLawMotionTemplate,
 };
 
 export function getTemplate(slug: string): TemplateDefinition | null {
