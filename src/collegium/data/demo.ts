@@ -110,6 +110,49 @@ export type ServiceMatter = {
   closureDate?: string;
   /** Whether the requester consented to closure-loop sharing with referring chapter. */
   closureLoopConsent?: boolean;
+  /**
+   * Optional personal appeal — the client's own short story, in their own
+   * voice. The structured fields are how Patrocinium matches matters to
+   * lawyers; the appeal is how it moves them. Privacy-protected: first
+   * name only, consent-gated, sanitizer-runs-on-share.
+   */
+  appeal?: ClientAppeal;
+};
+
+export type ClientAppeal = {
+  /** First name only — never last name, never contact info. */
+  firstName: string;
+  /** The story itself. Aim for 2–6 sentences in the client's own voice. */
+  storyText: string;
+  /**
+   * Who captured this story:
+   *  - "client" = client wrote it themselves (most ideal)
+   *  - "steward" = intake coordinator transcribed during intake
+   *  - "third-party" = parish staff / family member captured on behalf
+   *  - "voice-transcribed" = arrived via voicemail, auto-transcribed
+   */
+  storyAuthor: "client" | "steward" | "third-party" | "voice-transcribed";
+  /** ISO date the appeal was captured. */
+  capturedAt: string;
+  /** Original language of the story (if not English). */
+  originalLanguage?: string;
+  /** Translator credit if the story was translated. */
+  translatedBy?: string;
+  /** Client-controlled visibility flags. */
+  consents: {
+    /** OK to show on Patrocinium so potential advocates see the story. */
+    showToAdvocates: boolean;
+    /**
+     * OK to share with peer guilds via Communio. Story is auto-sanitized
+     * by buildSharedSignal before crossing tenant boundaries.
+     */
+    shareCommunio: boolean;
+    /**
+     * OK to use an anonymized version as a Justice Gap public-advocacy
+     * story (first name + circumstance only; no region; no specifics).
+     */
+    publicAdvocacy: boolean;
+  };
 };
 
 export type NRIBriefing = {
@@ -670,6 +713,20 @@ export const serviceMatters: ServiceMatter[] = [
     languages: ["es", "en"],
     fplPercent: 95,
     closureLoopConsent: true,
+    appeal: {
+      firstName: "Maria",
+      storyText:
+        "I came to Chicago in 2019 from Honduras with my brother. My husband stayed and was supposed to follow. Last year he was killed during a robbery in our town. The U-visa papers are confusing in any language and I have been carrying this alone for too long. My priest at St. Procopius told me to come to the Wednesday clinic. I want to do this right so my children and I can stay.",
+      storyAuthor: "steward",
+      capturedAt: "2026-03-04",
+      originalLanguage: "es",
+      translatedBy: "St. Procopius bilingual intake volunteer",
+      consents: {
+        showToAdvocates: true,
+        shareCommunio: false,
+        publicAdvocacy: false,
+      },
+    },
   },
   {
     id: "sm-3",
@@ -736,6 +793,18 @@ export const serviceMatters: ServiceMatter[] = [
     closureDate: "2026-05-19",
     closureSummary:
       "Matter resolved without conviction. The family is asking about pastoral support during the probation check-ins; one of the deacons may want to follow up. No legal substance shared with the parish; the client gave permission for this note.",
+    appeal: {
+      firstName: "John",
+      storyText:
+        "I had a misdemeanor charge from a stupid argument outside a bar in 2023. I am a roofer. I show up to work. I would like this not to follow me when I apply for the union apprenticeship in the fall. The Saturday clinic at the Cathedral said your guild handles things like this for free.",
+      storyAuthor: "client",
+      capturedAt: "2026-04-29",
+      consents: {
+        showToAdvocates: true,
+        shareCommunio: true,
+        publicAdvocacy: true,
+      },
+    },
   },
   {
     id: "sm-7",
@@ -769,6 +838,20 @@ export const serviceMatters: ServiceMatter[] = [
     languages: ["es"],
     fplPercent: 80,
     closureLoopConsent: true,
+    appeal: {
+      firstName: "Esperanza",
+      storyText:
+        "I have lived in my apartment for seventeen years. When I came to Boston from Phoenix last fall my Section-8 papers got stuck somewhere. The new landlord said he wants me out before the summer. My grandchildren go to St. Anthony's school three blocks away. I am asking for help so I do not lose my home.",
+      storyAuthor: "steward",
+      capturedAt: "2026-05-21",
+      originalLanguage: "es",
+      translatedBy: "St. Anthony Shrine outreach coordinator",
+      consents: {
+        showToAdvocates: true,
+        shareCommunio: false,
+        publicAdvocacy: false,
+      },
+    },
   },
   {
     id: "sm-9",
@@ -816,6 +899,18 @@ export const serviceMatters: ServiceMatter[] = [
     languages: ["en"],
     fplPercent: 110,
     closureLoopConsent: true,
+    appeal: {
+      firstName: "Anna",
+      storyText:
+        "My husband died in 2019. I have been meaning to put my affairs in order ever since but kept putting it off — there was always something. My daughter is grown and steady. I would like her to know what to do if something happens to me, and I would like to choose her now and not leave that decision to anyone else. The parish secretary said your guild does this kind of work for people like me.",
+      storyAuthor: "client",
+      capturedAt: "2026-05-19",
+      consents: {
+        showToAdvocates: true,
+        shareCommunio: true,
+        publicAdvocacy: true,
+      },
+    },
   },
   {
     id: "sm-12",
