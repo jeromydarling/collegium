@@ -1,0 +1,224 @@
+/**
+ * Collegium theme — a sacral palette in deep wine, gold, ivory, slate.
+ * Uses HSL tokens so shadcn-ui components inherit the brand automatically.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap");
+
+:root {
+  /* Collegium brand palette */
+  --c-wine: 354 55% 26%; /* primary brand */
+  --c-wine-deep: 354 55% 18%;
+  --c-gold: 38 52% 50%; /* accent — illuminated capitals */
+  --c-gold-soft: 38 55% 80%;
+  --c-cream: 40 35% 96%; /* parchment background */
+  --c-cream-warm: 40 30% 92%;
+  --c-slate: 220 25% 18%; /* foreground */
+  --c-slate-soft: 220 12% 38%;
+  --c-border: 38 22% 86%;
+  --c-ink: 220 30% 14%;
+}
+
+.collegium-theme {
+  background: hsl(var(--c-cream));
+  color: hsl(var(--c-slate));
+  font-family: "Source Serif 4", Georgia, serif;
+}
+
+.collegium-theme h1,
+.collegium-theme h2,
+.collegium-theme h3,
+.collegium-theme h4,
+.collegium-theme h5,
+.collegium-theme h6,
+.collegium-display {
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: hsl(var(--c-ink));
+}
+
+.collegium-theme .ui-sans {
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.collegium-display-xl {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.collegium-latin {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: hsl(var(--c-wine));
+  letter-spacing: 0.01em;
+}
+
+.collegium-gold-rule {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    hsl(var(--c-gold) / 0.0) 10%,
+    hsl(var(--c-gold) / 0.5) 50%,
+    hsl(var(--c-gold) / 0.0) 90%,
+    transparent 100%
+  );
+  margin: 1.5rem 0;
+}
+
+.collegium-card {
+  background: white;
+  border: 1px solid hsl(var(--c-border));
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px hsl(var(--c-slate) / 0.04);
+}
+
+.collegium-card-warm {
+  background: hsl(var(--c-cream-warm));
+  border: 1px solid hsl(var(--c-border));
+  border-radius: 0.75rem;
+}
+
+.collegium-illuminated {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--c-cream)) 0%,
+    hsl(var(--c-cream-warm)) 100%
+  );
+}
+
+/* Drop-cap for devotional/library reading panels. */
+.collegium-prose p:first-of-type::first-letter {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 3.4em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  margin: 0.1em 0.08em 0 0;
+  color: hsl(var(--c-wine));
+}
+
+.collegium-prose {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: hsl(var(--c-slate));
+}
+
+.collegium-prose p {
+  margin-bottom: 1em;
+}
+
+.collegium-quote {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.45;
+  color: hsl(var(--c-ink));
+  border-left: 2px solid hsl(var(--c-gold));
+  padding-left: 1.25rem;
+}
+
+.collegium-btn-primary {
+  background: hsl(var(--c-wine));
+  color: white;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 500;
+  border-radius: 9999px;
+  padding: 0.625rem 1.5rem;
+  transition: background-color 150ms;
+}
+
+.collegium-btn-primary:hover {
+  background: hsl(var(--c-wine-deep));
+}
+
+.collegium-btn-ghost {
+  background: transparent;
+  color: hsl(var(--c-wine));
+  border: 1px solid hsl(var(--c-wine) / 0.3);
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 500;
+  border-radius: 9999px;
+  padding: 0.625rem 1.5rem;
+  transition: all 150ms;
+}
+
+.collegium-btn-ghost:hover {
+  background: hsl(var(--c-wine) / 0.04);
+  border-color: hsl(var(--c-wine));
+}
+
+.collegium-tag {
+  display: inline-block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: hsl(var(--c-gold) / 0.12);
+  color: hsl(var(--c-wine-deep));
+  border: 1px solid hsl(var(--c-gold) / 0.3);
+}
+
+.collegium-tag-soft {
+  display: inline-block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: hsl(var(--c-cream-warm));
+  color: hsl(var(--c-slate-soft));
+  border: 1px solid hsl(var(--c-border));
+}
+
+.collegium-link {
+  color: hsl(var(--c-wine));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: hsl(var(--c-gold) / 0.5);
+}
+
+.collegium-link:hover {
+  text-decoration-color: hsl(var(--c-wine));
+}
+
+.collegium-mark {
+  background: linear-gradient(180deg, transparent 60%, hsl(var(--c-gold) / 0.25) 60%);
+}
+
+.collegium-divider-ornament {
+  text-align: center;
+  color: hsl(var(--c-gold));
+  font-size: 1.5rem;
+  margin: 2rem 0;
+  letter-spacing: 0.6em;
+}
+
+.collegium-nav-link {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--c-slate));
+  transition: color 150ms;
+}
+
+.collegium-nav-link:hover,
+.collegium-nav-link.active {
+  color: hsl(var(--c-wine));
+}
+
+/* Scroll-anchor offset for sticky nav */
+.collegium-theme [id] {
+  scroll-margin-top: 5rem;
+}
