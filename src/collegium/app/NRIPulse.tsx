@@ -1,6 +1,15 @@
-import { nriBriefings, chapters, mentorPairs, people } from "../data/demo";
+import { useMemo } from "react";
+import {
+  chapters,
+  mentorPairs,
+  people,
+  events,
+  serviceMatters,
+} from "../data/demo";
+import { peerGuilds, peerSignals } from "../data/communio";
+import { generateBriefings } from "../lib/nri/engine";
 import { demoStore, useDemoState } from "../lib/demoStore";
-import { Activity, Check, X } from "lucide-react";
+import { Activity, Check } from "lucide-react";
 
 const SCOPE_LABEL: Record<string, string> = {
   person: "Person",
@@ -11,8 +20,21 @@ const SCOPE_LABEL: Record<string, string> = {
 
 export function NRIPulse() {
   const state = useDemoState();
-  const active = nriBriefings.filter((b) => !state.resolvedBriefings.includes(b.id));
-  const resolved = nriBriefings.filter((b) => state.resolvedBriefings.includes(b.id));
+  const briefings = useMemo(
+    () =>
+      generateBriefings({
+        chapters,
+        people,
+        mentorPairs,
+        events,
+        serviceMatters,
+        peerGuilds,
+        peerSignals,
+      }),
+    []
+  );
+  const active = briefings.filter((b) => !state.resolvedBriefings.includes(b.id));
+  const resolved = briefings.filter((b) => state.resolvedBriefings.includes(b.id));
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-5xl mx-auto">
@@ -66,7 +88,13 @@ export function NRIPulse() {
   );
 }
 
-function BriefingCard({ b, resolved }: { b: (typeof nriBriefings)[number]; resolved: boolean }) {
+function BriefingCard({
+  b,
+  resolved,
+}: {
+  b: ReturnType<typeof generateBriefings>[number];
+  resolved: boolean;
+}) {
   const subject = resolveSubject(b.scope, b.scopeId);
   return (
     <article className={`collegium-card p-5 sm:p-6 ${b.tone === "concern" ? "border-l-4 border-l-[hsl(8_55%_52%)]" : b.tone === "celebrate" ? "border-l-4 border-l-[hsl(145_30%_42%)]" : "border-l-4 border-l-[hsl(38_55%_50%)]"}`}>

@@ -14,11 +14,12 @@ import { useDemoState, roleLabel } from "../lib/demoStore";
 import {
   chapters,
   events,
-  nriBriefings,
   serviceMatters,
   mentorPairs,
   people,
 } from "../data/demo";
+import { peerGuilds, peerSignals } from "../data/communio";
+import { generateBriefings } from "../lib/nri/engine";
 import { devotionalForDate } from "../content/devotional";
 
 export function Dashboard() {
@@ -27,6 +28,16 @@ export function Dashboard() {
 
   const today = new Date();
   const office = devotionalForDate(today);
+
+  const nriBriefings = generateBriefings({
+    chapters,
+    people,
+    mentorPairs,
+    events,
+    serviceMatters,
+    peerGuilds,
+    peerSignals,
+  });
 
   const myChapter = chapters[0]; // Boston for local steward demo
   const networkPulse = nriBriefings.find((b) => b.scope === "network");
