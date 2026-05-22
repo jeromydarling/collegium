@@ -25,3 +25,11 @@ dist-ssr
 
 # typescript build info
 *.tsbuildinfo
+
+# HyperFrames walkthrough project — local renders only
+collegium-walkthrough/node_modules
+collegium-walkthrough/.hyperframes
+collegium-walkthrough/dist
+collegium-walkthrough/transcript.json
+collegium-walkthrough/captions.vtt
+

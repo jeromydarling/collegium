@@ -374,6 +374,8 @@ export function MatterFile() {
 
         <PersonalAppealStep />
 
+        <SubmitToGuildSection file={file} />
+
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <Link
             to="/auxilium/find-help"
@@ -693,6 +695,307 @@ function ConsentRow({
       </div>
     </label>
   );
+}
+
+/* ------------------------------------------------------------------ */
+/* Submit to Guild                                                     */
+/* ------------------------------------------------------------------ */
+
+const SUBMISSION_KEY = "auxilium_submission_v1";
+
+type SubmissionRecord = {
+  draftId: string;
+  portalToken: string;
+  submittedAt: string;
+  receivingChapter: string;
+};
+
+function loadSubmission(): SubmissionRecord | null {
+  try {
+    const raw = localStorage.getItem(SUBMISSION_KEY);
+    return raw ? (JSON.parse(raw) as SubmissionRecord) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveSubmission(s: SubmissionRecord): void {
+  try {
+    localStorage.setItem(SUBMISSION_KEY, JSON.stringify(s));
+  } catch {
+    /* silent */
+  }
+}
+
+function clearSubmission(): void {
+  try {
+    localStorage.removeItem(SUBMISSION_KEY);
+  } catch {
+    /* silent */
+  }
+}
+
+function SubmitToGuildSection({ file }: { file: MatterFileT }) {
+  const [submission, setSubmission] = useState<SubmissionRecord | null>(loadSubmission);
+  const [submitting, setSubmitting] = useState(false);
+  const [appeal, setAppeal] = useState<SavedAppeal | null>(() => {
+    try {
+      const raw = localStorage.getItem(APPEAL_STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as SavedAppeal) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Refresh the appeal whenever PersonalAppealStep saves
+  useEffect(() => {
+    const interval = setInterval(() => {
+      try {
+        const raw = localStorage.getItem(APPEAL_STORAGE_KEY);
+        const next = raw ? (JSON.parse(raw) as SavedAppeal) : null;
+        if (JSON.stringify(next) !== JSON.stringify(appeal)) {
+          setAppeal(next);
+        }
+      } catch {
+        /* silent */
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [appeal]);
+
+  async function handleSubmit() {
+    setSubmitting(true);
+
+    // Synthesize the matter draft from the matter file + appeal
+    const draftId = `draft-aux-${Date.now()}`;
+    const portalToken = `pt-${Math.random().toString(36).slice(2, 10)}-${Date.now().toString(36)}`;
+    const receivingChapter = chapterForRegion(file.location ?? "");
+
+    // In production this POSTs to the steward's tenant; for demo we drop into
+    // localStorage in the shape demoStore.submitMatterDraft would create.
+    try {
+      const { demoStore } = await import("../lib/demoStore");
+      demoStore.submitMatterDraft({
+        requesterFirstName: appeal?.firstName ?? "Anonymous",
+        category: matterTypeToCategory(file.matterType),
+        region: file.location ?? "(region not provided)",
+        languages: ["en"],
+        summary: file.facts.summary || file.goals || "Auxilium-completed intake",
+        appealText: appeal?.storyText,
+        appealConsents: appeal?.consents,
+        source: "auxilium",
+      });
+    } catch {
+      /* fall through — demo still completes */
+    }
+
+    const record: SubmissionRecord = {
+      draftId,
+      portalToken,
+      submittedAt: new Date().toISOString(),
+      receivingChapter,
+    };
+    saveSubmission(record);
+    setSubmission(record);
+    setSubmitting(false);
+  }
+
+  function handleWithdraw() {
+    if (
+      !confirm(
+        "Withdraw your submission? Your matter file stays on your device. You can submit again any time."
+      )
+    ) {
+      return;
+    }
+    clearSubmission();
+    setSubmission(null);
+  }
+
+  if (submission) {
+    return (
+      <section className="mb-8 sm:mb-10">
+        <div className="collegium-card p-5 sm:p-6 bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))] border-l-4 border-l-[hsl(145_40%_28%)]">
+          <div className="flex items-center gap-2 mb-3">
+            <Check size={18} className="text-[hsl(145_40%_28%)]" />
+            <h2 className="collegium-display text-xl sm:text-2xl leading-tight">
+              Sent to a steward
+            </h2>
+          </div>
+          <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed mb-4">
+            Your matter has been forwarded to{" "}
+            <strong className="text-[hsl(var(--c-wine))]">
+              {submission.receivingChapter}
+            </strong>{" "}
+            for review. A steward will look at it within two business days
+            and route it to a volunteer attorney. You'll hear back through
+            your portal.
+          </p>
+
+          <div className="bg-white border border-[hsl(var(--c-border))] rounded p-3 sm:p-4 mb-4">
+            <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-1.5 font-semibold">
+              Your private portal
+            </div>
+            <Link
+              to={`/portal/${submission.portalToken}`}
+              className="text-sm font-mono text-[hsl(var(--c-wine))] hover:underline break-all"
+            >
+              /portal/{submission.portalToken}
+            </Link>
+            <p className="text-[11px] text-[hsl(var(--c-slate-soft))] mt-2 leading-relaxed">
+              Bookmark this link. The steward will also send it to{" "}
+              {receivingMethod(submission)}. From the portal you can update
+              your story, change consent settings, or remove it at any time.
+            </p>
+          </div>
+
+          <div className="text-[11px] text-[hsl(var(--c-slate-soft))] flex items-center justify-between gap-2 pt-3 border-t border-[hsl(var(--c-border))]">
+            <span>
+              Submitted{" "}
+              {new Date(submission.submittedAt).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            </span>
+            <button
+              type="button"
+              onClick={handleWithdraw}
+              className="text-[hsl(8_55%_42%)] hover:underline"
+            >
+              Withdraw submission
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="mb-8 sm:mb-10">
+      <div className="collegium-card p-5 sm:p-6">
+        <div className="flex items-start gap-2 mb-3">
+          <Search size={16} className="text-[hsl(var(--c-wine))] mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <h2 className="collegium-display text-xl sm:text-2xl leading-tight mb-1">
+              Send this matter to a Catholic legal guild?
+            </h2>
+            <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed">
+              You can submit your matter to the Patrocinium network of
+              volunteer Catholic and Christian lawyers. A steward will read
+              your file, find the right advocate, and reach out to you within
+              two business days. No legal fees if you qualify for pro bono.
+            </p>
+            <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-2 leading-relaxed">
+              We never share your last name, address, or contact details with
+              a lawyer until you've agreed. Only your matter category, region,
+              and (if you chose to share it) your personal appeal travels
+              through the network.
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-[hsl(var(--c-cream-warm))] rounded p-3 sm:p-4 mb-4 text-xs leading-relaxed">
+          <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2 font-semibold">
+            What gets sent
+          </div>
+          <ul className="space-y-1 text-[hsl(var(--c-slate))]">
+            <li>· The matter category and the deadline (if any)</li>
+            <li>· The region (city, not address)</li>
+            <li>
+              · Your goals, in your own words — drawn from the interview you
+              just completed
+            </li>
+            {appeal?.consents.showToAdvocates && appeal.storyText && (
+              <li>
+                · Your personal appeal:{" "}
+                <em className="not-italic text-[hsl(var(--c-ink))]">
+                  "{appeal.storyText.slice(0, 80)}
+                  {appeal.storyText.length > 80 ? "…" : ""}"
+                </em>{" "}
+                — by {appeal.firstName}
+              </li>
+            )}
+            <li>· What language you're most comfortable in</li>
+          </ul>
+          <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2 mt-3 font-semibold">
+            What stays private until you say so
+          </div>
+          <ul className="space-y-1 text-[hsl(var(--c-slate))]">
+            <li>· Your last name, address, and contact details</li>
+            <li>· Anything you marked as confidential in the interview</li>
+            <li>
+              · The personal appeal{" "}
+              {appeal?.consents.showToAdvocates
+                ? "(you opted in above)"
+                : "(off — write one above if you'd like to include it)"}
+            </li>
+          </ul>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={submitting}
+          className="collegium-btn-primary text-sm inline-flex items-center gap-1.5 disabled:opacity-50 w-full sm:w-auto"
+        >
+          {submitting ? (
+            <>Submitting…</>
+          ) : (
+            <>
+              Send to a guild <ArrowRight size={13} />
+            </>
+          )}
+        </button>
+        <p className="text-[11px] text-[hsl(var(--c-slate-soft))] italic mt-3">
+          You can always withdraw your submission. Your matter file stays on
+          this device regardless.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function chapterForRegion(region: string): string {
+  const r = region.toLowerCase();
+  if (r.includes("boston") || r.includes(" ma") || r.includes("massachusetts"))
+    return "St. Thomas More Society of Boston";
+  if (r.includes("chicago") || r.includes(" il") || r.includes("illinois"))
+    return "Catholic Lawyers Guild of Chicago";
+  if (
+    r.includes("washington") ||
+    r.includes(" dc") ||
+    r.includes("district") ||
+    r.includes(" va") ||
+    r.includes("arlington")
+  )
+    return "Saint John Paul II Guild — CUA Law";
+  if (r.includes("toronto") || r.includes("ontario") || r.includes(" on"))
+    return "Christian Legal Fellowship — Toronto Chapter";
+  return "St. Thomas More Society of Boston";
+}
+
+function receivingMethod(_s: SubmissionRecord): string {
+  // Once Twilio is wired, this returns "the phone number you gave the parish";
+  // until then we say email or in-person depending on what's on file.
+  return "the email or phone number the referring parish has for you";
+}
+
+function matterTypeToCategory(t: string | undefined): string {
+  const map: Record<string, string> = {
+    eviction: "housing",
+    "wage-theft": "public-benefits",
+    expungement: "expungement",
+    "child-custody": "family",
+    "child-support": "family",
+    immigration: "immigration",
+    benefits: "public-benefits",
+    "small-claims": "public-benefits",
+    estate: "estate-planning",
+  };
+  if (!t) return "other";
+  return map[t] ?? "other";
 }
 
 function Section({

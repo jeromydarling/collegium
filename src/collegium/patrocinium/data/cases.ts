@@ -78,7 +78,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "Archdiocese of Chicago — chancery review",
     postureNotes:
       "Parish council has approved a revision concept; needs civil-canon harmonization before final adoption. No active litigation.",
-    templatesAvailable: ["parish-bylaws-checklist"],
+    templatesAvailable: ["engagement-letter", "parish-bylaws-checklist"],
     remoteOk: true,
     subPractice: ["bylaws-drafting", "civil-canon-harmonization"],
   },
@@ -93,7 +93,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "Diocese of Arlington — chancery",
     postureNotes:
       "One 60-minute call plus a short follow-up memo. Fr. Cale already drafted a preliminary view; advisor reviews and stress-tests.",
-    templatesAvailable: ["juridic-person-property-memo"],
+    templatesAvailable: ["engagement-letter", "juridic-person-property-memo"],
     remoteOk: true,
     subPractice: ["canon-law", "property-tax"],
   },
@@ -109,7 +109,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "Immigration & Refugee Board of Canada — Toronto",
     postureNotes:
       "Four claimants; one binder of country-conditions evidence can serve all. Two languages on the witness side — Farsi and Tigrinya. Interpreter coordinated by RCN.",
-    templatesAvailable: ["irb-witness-statement", "country-conditions-binder"],
+    templatesAvailable: ["engagement-letter", "irb-witness-statement", "country-conditions-binder"],
     remoteOk: false,
     subPractice: ["asylum", "refugee-claims", "religious-liberty"],
   },
@@ -125,7 +125,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "Boston Housing Court — Eastern Division",
     postureNotes:
       "Spanish-first client. Sealed lease in hand. Section-8 portability paperwork stalled at HUD — voucher needs preservation pending transfer.",
-    templatesAvailable: ["eviction-answer", "voucher-preservation-letter"],
+    templatesAvailable: ["engagement-letter", "eviction-answer", "voucher-preservation-letter"],
     remoteOk: false,
     subPractice: ["housing-court", "section-8"],
   },
@@ -140,7 +140,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "Boston Municipal Court — Central Division (Probation)",
     postureNotes:
       "Client willing to file pro se if guided. Lawyer review of petition packet + one prep call should be enough. No hearing required for 100A.",
-    templatesAvailable: ["sealing-petition-100a"],
+    templatesAvailable: ["engagement-letter", "sealing-petition-100a"],
     remoteOk: true,
     subPractice: ["record-sealing", "expungement"],
   },
@@ -155,7 +155,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "IRCC — family-class sponsorship",
     postureNotes:
       "French/Lingala primary. RCN has lined up an interpreter. Goal is to remove the most expensive hour from a future paid consult by doing the prep here.",
-    templatesAvailable: ["sponsorship-document-checklist"],
+    templatesAvailable: ["engagement-letter", "sponsorship-document-checklist"],
     remoteOk: true,
     subPractice: ["immigration", "family-sponsorship"],
   },
@@ -170,7 +170,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "(none — non-contentious; recorded with probate registry on death)",
     postureNotes:
       "Adult daughter present at intake and willing to be HCP agent. Straightforward set; could be done as a 2-hour clinic shift if a lawyer prefers that format.",
-    templatesAvailable: ["simple-will", "hcp-form-mass"],
+    templatesAvailable: ["engagement-letter", "simple-will", "hcp-form-mass"],
     remoteOk: true,
     subPractice: ["estate-planning", "elder-law"],
   },
@@ -187,7 +187,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "Middlesex Probate & Family Court (Cambridge)",
     postureNotes:
       "Civil and canon-law tracks running in parallel — civil custody motion on the schedule and the annulment-tribunal advocacy proceeding through the Archdiocese. Sr. Anne Marie carries the tribunal piece; civil counsel needed for the modification.",
-    templatesAvailable: ["family-law-modification"],
+    templatesAvailable: ["engagement-letter", "family-law-modification"],
     remoteOk: false,
     subPractice: ["family-law", "probate-family", "tribunal-civil-overlap"],
   },
@@ -203,7 +203,7 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     forum: "SSA Chicago Region — Office of Disability Adjudication",
     postureNotes:
       "Treating-physician letter already in hand. Disability onset disputed. 60-day window to request reconsideration starts the clock at denial notice date.",
-    templatesAvailable: ["ssi-reconsideration", "medical-records-request"],
+    templatesAvailable: ["engagement-letter", "ssi-reconsideration", "medical-records-request"],
     remoteOk: true,
     subPractice: ["public-benefits", "disability"],
   },

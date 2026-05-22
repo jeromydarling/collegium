@@ -25,6 +25,7 @@ import { getCase, ENGAGEMENT_LABEL } from "./data/cases";
 import { isGuidedTemplate } from "./templates";
 import { useDemoState, demoStore } from "../lib/demoStore";
 import { chapters, people } from "../data/demo";
+import { MatterWorkspace } from "./MatterWorkspace";
 
 const LANG_NAME: Record<string, string> = {
   en: "English",
@@ -53,6 +54,7 @@ const TEMPLATE_LABEL: Record<string, string> = {
   "country-conditions-binder": "Country-conditions evidence binder",
   "padilla-advisal": "Padilla immigration-consequences advisal",
   "family-law-modification": "Custody / support modification motion",
+  "engagement-letter": "Limited-scope engagement letter",
 };
 
 export function CaseDetail() {
@@ -232,6 +234,9 @@ export function CaseDetail() {
         {matter.appeal && matter.appeal.consents.showToAdvocates && (
           <ClientAppealCard appeal={matter.appeal} />
         )}
+
+        {/* Workspace — only when the lawyer has accepted */}
+        {accepted && <MatterWorkspace case={c} />}
 
         {/* The brief */}
         <section className="mb-6 sm:mb-8">

@@ -40,6 +40,7 @@ const items = [
   { to: "/app/revenue", label: "Low-Bono Revenue", icon: DollarSign },
   { to: "/app/insights", label: "Justice Gap", icon: BarChart3 },
   { to: "/app/practice", label: "Practice Hub", icon: MessageCircleQuestion },
+  { to: "/app/intake-triage", label: "Intake Triage", icon: Inbox },
   { to: "/app/voice-intake", label: "Voice Intake", icon: PhoneIncoming },
   { to: "/app/appeals", label: "Appeals", icon: Quote },
   { to: "/app/intake-assist", label: "Intake Assist", icon: Sparkles },

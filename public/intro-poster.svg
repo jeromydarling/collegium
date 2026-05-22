@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6f0e4"/>
+      <stop offset="100%" stop-color="#f0e4d0"/>
+    </linearGradient>
+    <linearGradient id="play" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#801a31"/>
+      <stop offset="100%" stop-color="#5a1224"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- Latin tagline -->
+  <text x="960" y="320" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif" font-style="italic"
+    font-size="36" fill="#801a31" letter-spacing="6">
+    Collegium · Capitula · Tirocinium · Ministerium
+  </text>
+
+  <!-- Main title -->
+  <text x="960" y="500" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif" font-size="100" fill="#19161c">
+    A guild for those who practice law
+  </text>
+  <text x="960" y="620" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif" font-size="100" fill="#19161c">
+    as a <tspan fill="#801a31">calling.</tspan>
+  </text>
+
+  <!-- Play button -->
+  <circle cx="960" cy="820" r="72" fill="url(#play)"/>
+  <polygon points="930,780 1010,820 930,860" fill="#f0e8d8"/>
+
+  <!-- Caption under play -->
+  <text x="960" y="970" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#50525a"
+    font-style="italic" letter-spacing="2">
+    90 seconds · the network end to end
+  </text>
+</svg>
