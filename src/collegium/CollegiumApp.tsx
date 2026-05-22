@@ -10,6 +10,7 @@ import { FormationMarketing } from "./pages/FormationMarketing";
 import { Pricing } from "./pages/Pricing";
 import { Contact } from "./pages/Contact";
 import { DemoGate } from "./pages/DemoGate";
+import { WhyProBono } from "./pages/WhyProBono";
 
 import { Dashboard } from "./app/Dashboard";
 import { ChaptersList, ChapterDetail } from "./app/Chapters";
@@ -65,6 +66,7 @@ export default function CollegiumApp() {
           <Route path="formation" element={<FormationMarketing />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="why-pro-bono" element={<WhyProBono />} />
           <Route path="demo" element={<DemoGate />} />
         </Route>
 

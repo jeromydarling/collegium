@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import { ChevronLeft, ChevronRight, ExternalLink, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, X, Layers } from "lucide-react";
 import { ModeSwitcher } from "./components/ModeSwitcher";
 import { chapters, chapterById, type Chapter } from "./data/chapters";
 import {
@@ -10,6 +10,7 @@ import {
   colorOnRamp,
   formatMetric,
 } from "./data/stateMetrics";
+import { getFraming, type StateFraming } from "./data/stateFramings";
 import { STATE_FIPS_TO_CODE, stateData as civilStateData } from "../auxilium/data/justiceByState";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
@@ -33,11 +34,13 @@ export function MapView() {
   const idx = chapters.findIndex((c) => c.id === currentChapter.id);
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  const [showNumbers, setShowNumbers] = useState(false);
 
   function go(delta: number) {
     const next = chapters[(idx + delta + chapters.length) % chapters.length];
     navigate(`/justicegap/map/${next.id}`);
     setSelected(null);
+    setShowNumbers(false);
   }
 
   return (
@@ -149,11 +152,25 @@ export function MapView() {
         {/* Sidebar */}
         <aside className="bg-[hsl(220_30%_6%)] border border-[hsl(220_20%_18%)] rounded-xl flex flex-col">
           {selected ? (
-            <StateBreakdown
-              code={selected}
-              chapter={currentChapter}
-              onClose={() => setSelected(null)}
-            />
+            (() => {
+              const framing = getFraming(currentChapter.id, selected);
+              return framing ? (
+                <StateFramingPanel
+                  framing={framing}
+                  chapter={currentChapter}
+                  code={selected}
+                  onClose={() => setSelected(null)}
+                  onSeeNumbers={() => setShowNumbers(true)}
+                  showNumbers={showNumbers}
+                />
+              ) : (
+                <StateBreakdown
+                  code={selected}
+                  chapter={currentChapter}
+                  onClose={() => setSelected(null)}
+                />
+              );
+            })()
           ) : (
             <ChapterPanel chapter={currentChapter} />
           )}
@@ -217,6 +234,118 @@ function ChapterPanel({ chapter }: { chapter: Chapter }) {
         </div>
       )}
     </div>
+  );
+}
+
+function StateFramingPanel({
+  framing,
+  chapter,
+  code,
+  onClose,
+  onSeeNumbers,
+  showNumbers,
+}: {
+  framing: StateFraming;
+  chapter: Chapter;
+  code: string;
+  onClose: () => void;
+  onSeeNumbers: () => void;
+  showNumbers: boolean;
+}) {
+  const name = civilStateData[code]?.name ?? code;
+  return (
+    <div className="flex-1 p-5 sm:p-6 overflow-y-auto">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div>
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[hsl(38_60%_70%)] mb-1">
+            <Layers size={11} /> Reading {chapter.eyebrow.toLowerCase()} in
+          </div>
+          <h3 className="collegium-display text-3xl text-[hsl(40_40%_94%)] leading-tight">
+            {name}
+          </h3>
+        </div>
+        <button
+          onClick={onClose}
+          className="text-[hsl(40_20%_70%)] hover:text-[hsl(40_40%_94%)] -mt-1 -mr-1 p-1"
+          aria-label="Back to national framing"
+        >
+          <X size={16} />
+        </button>
+      </div>
+
+      {framing.headline && (
+        <div className="mb-5 pb-5 border-b border-[hsl(220_20%_22%)]">
+          <div className="collegium-display text-4xl sm:text-5xl text-[hsl(38_60%_70%)] leading-none mb-1">
+            {framing.headline}
+          </div>
+          {framing.subline && (
+            <p className="text-sm text-[hsl(40_20%_75%)] leading-relaxed">
+              {framing.subline}
+            </p>
+          )}
+        </div>
+      )}
+
+      {framing.body.split("\n\n").map((p, i) => (
+        <p key={i} className="text-[15px] text-[hsl(40_30%_85%)] leading-relaxed mb-4">
+          {p}
+        </p>
+      ))}
+
+      {framing.sting && (
+        <p
+          className="mt-5 pt-5 border-t border-[hsl(220_20%_22%)] text-[hsl(40_40%_94%)] text-base sm:text-lg leading-snug italic"
+          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
+          {framing.sting}
+        </p>
+      )}
+
+      <div className="mt-5 pt-5 border-t border-[hsl(220_20%_22%)] flex flex-wrap items-center gap-3">
+        {!showNumbers && (
+          <button
+            onClick={onSeeNumbers}
+            className="text-xs text-[hsl(38_60%_70%)] hover:text-[hsl(38_60%_85%)] inline-flex items-center gap-1 underline decoration-dotted"
+          >
+            See {name}'s numbers
+          </button>
+        )}
+        <button
+          onClick={onClose}
+          className="text-xs text-[hsl(40_20%_70%)] hover:text-[hsl(40_40%_94%)] inline-flex items-center gap-1"
+        >
+          <ChevronLeft size={12} /> Back to national framing
+        </button>
+      </div>
+
+      {showNumbers && (
+        <div className="mt-5 pt-5 border-t border-[hsl(220_20%_22%)]">
+          <StateNumbers code={code} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StateNumbers({ code }: { code: string }) {
+  const m = stateMetrics[code];
+  if (!m) return null;
+  const idx = metricValue(code, "justice_gap_index");
+  return (
+    <dl className="space-y-3 text-sm">
+      <Row label="Public-defender caseload" value={`${m.pd_caseload} / atty / yr`} />
+      <Row label="Indigent-defense spending" value={`$${m.indigent_spend_per_capita.toFixed(2)} / resident`} />
+      <Row label="Incarcerated" value={`${m.incarceration_per_100k.toLocaleString()} / 100K`} />
+      <Row label="LSC attorneys" value={`${m.lsc_attys_per_10k_poor.toFixed(2)} / 10K poor`} />
+      <Row label="Documented exonerations" value={m.exonerations_total.toLocaleString()} />
+      <Row label="Felony cases by plea" value={`${m.plea_pct.toFixed(0)}%`} />
+      <Row label="Jail population, pretrial" value={`${m.pretrial_pct.toFixed(0)}%`} />
+      <Row label="Court fines / fees, % of revenue" value={`${m.court_fines_pct.toFixed(1)}%`} />
+      <Row label="3-year recidivism" value={`${m.recidivism_3yr_pct.toFixed(0)}%`} />
+      {idx != null && (
+        <Row label="Justice Gap Index" value={`${idx} / 100`} />
+      )}
+    </dl>
   );
 }
 

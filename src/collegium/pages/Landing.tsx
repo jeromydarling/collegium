@@ -284,6 +284,43 @@ export function Landing() {
         </div>
       </section>
 
+      {/* ─────────────────── Why pro bono? ─────────────────── */}
+      <section className="bg-[hsl(40_30%_94%)] border-y border-[hsl(var(--c-border))]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
+          <p className="collegium-latin text-sm text-[hsl(var(--c-wine))] mb-3">
+            Cur pro bono?
+          </p>
+          <h2 className="collegium-display text-3xl sm:text-4xl md:text-5xl text-[hsl(var(--c-ink))] mb-4 sm:mb-5 leading-tight">
+            The harvest is plentiful.
+            <br />
+            The labourers are few.
+          </h2>
+          <p
+            className="text-sm sm:text-base text-[hsl(var(--c-slate))] italic mb-6 sm:mb-8"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Luke 10:2
+          </p>
+          <p className="text-base sm:text-lg text-[hsl(var(--c-slate))] leading-relaxed mb-6 max-w-2xl mx-auto">
+            A research-anchored case for what we are asking of the Christian
+            lawyer: not the ABA's fifty hours; not the card-table clinic.
+            <strong> Five Auxilium-prepped cases per year</strong> — fifteen
+            to twenty-five attorney hours total, after the client has done
+            the intake themselves.
+          </p>
+          <p className="text-sm sm:text-base text-[hsl(var(--c-slate-soft))] leading-relaxed mb-8 max-w-2xl mx-auto">
+            The math, the Scripture, the saints of legal vocation, and the
+            single ask that makes the harvest tractable.
+          </p>
+          <Link
+            to="/why-pro-bono"
+            className="collegium-btn-primary inline-flex items-center justify-center gap-2"
+          >
+            Read the case <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
+
       {/* ─────────────────── Aquinas closing ─────────────────── */}
       <section className="bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
