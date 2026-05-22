@@ -13,6 +13,9 @@ import {
   MapPin,
   RefreshCw,
   Search,
+  Quote,
+  Pencil,
+  HandHeart,
 } from "lucide-react";
 import type { MatterFile as MatterFileT } from "./lib/aiClient";
 import {
@@ -369,6 +372,8 @@ export function MatterFile() {
           </aside>
         )}
 
+        <PersonalAppealStep />
+
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <Link
             to="/auxilium/find-help"
@@ -395,6 +400,298 @@ export function MatterFile() {
       </div>
       <InfoNotAdviceFooter />
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Personal Appeal Step                                                */
+/* ------------------------------------------------------------------ */
+
+const APPEAL_STORAGE_KEY = "auxilium_personal_appeal_v1";
+
+type SavedAppeal = {
+  firstName: string;
+  storyText: string;
+  consents: {
+    showToAdvocates: boolean;
+    shareCommunio: boolean;
+    publicAdvocacy: boolean;
+  };
+  capturedAt: string;
+};
+
+/**
+ * Optional final step — the client adds their own short personal appeal
+ * before the matter file goes out into the world. Calm, never pushy.
+ * The structured fields above match the case to a lawyer; this paragraph
+ * is what moves them to take it.
+ */
+function PersonalAppealStep() {
+  const [saved, setSaved] = useState<SavedAppeal | null>(() => {
+    try {
+      const raw = localStorage.getItem(APPEAL_STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as SavedAppeal) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [expanded, setExpanded] = useState(!saved);
+  const [firstName, setFirstName] = useState(saved?.firstName ?? "");
+  const [storyText, setStoryText] = useState(saved?.storyText ?? "");
+  const [showToAdvocates, setShowToAdvocates] = useState(
+    saved?.consents.showToAdvocates ?? true
+  );
+  const [shareCommunio, setShareCommunio] = useState(
+    saved?.consents.shareCommunio ?? false
+  );
+  const [publicAdvocacy, setPublicAdvocacy] = useState(
+    saved?.consents.publicAdvocacy ?? false
+  );
+  const [justSaved, setJustSaved] = useState(false);
+
+  function handleSave() {
+    if (!firstName.trim() || !storyText.trim()) return;
+    const next: SavedAppeal = {
+      firstName: firstName.trim(),
+      storyText: storyText.trim(),
+      consents: { showToAdvocates, shareCommunio, publicAdvocacy },
+      capturedAt: new Date().toISOString(),
+    };
+    try {
+      localStorage.setItem(APPEAL_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      /* silent */
+    }
+    setSaved(next);
+    setJustSaved(true);
+    setTimeout(() => setJustSaved(false), 2000);
+    setExpanded(false);
+  }
+
+  function handleRevoke() {
+    if (!confirm("Remove your personal appeal? You can write a new one any time.")) {
+      return;
+    }
+    try {
+      localStorage.removeItem(APPEAL_STORAGE_KEY);
+    } catch {
+      /* silent */
+    }
+    setSaved(null);
+    setFirstName("");
+    setStoryText("");
+    setShowToAdvocates(true);
+    setShareCommunio(false);
+    setPublicAdvocacy(false);
+    setExpanded(true);
+  }
+
+  const charCount = storyText.length;
+  const charsOk = charCount >= 40 && charCount <= 1000;
+
+  if (saved && !expanded) {
+    return (
+      <section className="mb-8 sm:mb-10">
+        <div className="collegium-card p-5 sm:p-6 bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))] border-l-4 border-l-[hsl(var(--c-gold))]">
+          <div className="flex items-start gap-3">
+            <Quote
+              size={24}
+              className="text-[hsl(var(--c-gold))] shrink-0 mt-0.5"
+              strokeWidth={1.5}
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <span className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] font-semibold inline-flex items-center gap-1">
+                  <Pencil size={11} /> Your personal appeal
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setExpanded(true)}
+                    className="text-xs collegium-link"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRevoke}
+                    className="text-xs collegium-link text-[hsl(8_55%_42%)]"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <p className="text-sm sm:text-base text-[hsl(var(--c-ink))] leading-relaxed italic">
+                "{saved.storyText}"
+              </p>
+              <div className="mt-3 text-xs text-[hsl(var(--c-wine))] font-medium">
+                — {saved.firstName}
+              </div>
+              {justSaved && (
+                <div className="mt-3 text-xs text-[hsl(145_40%_28%)] flex items-center gap-1.5">
+                  <Check size={12} /> Saved. This stays on your device until
+                  you share your matter file with a lawyer.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="mb-8 sm:mb-10">
+      <div className="collegium-card p-5 sm:p-6">
+        <div className="flex items-start gap-2 mb-3">
+          <HandHeart size={16} className="text-[hsl(var(--c-wine))] mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <h2 className="collegium-display text-xl sm:text-2xl leading-tight mb-1">
+              Want to add a personal note?
+            </h2>
+            <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed">
+              This is optional. If you'd like the lawyer who reads your matter
+              to hear a little of your story — in your own words — write a
+              short paragraph here. A few sentences is enough.
+            </p>
+            <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-2 leading-relaxed">
+              We never publish your last name, address, or contact information.
+              You decide what's shared and you can take it down at any time.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid sm:grid-cols-[10rem_1fr] gap-3 mb-3">
+          <label className="block">
+            <span className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))] block mb-1">
+              First name only
+            </span>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Maria"
+              className="w-full text-sm py-2 px-3 rounded border border-[hsl(var(--c-border))] bg-white"
+              maxLength={40}
+            />
+          </label>
+          <label className="block">
+            <span className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))] block mb-1">
+              In your words
+            </span>
+            <textarea
+              value={storyText}
+              onChange={(e) => setStoryText(e.target.value)}
+              rows={5}
+              placeholder="Try to write the way you'd talk to a friend. What is happening, what you've already tried, what you're hoping for."
+              className="w-full text-sm p-3 rounded border border-[hsl(var(--c-border))] bg-white leading-relaxed resize-y"
+              maxLength={1000}
+            />
+            <div className="flex items-center justify-between text-[11px] mt-1">
+              <span
+                className={
+                  charsOk
+                    ? "text-[hsl(var(--c-slate-soft))]"
+                    : charCount < 40
+                    ? "text-[hsl(var(--c-slate-soft))]"
+                    : "text-[hsl(8_55%_42%)]"
+                }
+              >
+                {charCount} / 1000 characters
+              </span>
+              {charCount < 40 && charCount > 0 && (
+                <span className="text-[hsl(var(--c-slate-soft))] italic">
+                  A few more sentences will help.
+                </span>
+              )}
+            </div>
+          </label>
+        </div>
+
+        <div className="border-t border-[hsl(var(--c-border))] pt-4">
+          <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))] mb-3 inline-flex items-center gap-1">
+            <ShieldCheck size={11} /> Who can read it
+          </div>
+          <div className="space-y-2.5">
+            <ConsentRow
+              checked={showToAdvocates}
+              onChange={setShowToAdvocates}
+              label="Lawyers reading my case"
+              detail="Only lawyers who are considering taking your matter will see this."
+            />
+            <ConsentRow
+              checked={shareCommunio}
+              onChange={setShareCommunio}
+              label="Other guilds in the network (if my chapter shares this case)"
+              detail="If your matter is referred to a peer guild, your story travels with it — automatically sanitized so no other personal details cross the line."
+            />
+            <ConsentRow
+              checked={publicAdvocacy}
+              onChange={setPublicAdvocacy}
+              label="Public Justice Gap stories (anonymous)"
+              detail="An anonymized version of your story may appear on the Justice Gap site to show why the network exists. Your first name is changed and no specifics are kept."
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-5 pt-4 border-t border-[hsl(var(--c-border))]">
+          <p className="text-[11px] text-[hsl(var(--c-slate-soft))] leading-relaxed">
+            Stored only on your device until you share your matter file with a
+            lawyer. You can come back and change or remove it any time.
+          </p>
+          <div className="flex gap-2 shrink-0">
+            {saved && (
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="collegium-btn-ghost text-sm"
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={!firstName.trim() || !charsOk}
+              className="collegium-btn-primary text-sm inline-flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Check size={13} /> {saved ? "Update appeal" : "Save appeal"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ConsentRow({
+  checked,
+  onChange,
+  label,
+  detail,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  detail: string;
+}) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="mt-1 shrink-0 cursor-pointer"
+      />
+      <div className="flex-1 min-w-0">
+        <div className="text-sm text-[hsl(var(--c-ink))] font-medium">
+          {label}
+        </div>
+        <div className="text-xs text-[hsl(var(--c-slate-soft))] leading-relaxed">
+          {detail}
+        </div>
+      </div>
+    </label>
   );
 }
 
