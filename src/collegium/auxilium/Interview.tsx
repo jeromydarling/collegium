@@ -31,6 +31,8 @@ import {
   awaitVoices,
   type DictationSession,
 } from "./lib/voice";
+import { useLocale, localeFor } from "./lib/locale";
+import { LanguagePicker } from "./components/LanguagePicker";
 
 const SESSION_KEY = "auxilium_interview_session";
 
@@ -69,6 +71,8 @@ function saveSession(s: Session) {
 
 export function Interview() {
   const navigate = useNavigate();
+  const [locale] = useLocale();
+  const speechLang = localeFor(locale).speechLang;
   const [session, setSession] = useState<Session>(() => {
     const existing = loadSession();
     if (existing) return existing;
@@ -136,9 +140,9 @@ export function Interview() {
     const id = lastAi.stepId + "::" + lastAi.text.length;
     if (lastSpokenIdRef.current === id) return;
     lastSpokenIdRef.current = id;
-    // Speak without awaiting — let React keep going.
-    speak(lastAi.text, { lang: "en-US" });
-  }, [session.transcript, voiceEnabled]);
+    // Speak in the active locale.
+    speak(lastAi.text, { lang: speechLang });
+  }, [session.transcript, voiceEnabled, speechLang]);
 
   // Whenever voice mode flips off, stop mid-utterance speech.
   useEffect(() => {
@@ -245,7 +249,7 @@ export function Interview() {
     setInterimText("");
     setListening(true);
     const session = startDictation({
-      lang: "en-US",
+      lang: speechLang,
       onInterim: (t) => setInterimText(t),
       onFinal: (t) => {
         setListening(false);
@@ -312,7 +316,8 @@ export function Interview() {
             >
               <ChevronLeft size={12} /> Back
             </button>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+              <LanguagePicker />
               {voiceCapable && (
                 <button
                   onClick={() => setVoiceEnabled((v) => !v)}

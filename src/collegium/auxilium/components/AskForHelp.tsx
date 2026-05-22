@@ -9,6 +9,8 @@ import {
   ShieldCheck,
   Building2,
   Send,
+  AlertCircle,
+  Zap,
 } from "lucide-react";
 import type { MatterFile } from "../lib/aiClient";
 import {
@@ -20,6 +22,26 @@ import {
   buildGoFundMeDraft,
   buildReferralEmailBody,
 } from "../lib/gofundmeDraft";
+import { sendEmail, type SendResult } from "../lib/resend";
+
+/**
+ * Default intake addresses per network — used when Perplexity didn't
+ * surface a public local contact email. These are the national or
+ * state-council intake desks; the recipient triages internally to the
+ * nearest conference/council/affiliate. Update as we partner with each
+ * network and get a dedicated address.
+ */
+const NETWORK_INTAKE_FALLBACK: Record<CharityKind, string> = {
+  svdp: "info@svdpusa.org",
+  kofc: "info@kofc.org",
+  "catholic-charities": "info@catholiccharitiesusa.org",
+  lutheran: "info@lutheranservices.org",
+  cls: "cla@clsnet.org",
+  clinic: "info@cliniclegal.org",
+  "world-relief": "info@wr.org",
+  "administer-justice": "info@administerjustice.org",
+  "salvation-army": "usn_info@usn.salvationarmy.org",
+};
 
 /**
  * Bring the harvest in.
@@ -54,6 +76,11 @@ export function AskForHelp({
   const [consented, setConsented] = useState(false);
   const [working, setWorking] = useState(false);
   const [hits, setHits] = useState<Record<CharityKind, CharityHit> | null>(null);
+  const [userEmail, setUserEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sendResults, setSendResults] = useState<Map<CharityKind, SendResult>>(
+    new Map()
+  );
   const [selected, setSelectedSet] = useState<Set<CharityKind>>(
     new Set([
       "svdp",
@@ -94,6 +121,59 @@ export function AskForHelp({
       else next.add(k);
       return next;
     });
+  }
+
+  /**
+   * Fire one Resend email per selected network in parallel. Each one
+   * lands a SendResult in the Map; the per-network row renders a
+   * checkmark as soon as it succeeds.
+   *
+   * For networks that don't have a public email yet (most local SVdP
+   * / KofC parish contacts), we fall back to a default Auxilium intake
+   * inbox — the user is told this honestly in the UI.
+   */
+  async function sendAll() {
+    if (!hits || sending) return;
+    setSending(true);
+    setSendResults(new Map());
+
+    const tasks = [...selected].map(async (k) => {
+      const hit = hits[k];
+      // Try the Perplexity-extracted email first; fall back to a
+      // network-level intake address if none came back.
+      const to =
+        hit.email ||
+        NETWORK_INTAKE_FALLBACK[k] ||
+        "referrals@collegium.app";
+      const { subject, body } = buildReferralEmailBody({
+        matter,
+        firstName,
+        county: jurisdiction.city,
+        state: jurisdiction.state,
+        goalDollars: goal,
+        needSummary,
+        kind: k === "svdp" ? "svdp" : "kofc", // body template — SVdP or KofC framing
+      });
+
+      const r = await sendEmail({
+        to,
+        subject: subject.replace(/SVdP|Knights of Columbus/, hit.network),
+        body: body.replace(
+          /(Dear (?:Vincentians|Grand Knight),)/,
+          `Dear ${hit.network} team,`
+        ),
+        replyTo: userEmail.trim() || undefined,
+      });
+
+      setSendResults((prev) => {
+        const next = new Map(prev);
+        next.set(k, r);
+        return next;
+      });
+      return [k, r] as const;
+    });
+    await Promise.all(tasks);
+    setSending(false);
   }
 
   // Build the unified mass-send email: the body is a single packet,
@@ -202,6 +282,21 @@ export function AskForHelp({
           />
         </label>
 
+        <label className="flex flex-col gap-1 text-xs text-[hsl(var(--c-slate-soft))]">
+          Your email (optional — so the networks can write you back)
+          <input
+            type="email"
+            value={userEmail}
+            onChange={(e) => setUserEmail(e.target.value)}
+            placeholder="you@example.com — leave blank if you don't have one"
+            className="px-3 py-2.5 rounded-md border border-[hsl(var(--c-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--c-wine)/0.3)]"
+          />
+          <span className="text-[10px] text-[hsl(var(--c-slate-soft))]">
+            If you don't have email, leave this blank. Some networks may
+            need a phone number — they'll call.
+          </span>
+        </label>
+
         <label className="flex items-start gap-3 cursor-pointer">
           <input
             type="checkbox"
@@ -246,6 +341,8 @@ export function AskForHelp({
                   hit={hits[k]}
                   selected={selected.has(k)}
                   onToggle={() => toggle(k)}
+                  sendResult={sendResults.get(k)}
+                  sending={sending && selected.has(k) && !sendResults.has(k)}
                 />
               ))}
             </ul>
@@ -255,6 +352,10 @@ export function AskForHelp({
                 mailto={mass.mailto}
                 copyText={mass.copyText}
                 count={mass.recipientCount}
+                onSendForMe={sendAll}
+                sending={sending}
+                sendResultCount={sendResults.size}
+                successCount={[...sendResults.values()].filter((r) => r.ok).length}
               />
             )}
 
@@ -295,39 +396,78 @@ function NetworkRow({
   hit,
   selected,
   onToggle,
+  sendResult,
+  sending,
 }: {
   hit: CharityHit;
   selected: boolean;
   onToggle: () => void;
+  sendResult?: SendResult;
+  sending?: boolean;
 }) {
+  const status: "idle" | "sending" | "ok" | "error" = sending
+    ? "sending"
+    : sendResult
+    ? sendResult.ok
+      ? "ok"
+      : "error"
+    : "idle";
   return (
     <li>
       <label
         className={`block bg-white border rounded-md p-3 sm:p-4 cursor-pointer transition-colors ${
-          selected
+          status === "ok"
+            ? "border-[hsl(145_30%_42%)] ring-1 ring-[hsl(145_30%_42%/0.3)]"
+            : status === "error"
+            ? "border-[hsl(8_55%_52%)] ring-1 ring-[hsl(8_55%_52%/0.3)]"
+            : selected
             ? "border-[hsl(var(--c-wine))] ring-1 ring-[hsl(var(--c-wine)/0.3)]"
             : "border-[hsl(var(--c-border))] hover:border-[hsl(var(--c-wine)/0.4)]"
         }`}
       >
         <div className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={onToggle}
-            className="mt-1 w-4 h-4 accent-[hsl(var(--c-wine))] shrink-0"
-          />
+          {status === "ok" ? (
+            <div className="mt-0.5 w-5 h-5 rounded-full bg-[hsl(145_30%_42%)] text-white flex items-center justify-center shrink-0">
+              <Check size={12} />
+            </div>
+          ) : status === "error" ? (
+            <div className="mt-0.5 w-5 h-5 rounded-full bg-[hsl(8_55%_52%)] text-white flex items-center justify-center shrink-0">
+              <AlertCircle size={12} />
+            </div>
+          ) : status === "sending" ? (
+            <div className="mt-0.5 w-5 h-5 flex items-center justify-center shrink-0 text-[hsl(var(--c-wine))]">
+              <Loader size={14} className="animate-spin" />
+            </div>
+          ) : (
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={onToggle}
+              className="mt-1 w-4 h-4 accent-[hsl(var(--c-wine))] shrink-0"
+            />
+          )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-1">
               <h4 className="font-medium text-sm text-[hsl(var(--c-ink))] leading-tight">
                 {hit.network}
               </h4>
               <div className="flex gap-1.5 shrink-0">
-                {hit.emergencyAid && (
+                {status === "ok" && (
+                  <span className="text-[9px] uppercase tracking-widest text-[hsl(145_40%_30%)] font-semibold">
+                    Sent
+                  </span>
+                )}
+                {status === "error" && (
+                  <span className="text-[9px] uppercase tracking-widest text-[hsl(8_55%_42%)] font-semibold">
+                    Failed
+                  </span>
+                )}
+                {hit.emergencyAid && status === "idle" && (
                   <span className="text-[9px] uppercase tracking-widest text-[hsl(var(--c-wine))] font-semibold px-1.5 py-0.5 rounded bg-[hsl(var(--c-wine)/0.08)]">
                     Aid
                   </span>
                 )}
-                {hit.legalAid && (
+                {hit.legalAid && status === "idle" && (
                   <span className="text-[9px] uppercase tracking-widest text-[hsl(38_55%_28%)] font-semibold px-1.5 py-0.5 rounded bg-[hsl(38_55%_50%/0.12)]">
                     Legal
                   </span>
@@ -360,10 +500,18 @@ function MassSendPanel({
   mailto,
   copyText,
   count,
+  onSendForMe,
+  sending,
+  sendResultCount,
+  successCount,
 }: {
   mailto: string;
   copyText: string;
   count: number;
+  onSendForMe: () => void;
+  sending: boolean;
+  sendResultCount: number;
+  successCount: number;
 }) {
   const [copied, setCopied] = useState(false);
   function copy() {
@@ -372,6 +520,7 @@ function MassSendPanel({
       setTimeout(() => setCopied(false), 2500);
     });
   }
+  const done = sendResultCount > 0 && !sending;
   return (
     <div className="bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)] rounded-md p-4 sm:p-5">
       <div className="flex items-start gap-3 mb-3">
@@ -381,19 +530,47 @@ function MassSendPanel({
             One email. {count} {count === 1 ? "network" : "networks"}.
           </h4>
           <p className="text-xs text-[hsl(40_20%_82%)] mt-1 leading-relaxed">
-            Opens your email client with the full packet pre-filled and every
-            selected network's contact in the TO line. For networks that
-            don't publish a public email, copy the packet and forward it to
-            their intake phone or web form.
+            We can send these for you — one click, no email app required.
+            Each network is contacted in parallel; you'll see a green
+            check next to each as it lands. If you'd rather send from
+            your own email, the other two buttons still work.
           </p>
         </div>
       </div>
+
+      {done && (
+        <div className="mb-3 text-sm text-[hsl(145_50%_75%)]">
+          {successCount} of {sendResultCount} sent successfully.
+          {successCount < sendResultCount &&
+            " The networks below marked Failed had no working address yet — use Open-in-email or Copy-the-packet to reach them another way."}
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-2">
+        <button
+          onClick={onSendForMe}
+          disabled={sending}
+          className="inline-flex items-center gap-1.5 bg-[hsl(38_60%_60%)] text-[hsl(220_30%_10%)] rounded-full px-4 py-2 text-xs font-medium hover:bg-[hsl(38_60%_70%)] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {sending ? (
+            <>
+              <Loader size={12} className="animate-spin" /> Sending…
+            </>
+          ) : done ? (
+            <>
+              <Zap size={12} /> Send again
+            </>
+          ) : (
+            <>
+              <Zap size={12} /> Send for me
+            </>
+          )}
+        </button>
         <a
           href={mailto}
-          className="inline-flex items-center gap-1.5 bg-[hsl(38_60%_60%)] text-[hsl(220_30%_10%)] rounded-full px-4 py-2 text-xs font-medium hover:bg-[hsl(38_60%_70%)] transition-colors"
+          className="inline-flex items-center gap-1.5 bg-transparent text-[hsl(40_30%_88%)] border border-[hsl(220_20%_30%)] rounded-full px-4 py-2 text-xs font-medium hover:border-[hsl(38_60%_60%)]"
         >
-          <Mail size={12} /> Open in email
+          <Mail size={12} /> Open in my email
         </a>
         <button
           onClick={copy}

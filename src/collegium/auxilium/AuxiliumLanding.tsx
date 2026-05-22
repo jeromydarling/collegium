@@ -11,6 +11,7 @@ import { matterTypes } from "./data/matters";
 import { InfoNotAdviceFooter } from "./components/InfoNotAdviceFooter";
 import { JusticeMap } from "./components/JusticeMap";
 import { LegalShieldFeatured } from "./components/LegalShieldFeatured";
+import { LanguagePicker } from "./components/LanguagePicker";
 
 /**
  * Auxilium landing — the second front door of Collegium.
@@ -28,10 +29,13 @@ export function AuxiliumLanding() {
       {/* Hero */}
       <section className="bg-gradient-to-b from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))] border-b border-[hsl(var(--c-border))]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-12 sm:pb-16 text-center">
-          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[hsl(var(--c-wine))] mb-4">
-            <span className="collegium-latin not-italic">Auxilium</span>
-            <span className="text-[hsl(var(--c-slate-soft))]">·</span>
-            <span>By Collegium</span>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[hsl(var(--c-wine))]">
+              <span className="collegium-latin not-italic">Auxilium</span>
+              <span className="text-[hsl(var(--c-slate-soft))]">·</span>
+              <span>By Collegium</span>
+            </div>
+            <LanguagePicker />
           </div>
           <h1 className="collegium-display-xl text-4xl sm:text-5xl md:text-6xl text-[hsl(var(--c-ink))] mb-5 sm:mb-6 leading-[1.05]">
             Walk into help <span className="collegium-mark">prepared.</span>
