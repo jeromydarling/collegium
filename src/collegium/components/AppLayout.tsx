@@ -21,6 +21,8 @@ import {
   Sparkles,
   Award,
   DollarSign,
+  PhoneIncoming,
+  Quote,
 } from "lucide-react";
 import { useDemoState, roleLabel } from "../lib/demoStore";
 
@@ -38,6 +40,8 @@ const items = [
   { to: "/app/revenue", label: "Low-Bono Revenue", icon: DollarSign },
   { to: "/app/insights", label: "Justice Gap", icon: BarChart3 },
   { to: "/app/practice", label: "Practice Hub", icon: MessageCircleQuestion },
+  { to: "/app/voice-intake", label: "Voice Intake", icon: PhoneIncoming },
+  { to: "/app/appeals", label: "Appeals", icon: Quote },
   { to: "/app/intake-assist", label: "Intake Assist", icon: Sparkles },
   { to: "/app/office", label: "Daily Office", icon: Sun },
   { to: "/app/calendar", label: "Calendar", icon: CalendarDays },
