@@ -26,6 +26,9 @@ import { AuxiliumLanding } from "./auxilium/AuxiliumLanding";
 import { MatterPicker } from "./auxilium/MatterPicker";
 import { MatterGuide } from "./auxilium/MatterGuide";
 import { FindHelp } from "./auxilium/FindHelp";
+import { InterviewBegin } from "./auxilium/InterviewBegin";
+import { Interview } from "./auxilium/Interview";
+import { MatterFile } from "./auxilium/MatterFile";
 
 import "./styles.css";
 
@@ -58,6 +61,9 @@ export default function CollegiumApp() {
 
         {/* Auxilium — second front door. Plain English, public-facing. */}
         <Route path="auxilium" element={<AuxiliumLanding />} />
+        <Route path="auxilium/begin" element={<InterviewBegin />} />
+        <Route path="auxilium/interview" element={<Interview />} />
+        <Route path="auxilium/matter-file" element={<MatterFile />} />
         <Route path="auxilium/start" element={<MatterPicker />} />
         <Route path="auxilium/matter/:slug" element={<MatterGuide />} />
         <Route path="auxilium/find-help" element={<FindHelp />} />

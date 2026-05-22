@@ -38,14 +38,21 @@ export function AuxiliumLanding() {
             before the meter starts running.
           </p>
           <Link
-            to="/auxilium/start"
+            to="/auxilium/begin"
             className="collegium-btn-primary inline-flex items-center justify-center gap-2 w-full sm:w-auto max-w-sm mx-auto text-base"
           >
-            Start with what happened <ArrowRight size={18} />
+            Begin the interview <ArrowRight size={18} />
           </Link>
-          <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-5">
-            Free. No account required to begin. Nothing leaves your device
-            unless you choose to share it with a clinic.
+          <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-4">
+            10–15 minutes, in a conversation. No account required. Stays on
+            your device unless you choose to share it.
+          </p>
+          <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-3">
+            Or{" "}
+            <Link to="/auxilium/start" className="collegium-link">
+              skip the interview and browse matter types
+            </Link>
+            .
           </p>
         </div>
       </section>
@@ -182,10 +189,10 @@ export function AuxiliumLanding() {
             need to tell us what happened.
           </p>
           <Link
-            to="/auxilium/start"
+            to="/auxilium/begin"
             className="collegium-btn-primary inline-flex items-center justify-center gap-2 w-full sm:w-auto max-w-sm mx-auto"
           >
-            Start with what happened <ArrowRight size={18} />
+            Begin the interview <ArrowRight size={18} />
           </Link>
         </div>
       </section>
