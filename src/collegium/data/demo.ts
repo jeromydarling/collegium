@@ -78,11 +78,38 @@ export type ServiceMatter = {
   intakeDate: string;
   requester: string;
   region: string;
-  category: "immigration" | "family" | "housing" | "parish-governance" | "canon-law" | "indigent-defense" | "religious-liberty";
+  category:
+    | "immigration"
+    | "family"
+    | "housing"
+    | "parish-governance"
+    | "canon-law"
+    | "indigent-defense"
+    | "religious-liberty"
+    | "expungement"
+    | "estate-planning"
+    | "public-benefits";
   status: "new" | "triaged" | "assigned" | "follow-up" | "closed";
   assignedTo?: string;
   summary: string;
   urgency: "routine" | "soon" | "urgent";
+  /** Optional: a chapter (parish, guild, student org) that referred this matter. */
+  referringChapterId?: string;
+  /** The clergy/staff/officer who made the referral, if applicable. */
+  referredBy?: string;
+  /** Spoken language(s) of the person seeking help — used by the intake router. */
+  languages?: string[];
+  /** Federal poverty level percentage — captured at intake for eligibility. */
+  fplPercent?: number;
+  /**
+   * Pastoral-care-aware summary written on closure, returned to the
+   * referring chapter. Never includes private legal substance; surfaces
+   * what the parish can do next.
+   */
+  closureSummary?: string;
+  closureDate?: string;
+  /** Whether the requester consented to closure-loop sharing with referring chapter. */
+  closureLoopConsent?: boolean;
 };
 
 export type NRIBriefing = {
@@ -622,11 +649,15 @@ export const serviceMatters: ServiceMatter[] = [
     summary:
       "Parish council seeking guidance on bylaws revision following a property-transfer question. Likely needs canon-law overlap with civil counsel.",
     urgency: "soon",
+    referringChapterId: "ch-clg-chicago",
+    referredBy: "Msgr. Patrick Lally",
+    languages: ["en"],
+    closureLoopConsent: true,
   },
   {
     id: "sm-2",
     intakeDate: "2026-05-15",
-    requester: "Maria F. (referred by Pilsen clinic)",
+    requester: "Maria F. (Pilsen)",
     region: "Chicago, IL",
     category: "immigration",
     status: "assigned",
@@ -634,6 +665,11 @@ export const serviceMatters: ServiceMatter[] = [
     summary:
       "U-visa application for survivor of domestic violence. Documentation gathered; petition draft underway.",
     urgency: "soon",
+    referringChapterId: "ch-clg-chicago",
+    referredBy: "St. Procopius Parish (Wednesday clinic)",
+    languages: ["es", "en"],
+    fplPercent: 95,
+    closureLoopConsent: true,
   },
   {
     id: "sm-3",
@@ -645,11 +681,14 @@ export const serviceMatters: ServiceMatter[] = [
     summary:
       "Trustee asking how civil property-tax exemption interacts with the canon-law definition of 'public juridic person.' Fr. Cale advising.",
     urgency: "routine",
+    referringChapterId: "ch-doc-arlington",
+    referredBy: "Diocesan chancery",
+    languages: ["en"],
   },
   {
     id: "sm-4",
     intakeDate: "2026-05-08",
-    requester: "Karen L. (Boston resident)",
+    requester: "Karen L. (Dorchester)",
     region: "Boston, MA",
     category: "family",
     status: "follow-up",
@@ -657,6 +696,11 @@ export const serviceMatters: ServiceMatter[] = [
     summary:
       "Annulment-tribunal advocacy combined with civil custody motion. Sr. Anne Marie advising on the tribunal side.",
     urgency: "soon",
+    referringChapterId: "ch-stm-boston",
+    referredBy: "Cathedral of the Holy Cross — pastoral office",
+    languages: ["en"],
+    fplPercent: 165,
+    closureLoopConsent: true,
   },
   {
     id: "sm-5",
@@ -668,11 +712,15 @@ export const serviceMatters: ServiceMatter[] = [
     summary:
       "Bulk request: four religious-persecution claimants need IRB-hearing counsel within 90 days.",
     urgency: "urgent",
+    referringChapterId: "ch-cbf-toronto",
+    referredBy: "RCN intake coordinator",
+    languages: ["en", "fa", "ti"],
+    fplPercent: 100,
   },
   {
     id: "sm-6",
     intakeDate: "2026-04-29",
-    requester: "John D. (CUA Law alumnus)",
+    requester: "John D. (Arlington)",
     region: "Washington, DC",
     category: "indigent-defense",
     status: "closed",
@@ -680,6 +728,14 @@ export const serviceMatters: ServiceMatter[] = [
     summary:
       "Misdemeanor representation, completed pro bono. Pleaded down to a continuance without finding.",
     urgency: "routine",
+    referringChapterId: "ch-doc-arlington",
+    referredBy: "Cathedral of St. Thomas More — Saturday clinic",
+    languages: ["en"],
+    fplPercent: 140,
+    closureLoopConsent: true,
+    closureDate: "2026-05-19",
+    closureSummary:
+      "Matter resolved without conviction. The family is asking about pastoral support during the probation check-ins; one of the deacons may want to follow up. No legal substance shared with the parish; the client gave permission for this note.",
   },
   {
     id: "sm-7",
@@ -691,6 +747,91 @@ export const serviceMatters: ServiceMatter[] = [
     summary:
       "Cemetery-trust governance question — fourth such parish-governance matter this quarter.",
     urgency: "routine",
+    referringChapterId: "ch-clg-chicago",
+    referredBy: "Parish business manager",
+    languages: ["en"],
+  },
+  // ── Network-inbox referrals: matters arriving from partner parishes that
+  //    have not yet been routed to a local clinic. The federated intake board
+  //    surfaces these to a steward with a routing suggestion.
+  {
+    id: "sm-8",
+    intakeDate: "2026-05-21",
+    requester: "Esperanza R. (Allston)",
+    region: "Boston, MA",
+    category: "housing",
+    status: "new",
+    summary:
+      "Notice-to-quit served at end of April; sealed lease and a Section-8 voucher transfer question. Requester is Spanish-first.",
+    urgency: "urgent",
+    referringChapterId: "ch-stm-boston",
+    referredBy: "St. Anthony Shrine — Tuesday outreach",
+    languages: ["es"],
+    fplPercent: 80,
+    closureLoopConsent: true,
+  },
+  {
+    id: "sm-9",
+    intakeDate: "2026-05-21",
+    requester: "Daniel O. (Brookline)",
+    region: "Boston, MA",
+    category: "expungement",
+    status: "new",
+    summary:
+      "Two 2018 misdemeanor charges; eligible for record sealing under 276 § 100A. Wants help filing pro se if possible.",
+    urgency: "routine",
+    referringChapterId: "ch-stm-boston",
+    referredBy: "Sacred Heart, Newton",
+    languages: ["en"],
+    fplPercent: 120,
+  },
+  {
+    id: "sm-10",
+    intakeDate: "2026-05-20",
+    requester: "Jean-Paul N. (Scarborough)",
+    region: "Toronto, ON",
+    category: "immigration",
+    status: "new",
+    summary:
+      "Family reunification — spouse and two minor children in DRC. Asking what documents to gather before consult.",
+    urgency: "soon",
+    referringChapterId: "ch-cbf-toronto",
+    referredBy: "Our Lady of Guadalupe — multilingual outreach",
+    languages: ["fr", "ln"],
+    fplPercent: 65,
+    closureLoopConsent: true,
+  },
+  {
+    id: "sm-11",
+    intakeDate: "2026-05-19",
+    requester: "Anna T. (Dorchester)",
+    region: "Boston, MA",
+    category: "estate-planning",
+    status: "new",
+    summary:
+      "Widow, age 72, needs a will and a health-care proxy. Adult daughter present at intake; no contested estate.",
+    urgency: "routine",
+    referringChapterId: "ch-stm-boston",
+    referredBy: "St. Mark's, Dorchester",
+    languages: ["en"],
+    fplPercent: 110,
+    closureLoopConsent: true,
+  },
+  {
+    id: "sm-12",
+    intakeDate: "2026-05-19",
+    requester: "Robert M. (Pilsen)",
+    region: "Chicago, IL",
+    category: "public-benefits",
+    status: "new",
+    summary:
+      "SSI denial appeal — disability onset disputed. Treating physician letter in hand.",
+    urgency: "soon",
+    referringChapterId: "ch-clg-chicago",
+    referredBy: "St. Procopius Parish (Wednesday clinic)",
+    languages: ["en"],
+    fplPercent: 75,
+    closureLoopConsent: true,
   },
 ];
 
@@ -790,5 +931,54 @@ export const nriBriefings: NRIBriefing[] = [
       "Publish a national 'Treatise on Law in Eight Weeks' kit with discussion guides per chapter. Use the JP II Guild's notes as the source.",
     generatedOn: "2026-05-21",
     tone: "celebrate",
+  },
+  // ── Parish-loop briefings ─────────────────────────────────────────
+  {
+    id: "nri-7",
+    scope: "chapter",
+    scopeId: "ch-stm-boston",
+    title: "Five Boston referrals are sitting unrouted",
+    body: "Five new matters came in through partner parishes between May 19 and May 21 — two housing (Allston, Dorchester), one expungement (Newton), one estate planning (Dorchester), one parish-governance (already triaged). Three are tagged for closure-loop sharing with the referring parish. The chapter has volunteer capacity; it has an intake-routing gap.",
+    signals: [
+      "5 new matters in 72 hours (parish-referred)",
+      "3 closure-loop consents on file",
+      "Volunteer roster shows 14 attorneys available this month",
+    ],
+    suggestedAction:
+      "Open the Network Inbox and approve the suggested routing. The two housing matters need a Spanish-fluent volunteer — Daniel Chen and Elena Ruiz-Schwarz are both options.",
+    generatedOn: "2026-05-22",
+    tone: "attend",
+  },
+  {
+    id: "nri-8",
+    scope: "chapter",
+    scopeId: "ch-doc-arlington",
+    title: "John D.'s matter closed — Cathedral of St. Thomas More notified",
+    body: "Brennan's pro bono misdemeanor representation for John D. closed without conviction on May 19. With the client's consent, a pastoral-care-aware note was returned to the Cathedral's Saturday-clinic coordinator: no legal substance, but a suggestion that one of the deacons reach out during the probation check-ins. This is the parish loop working.",
+    signals: [
+      "Matter closed 19 May",
+      "Closure-loop consent given at intake",
+      "Pastoral suggestion delivered to referring chapter",
+    ],
+    suggestedAction:
+      "Cathedral pastoral office reviews the closure note and decides whether a deacon follow-up is warranted. No further action required from the chapter steward unless asked.",
+    generatedOn: "2026-05-21",
+    tone: "celebrate",
+  },
+  {
+    id: "nri-9",
+    scope: "network",
+    scopeId: "network",
+    title: "Housing referrals are surging across the network",
+    body: "Seven housing matters across three chapters in 30 days (Boston 4, Chicago 2, Toronto 1). Four name a notice-to-quit; three involve voucher transfers. This is a pattern, not a coincidence — and four of the seven name Spanish or French as the primary language. A short, multilingual housing-rights kit pulled into Formation would let intake specialists hand something useful at first contact.",
+    signals: [
+      "7 housing matters (30d, 3 chapters)",
+      "4 notice-to-quit",
+      "57% non-English primary language",
+    ],
+    suggestedAction:
+      "Commission a Formation kit: 'Notice-to-Quit, in Plain English / En Español / En Français.' Lead with Rerum Novarum §§5–7 on the right to housing; close with the federal-statute citations.",
+    generatedOn: "2026-05-22",
+    tone: "attend",
   },
 ];

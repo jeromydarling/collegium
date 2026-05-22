@@ -15,6 +15,7 @@ import { Dashboard } from "./app/Dashboard";
 import { ChaptersList, ChapterDetail } from "./app/Chapters";
 import { Mentorship } from "./app/Mentorship";
 import { Service } from "./app/Service";
+import { NetworkInbox } from "./app/NetworkInbox";
 import { Formation } from "./app/Formation";
 import { Advancement } from "./app/Advancement";
 import { NRIPulse } from "./app/NRIPulse";
@@ -57,6 +58,7 @@ export default function CollegiumApp() {
           <Route path="chapters/:slug" element={<ChapterDetail />} />
           <Route path="mentorship" element={<Mentorship />} />
           <Route path="service" element={<Service />} />
+          <Route path="service/inbox" element={<NetworkInbox />} />
           <Route path="formation" element={<Formation />} />
           <Route path="advancement" element={<Advancement />} />
           <Route path="pulse" element={<NRIPulse />} />

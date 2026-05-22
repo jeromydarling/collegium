@@ -1,4 +1,6 @@
-import { serviceMatters, people } from "../data/demo";
+import { Link } from "react-router-dom";
+import { serviceMatters, people, chapters } from "../data/demo";
+import { Inbox, ArrowRight } from "lucide-react";
 
 const STATUS_COLS = ["new", "triaged", "assigned", "follow-up", "closed"] as const;
 type StatusKey = (typeof STATUS_COLS)[number];
@@ -12,16 +14,41 @@ const STATUS_LABEL: Record<StatusKey, { label: string; latin: string }> = {
 };
 
 export function Service() {
+  const inboxCount = serviceMatters.filter(
+    (m) => m.status === "new" && m.referringChapterId
+  ).length;
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Ministerium</div>
-        <h1 className="collegium-display text-3xl sm:text-4xl">Service</h1>
-        <p className="text-[hsl(var(--c-slate-soft))] mt-1">
-          The works of mercy in legal vocation — pro bono, parish governance,
-          canon-law overlap, and the unrepresented who would otherwise fall
-          through.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 sm:mb-8">
+        <div>
+          <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Ministerium</div>
+          <h1 className="collegium-display text-3xl sm:text-4xl">Service</h1>
+          <p className="text-[hsl(var(--c-slate-soft))] mt-1 max-w-2xl">
+            The works of mercy in legal vocation — pro bono, parish governance,
+            canon-law overlap, and the unrepresented who would otherwise fall
+            through.
+          </p>
+        </div>
+        <Link
+          to="/app/service/inbox"
+          className="collegium-card p-4 hover:shadow-md transition-shadow flex items-center gap-3 group shrink-0"
+        >
+          <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+            <Inbox size={18} />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+              Network Inbox
+            </div>
+            <div className="collegium-display text-lg leading-tight">
+              {inboxCount} referrals to route
+            </div>
+          </div>
+          <ArrowRight
+            size={16}
+            className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+          />
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6 sm:mb-8">
@@ -57,6 +84,9 @@ export function Service() {
                   const assigned = m.assignedTo
                     ? people.find((p) => p.id === m.assignedTo)
                     : null;
+                  const refChapter = m.referringChapterId
+                    ? chapters.find((c) => c.id === m.referringChapterId)
+                    : null;
                   return (
                     <article key={m.id} className="bg-white rounded-md p-3 border border-[hsl(var(--c-border))]">
                       <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -69,6 +99,11 @@ export function Service() {
                       <p className="text-xs text-[hsl(var(--c-slate))] leading-snug line-clamp-3 mb-2">
                         {m.summary}
                       </p>
+                      {refChapter && (
+                        <div className="text-[10px] text-[hsl(var(--c-wine))] mb-1.5 truncate">
+                          Referred · {m.referredBy || refChapter.name}
+                        </div>
+                      )}
                       <div className="flex items-center justify-between text-[10px] text-[hsl(var(--c-slate-soft))]">
                         <span>{m.region}</span>
                         {assigned && <span>→ {assigned.name.split(" ").slice(-1)[0]}</span>}

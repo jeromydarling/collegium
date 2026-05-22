@@ -1,6 +1,14 @@
 import { Link, useParams } from "react-router-dom";
-import { chapters, people, events } from "../data/demo";
-import { MapPin, Users, Calendar, ArrowRight, ChevronLeft } from "lucide-react";
+import { chapters, people, events, serviceMatters } from "../data/demo";
+import {
+  MapPin,
+  Users,
+  Calendar,
+  ArrowRight,
+  ChevronLeft,
+  Scale,
+  CheckCircle2,
+} from "lucide-react";
 
 export function ChaptersList() {
   return (
@@ -47,6 +55,13 @@ export function ChapterDetail() {
 
   const members = people.filter((p) => p.chapterId === c.id);
   const chapterEvents = events.filter((e) => e.chapterId === c.id);
+  const referredMatters = serviceMatters.filter(
+    (m) => m.referringChapterId === c.id
+  );
+  const closedWithLoop = referredMatters.filter(
+    (m) => m.status === "closed" && m.closureSummary
+  );
+  const openLoop = referredMatters.filter((m) => m.status !== "closed");
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
@@ -146,6 +161,115 @@ export function ChapterDetail() {
           </ul>
         </div>
       </div>
+
+      {/* ── Parish loop ────────────────────────────────────────────── */}
+      {referredMatters.length > 0 && (
+        <section className="mt-6 sm:mt-8 collegium-safe-bottom">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+            <h2 className="collegium-display text-2xl sm:text-3xl">
+              Parish loop
+            </h2>
+            <Link to="/app/service" className="text-xs collegium-link">
+              All service matters
+            </Link>
+          </div>
+          <p className="text-sm text-[hsl(var(--c-slate-soft))] mb-5 sm:mb-6 max-w-3xl">
+            Matters referred in through partner parishes connected to this
+            chapter. When a matter closes — and the requester has consented —
+            a pastoral-care-aware note returns here so the parish that sent
+            them can keep walking with them, even after the legal work is done.
+          </p>
+
+          {closedWithLoop.length > 0 && (
+            <div className="mb-5 sm:mb-6">
+              <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-wine))] mb-3 flex items-center gap-1.5">
+                <CheckCircle2 size={12} /> Closed — pastoral notes
+              </div>
+              <div className="space-y-3">
+                {closedWithLoop.map((m) => (
+                  <article
+                    key={m.id}
+                    className="collegium-card p-5 sm:p-6 bg-gradient-to-br from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))]"
+                  >
+                    <div className="flex flex-wrap items-center gap-2 text-xs mb-2">
+                      <span className="collegium-tag-soft">
+                        {m.category.replace("-", " ")}
+                      </span>
+                      <span className="text-[hsl(var(--c-slate-soft))]">
+                        Closed{" "}
+                        {m.closureDate
+                          ? new Date(m.closureDate).toLocaleDateString(
+                              "en-US",
+                              { month: "long", day: "numeric" }
+                            )
+                          : ""}
+                      </span>
+                      {m.referredBy && (
+                        <span className="text-[hsl(var(--c-slate-soft))]">
+                          · via {m.referredBy}
+                        </span>
+                      )}
+                    </div>
+                    <div className="font-medium text-sm text-[hsl(var(--c-ink))] mb-2">
+                      {m.requester}
+                    </div>
+                    <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed italic border-l-2 border-[hsl(var(--c-gold))] pl-3">
+                      {m.closureSummary}
+                    </p>
+                    <p className="text-[10px] text-[hsl(var(--c-slate-soft))] mt-3 uppercase tracking-widest">
+                      Consent on file · no legal substance shared
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {openLoop.length > 0 && (
+            <div>
+              <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-slate-soft))] mb-3">
+                In progress — visible to chapter steward only
+              </div>
+              <div className="space-y-2">
+                {openLoop.map((m) => (
+                  <div
+                    key={m.id}
+                    className="collegium-card p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                        <span className="collegium-tag-soft">
+                          {m.category.replace("-", " ")}
+                        </span>
+                        <span className="text-xs text-[hsl(var(--c-slate-soft))]">
+                          {m.status} · referred{" "}
+                          {new Date(m.intakeDate).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      <div className="text-sm font-medium text-[hsl(var(--c-ink))] truncate">
+                        {m.requester}
+                      </div>
+                      {m.referredBy && (
+                        <div className="text-xs text-[hsl(var(--c-slate-soft))] truncate">
+                          via {m.referredBy}
+                        </div>
+                      )}
+                    </div>
+                    {m.closureLoopConsent && (
+                      <span className="text-[10px] uppercase tracking-widest text-[hsl(145_40%_30%)] shrink-0">
+                        Closure-loop on
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
