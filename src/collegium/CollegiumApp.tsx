@@ -11,6 +11,8 @@ import { Pricing } from "./pages/Pricing";
 import { Contact } from "./pages/Contact";
 import { DemoGate } from "./pages/DemoGate";
 import { WhyProBono } from "./pages/WhyProBono";
+import { Checkout } from "./pages/Checkout";
+import { Onboarding } from "./pages/Onboarding";
 
 import { Dashboard } from "./app/Dashboard";
 import { ChaptersList, ChapterDetail } from "./app/Chapters";
@@ -26,6 +28,8 @@ import { CommunioDirectory, CommunioPeer } from "./app/Communio";
 import { IntakeAssist } from "./app/IntakeAssist";
 import { JusticeGapInsights } from "./app/JusticeGapInsights";
 import { PracticeHub } from "./app/PracticeHub";
+import { HoursDashboard } from "./app/HoursDashboard";
+import { TenantRevenue } from "./app/TenantRevenue";
 
 import { AuxiliumLanding } from "./auxilium/AuxiliumLanding";
 import { MatterPicker } from "./auxilium/MatterPicker";
@@ -80,6 +84,11 @@ export default function CollegiumApp() {
           <Route path="demo" element={<DemoGate />} />
         </Route>
 
+        {/* Checkout + onboarding live outside the marketing PublicLayout so
+            they get their own focused chrome. */}
+        <Route path="checkout" element={<Checkout />} />
+        <Route path="onboarding" element={<Onboarding />} />
+
         {/* Auxilium — second front door. Plain English, public-facing. */}
         <Route path="auxilium" element={<AuxiliumLanding />} />
         <Route path="auxilium/begin" element={<InterviewBegin />} />
@@ -124,6 +133,8 @@ export default function CollegiumApp() {
           <Route path="pulse" element={<NRIPulse />} />
           <Route path="insights" element={<JusticeGapInsights />} />
           <Route path="practice" element={<PracticeHub />} />
+          <Route path="hours" element={<HoursDashboard />} />
+          <Route path="revenue" element={<TenantRevenue />} />
           <Route path="intake-assist" element={<IntakeAssist />} />
           <Route path="office" element={<DailyOffice />} />
           <Route path="calendar" element={<CalendarPage />} />

@@ -19,6 +19,8 @@ import {
   BarChart3,
   MessageCircleQuestion,
   Sparkles,
+  Award,
+  DollarSign,
 } from "lucide-react";
 import { useDemoState, roleLabel } from "../lib/demoStore";
 
@@ -32,6 +34,8 @@ const items = [
   { to: "/app/formation", label: "Formation", icon: Library },
   { to: "/app/advancement", label: "Advancement", icon: TrendingUp },
   { to: "/app/pulse", label: "NRI Pulse", icon: Activity },
+  { to: "/app/hours", label: "Pro Bono Hours", icon: Award },
+  { to: "/app/revenue", label: "Low-Bono Revenue", icon: DollarSign },
   { to: "/app/insights", label: "Justice Gap", icon: BarChart3 },
   { to: "/app/practice", label: "Practice Hub", icon: MessageCircleQuestion },
   { to: "/app/intake-assist", label: "Intake Assist", icon: Sparkles },
