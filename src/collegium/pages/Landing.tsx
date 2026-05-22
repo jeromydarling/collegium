@@ -52,13 +52,15 @@ export function Landing() {
             </Link>
           </div>
 
-          {/* Second + third front doors — Auxilium for the person, Justice Gap for the conscience. */}
-          <div className="mt-10 sm:mt-12 max-w-3xl mx-auto px-2">
+          {/* Three front doors — Auxilium for the person seeking help,
+              Patrocinium for the advocate offering it, Justice Gap for
+              the conscience watching the gap. */}
+          <div className="mt-10 sm:mt-12 max-w-5xl mx-auto px-2">
             <hr className="collegium-gold-rule" />
-            <div className="mt-6 sm:mt-8 grid sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               <Link
                 to="/auxilium"
-                className="group text-left bg-white border border-[hsl(var(--c-border))] rounded-xl p-5 sm:p-6 hover:shadow-md transition-shadow"
+                className="group text-left bg-white border border-[hsl(var(--c-border))] rounded-xl p-5 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
@@ -68,11 +70,11 @@ export function Landing() {
                     <div className="collegium-latin text-xs text-[hsl(var(--c-wine))] mb-0.5">
                       Auxilium
                     </div>
-                    <h3 className="collegium-display text-lg sm:text-xl mb-1 leading-tight">
+                    <h3 className="collegium-display text-base sm:text-lg mb-1 leading-tight">
                       Need legal help yourself?
                     </h3>
                     <p className="text-sm text-[hsl(var(--c-slate))] leading-snug">
-                      A plain-English guide so you walk into help prepared.{" "}
+                      Plain-English guide so you walk into help prepared.{" "}
                       <span className="text-[hsl(var(--c-wine))] font-medium underline decoration-[hsl(var(--c-gold)/0.5)] underline-offset-2 group-hover:decoration-[hsl(var(--c-wine))]">
                         Open Auxilium →
                       </span>
@@ -82,8 +84,33 @@ export function Landing() {
               </Link>
 
               <Link
+                to="/patrocinium"
+                className="group text-left bg-[hsl(var(--c-cream-warm))] border border-[hsl(var(--c-gold)/0.4)] rounded-xl p-5 hover:shadow-md hover:border-[hsl(var(--c-wine))] transition-all"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-gold)/0.18)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+                    <ArrowRight size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="collegium-latin text-xs text-[hsl(var(--c-wine))] mb-0.5">
+                      Patrocinium
+                    </div>
+                    <h3 className="collegium-display text-base sm:text-lg mb-1 leading-tight">
+                      Lawyer ready to give an hour?
+                    </h3>
+                    <p className="text-sm text-[hsl(var(--c-slate))] leading-snug">
+                      Pre-vetted pro bono cases. Five minutes from sign-in.{" "}
+                      <span className="text-[hsl(var(--c-wine))] font-medium underline decoration-[hsl(var(--c-gold)/0.5)] underline-offset-2 group-hover:decoration-[hsl(var(--c-wine))]">
+                        Open Patrocinium →
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 to="/justicegap"
-                className="group text-left bg-[hsl(220_30%_10%)] border border-[hsl(220_20%_22%)] rounded-xl p-5 sm:p-6 hover:border-[hsl(38_60%_60%)] transition-colors"
+                className="group text-left bg-[hsl(220_30%_10%)] border border-[hsl(220_20%_22%)] rounded-xl p-5 hover:border-[hsl(38_60%_60%)] transition-colors"
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-[hsl(38_60%_60%/0.18)] flex items-center justify-center text-[hsl(38_60%_75%)] shrink-0">
@@ -93,11 +120,11 @@ export function Landing() {
                     <div className="collegium-latin text-xs text-[hsl(38_60%_70%)] mb-0.5 not-italic">
                       Iustitia rapta
                     </div>
-                    <h3 className="collegium-display text-lg sm:text-xl mb-1 leading-tight text-[hsl(40_40%_94%)]">
+                    <h3 className="collegium-display text-base sm:text-lg mb-1 leading-tight text-[hsl(40_40%_94%)]">
                       Why does this matter?
                     </h3>
                     <p className="text-sm text-[hsl(40_30%_82%)] leading-snug">
-                      The 92% gap, mapped state by state. Seventeen chapters.{" "}
+                      The 92% gap, mapped state by state.{" "}
                       <span className="text-[hsl(38_60%_70%)] font-medium underline decoration-[hsl(38_60%_60%/0.5)] underline-offset-2 group-hover:decoration-[hsl(38_60%_70%)]">
                         Open Justice Gap →
                       </span>

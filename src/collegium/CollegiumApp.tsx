@@ -41,6 +41,12 @@ import {
   SolutionView as JusticeGapSolution,
 } from "./justicegap/StubViews";
 
+import { PatrociniumLanding } from "./patrocinium/PatrociniumLanding";
+import { CaseBrowser } from "./patrocinium/CaseBrowser";
+import { CaseDetail } from "./patrocinium/CaseDetail";
+import { MyProBono } from "./patrocinium/MyProBono";
+import { EvictionAnswer } from "./patrocinium/EvictionAnswer";
+
 import "./styles.css";
 
 // Vite injects the base URL at build time (e.g. "/" locally, "/collegium/" on
@@ -88,6 +94,17 @@ export default function CollegiumApp() {
         <Route path="justicegap/stories" element={<JusticeGapStories />} />
         <Route path="justicegap/news" element={<JusticeGapNews />} />
         <Route path="justicegap/solution" element={<JusticeGapSolution />} />
+
+        {/* Patrocinium — fourth front door. Advocate-facing: where lawyers
+            see pre-vetted pro bono matters and accept what fits their week. */}
+        <Route path="patrocinium" element={<PatrociniumLanding />} />
+        <Route path="patrocinium/cases" element={<CaseBrowser />} />
+        <Route path="patrocinium/cases/:id" element={<CaseDetail />} />
+        <Route
+          path="patrocinium/cases/:id/eviction-answer"
+          element={<EvictionAnswer />}
+        />
+        <Route path="patrocinium/me" element={<MyProBono />} />
 
         {/* Demo app */}
         <Route path="app" element={<AppLayout />}>
