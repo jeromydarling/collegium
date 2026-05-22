@@ -174,6 +174,23 @@ export const proBonoCaseMeta: Record<string, ProBonoCaseMeta> = {
     remoteOk: true,
     subPractice: ["estate-planning", "elder-law"],
   },
+  "sm-4": {
+    matterId: "sm-4",
+    hoursEstimate: 8,
+    engagementType: "limited-scope",
+    conflicts: "auto-cleared",
+    malpracticeCovered: true,
+    deadlineDate: "2026-07-15",
+    opposingParty: "Former spouse · pro se",
+    goal:
+      "Custody modification + civil custody motion paired with tribunal-side annulment advocacy.",
+    forum: "Middlesex Probate & Family Court (Cambridge)",
+    postureNotes:
+      "Civil and canon-law tracks running in parallel — civil custody motion on the schedule and the annulment-tribunal advocacy proceeding through the Archdiocese. Sr. Anne Marie carries the tribunal piece; civil counsel needed for the modification.",
+    templatesAvailable: ["family-law-modification"],
+    remoteOk: false,
+    subPractice: ["family-law", "probate-family", "tribunal-civil-overlap"],
+  },
   "sm-12": {
     matterId: "sm-12",
     hoursEstimate: 8,

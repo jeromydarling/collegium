@@ -9,7 +9,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { complete } from "../lib/ai/client";
-import { hasClaudeKey } from "../lib/ai/settings";
+import { hasAIConfigured } from "../lib/ai/settings";
 import { IntegrationsPanel } from "../components/IntegrationsPanel";
 
 const SYSTEM_PROMPT = `You are an intake analyst for a Catholic legal-aid network. You convert unstructured intake-call notes from a parish or clinic steward into a structured pro bono case brief.
@@ -61,7 +61,7 @@ export function IntakeAssist() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ParsedBrief | null>(null);
   const [rawText, setRawText] = useState<string | null>(null);
-  const [showSettings, setShowSettings] = useState(!hasClaudeKey());
+  const [showSettings, setShowSettings] = useState(!hasAIConfigured());
   const [usage, setUsage] = useState<{
     inputTokens: number;
     outputTokens: number;
@@ -98,7 +98,7 @@ export function IntakeAssist() {
     const parsed = tryParseJSON(response.text);
     if (!parsed) {
       setError(
-        "Claude returned content but it didn't parse as JSON. See raw output below."
+        "The model returned content but it didn't parse as JSON. See raw output below."
       );
     } else {
       setResult(parsed);
@@ -143,14 +143,14 @@ export function IntakeAssist() {
 
       <div className="mb-5 flex items-center justify-between gap-3">
         <div className="text-xs text-[hsl(var(--c-slate-soft))]">
-          {hasClaudeKey() ? (
+          {hasAIConfigured() ? (
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheck size={12} className="text-[hsl(145_40%_28%)]" />
-              Claude API configured — calls stay in this browser
+              AI gateway configured — Gemini Flash via Lovable
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 text-[hsl(38_55%_28%)]">
-              <AlertTriangle size={12} /> Claude API not configured
+              <AlertTriangle size={12} /> AI gateway not configured
             </span>
           )}
         </div>
@@ -205,7 +205,7 @@ export function IntakeAssist() {
             <button
               type="button"
               onClick={handleRun}
-              disabled={busy || !notes.trim() || !hasClaudeKey()}
+              disabled={busy || !notes.trim() || !hasAIConfigured()}
               className="collegium-btn-primary text-sm inline-flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {busy ? (
@@ -238,9 +238,9 @@ export function IntakeAssist() {
 
           {!result && !error && !busy && (
             <div className="collegium-card p-8 text-center text-sm text-[hsl(var(--c-slate-soft))]">
-              {hasClaudeKey()
+              {hasAIConfigured()
                 ? "Paste notes on the left and generate to see the proposed brief here."
-                : "Configure your Claude API key above to enable AI assist."}
+                : "Configure the AI gateway above to enable AI assist."}
             </div>
           )}
 

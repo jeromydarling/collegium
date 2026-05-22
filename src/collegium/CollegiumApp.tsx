@@ -13,6 +13,7 @@ import { DemoGate } from "./pages/DemoGate";
 import { WhyProBono } from "./pages/WhyProBono";
 import { Checkout } from "./pages/Checkout";
 import { Onboarding } from "./pages/Onboarding";
+import { ClientPortal } from "./pages/ClientPortal";
 
 import { Dashboard } from "./app/Dashboard";
 import { ChaptersList, ChapterDetail } from "./app/Chapters";
@@ -90,6 +91,7 @@ export default function CollegiumApp() {
             they get their own focused chrome. */}
         <Route path="checkout" element={<Checkout />} />
         <Route path="onboarding" element={<Onboarding />} />
+        <Route path="portal/:token" element={<ClientPortal />} />
 
         {/* Auxilium — second front door. Plain English, public-facing. */}
         <Route path="auxilium" element={<AuxiliumLanding />} />

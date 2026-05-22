@@ -51,6 +51,8 @@ const TEMPLATE_LABEL: Record<string, string> = {
   "juridic-person-property-memo": "Juridic-person / property-tax memo",
   "irb-witness-statement": "IRB witness-statement template",
   "country-conditions-binder": "Country-conditions evidence binder",
+  "padilla-advisal": "Padilla immigration-consequences advisal",
+  "family-law-modification": "Custody / support modification motion",
 };
 
 export function CaseDetail() {

@@ -92,7 +92,7 @@ export function HoursDashboard() {
     });
   }
 
-  function handleDownload() {
+  function handleDownloadText() {
     const filename =
       mode === "personal"
         ? `pro-bono-${jurisdiction}-${year}-${attorney?.name.split(" ").pop()}.txt`
@@ -104,6 +104,19 @@ export function HoursDashboard() {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  async function handleDownloadPdf() {
+    const { downloadBarReportPdf, downloadFirmRollupPdf } = await import(
+      "../lib/hours/barExportPdf"
+    );
+    if (mode === "personal" && personalReport) {
+      downloadBarReportPdf(personalReport.summary, {
+        firmOrClinic: tenant.branding.displayName,
+      });
+    } else if (mode === "firm") {
+      downloadFirmRollupPdf(firmRollup);
+    }
   }
 
   const recentEntries = [...hoursEntries]
@@ -356,11 +369,19 @@ export function HoursDashboard() {
               </button>
               <button
                 type="button"
-                onClick={handleDownload}
+                onClick={handleDownloadText}
+                disabled={!reportText}
+                className="collegium-btn-ghost text-xs inline-flex items-center gap-1.5"
+              >
+                <Download size={12} /> .txt
+              </button>
+              <button
+                type="button"
+                onClick={handleDownloadPdf}
                 disabled={!reportText}
                 className="collegium-btn-primary text-xs inline-flex items-center gap-1.5"
               >
-                <Download size={12} /> Download
+                <Download size={12} /> PDF
               </button>
             </div>
           </div>

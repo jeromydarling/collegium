@@ -1,33 +1,36 @@
 /**
- * Browser-side Claude API client.
+ * AI gateway client — OpenAI chat-completions compatible.
  *
- * Calls api.anthropic.com directly using the key from localStorage. The
- * Anthropic API supports browser-origin calls when the dangerous-direct
- * -browser-access header is set; we set it explicitly so this is a
- * deliberate, owner-acknowledged decision rather than an accident.
+ * Speaks the standard {model, messages, temperature, max_tokens} format
+ * that Lovable AI, OpenRouter, OpenAI, Anthropic-via-proxy, and most
+ * self-hosted runtimes all support. The default endpoint is Lovable's
+ * gateway (/api/ai/chat); the default model is Gemini 2.5 Flash.
  *
- * For production deployment, route through a server proxy and keep the
- * key off the browser entirely. This module's call surface is small enough
- * that swapping to a proxy is a one-line endpoint change.
+ * On Lovable cloud:
+ *   - Endpoint stays as the relative path
+ *   - Credentials are auto-injected by the gateway
+ *   - Calls happen browser → Lovable backend → Gemini → back
+ *
+ * For local dev or non-Lovable deployment:
+ *   - User pastes their own key + can override endpoint + model
+ *   - Same call surface so feature code is unchanged
  */
 
 import {
-  getClaudeKey,
-  getClaudeModel,
-  DEFAULT_CLAUDE_MODEL,
+  getApiKey,
+  getEndpoint,
+  getModel,
+  hasAIConfigured,
 } from "./settings";
 
-const ENDPOINT = "https://api.anthropic.com/v1/messages";
-const ANTHROPIC_VERSION = "2023-06-01";
-
 export interface CompleteOptions {
-  /** System instruction for this call. */
+  /** System instruction prepended to the chat. */
   system?: string;
-  /** Override model — defaults to whatever the user has selected in settings. */
+  /** Override the configured model for this single call. */
   model?: string;
   /** Max tokens out. Default 2000. */
   maxTokens?: number;
-  /** Temperature 0–1. Default 0.4 (slight creativity, mostly grounded). */
+  /** Temperature 0–2. Default 0.4. */
   temperature?: number;
 }
 
@@ -41,7 +44,7 @@ export interface CompleteResult {
 export interface CompleteError {
   ok: false;
   reason:
-    | "no-key"
+    | "not-configured"
     | "request-failed"
     | "api-error"
     | "invalid-response"
@@ -52,45 +55,73 @@ export interface CompleteError {
 
 export type CompleteResponse = CompleteResult | CompleteError;
 
+interface OpenAIChatMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+interface OpenAIChatResponse {
+  choices?: {
+    message?: { role?: string; content?: string };
+    delta?: { content?: string };
+    finish_reason?: string;
+  }[];
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+  };
+  model?: string;
+  error?: { message?: string };
+}
+
 /**
- * Single-prompt completion. The simplest possible call surface so individual
- * features can just say "complete(prompt, { system })" and get text back.
+ * Single-prompt completion. Feature code calls this; the gateway/provider
+ * is opaque from the caller's perspective.
  */
 export async function complete(
   prompt: string,
   options: CompleteOptions = {}
 ): Promise<CompleteResponse> {
-  const key = getClaudeKey();
-  if (!key) {
+  if (!hasAIConfigured()) {
     return {
       ok: false,
-      reason: "no-key",
+      reason: "not-configured",
       message:
-        "No Claude API key configured. Add one in Integrations to enable AI features.",
+        "AI gateway not configured. Paste an API key in Integrations or deploy on Lovable for auto-injected credentials.",
     };
   }
 
-  const model = options.model ?? getClaudeModel() ?? DEFAULT_CLAUDE_MODEL;
+  const endpoint = getEndpoint();
+  const apiKey = getApiKey();
+  const model = options.model ?? getModel();
 
-  const body = {
-    model,
-    max_tokens: options.maxTokens ?? 2000,
-    temperature: options.temperature ?? 0.4,
-    ...(options.system ? { system: options.system } : {}),
-    messages: [{ role: "user", content: prompt }],
+  const messages: OpenAIChatMessage[] = [];
+  if (options.system) messages.push({ role: "system", content: options.system });
+  messages.push({ role: "user", content: prompt });
+
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
   };
+  // Only attach the bearer when we actually have one — the Lovable gateway
+  // does its own auth when running against a relative endpoint.
+  if (apiKey && !endpoint.startsWith("/")) {
+    headers["authorization"] = `Bearer ${apiKey}`;
+  } else if (apiKey) {
+    // Some self-hosted gateways still want the bearer even on relative routes.
+    headers["authorization"] = `Bearer ${apiKey}`;
+  }
 
   let response: Response;
   try {
-    response = await fetch(ENDPOINT, {
+    response = await fetch(endpoint, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": key,
-        "anthropic-version": ANTHROPIC_VERSION,
-        "anthropic-dangerous-direct-browser-access": "true",
-      },
-      body: JSON.stringify(body),
+      headers,
+      body: JSON.stringify({
+        model,
+        messages,
+        max_tokens: options.maxTokens ?? 2000,
+        temperature: options.temperature ?? 0.4,
+      }),
     });
   } catch (err) {
     return {
@@ -103,12 +134,10 @@ export async function complete(
   if (!response.ok) {
     let detail = `HTTP ${response.status}`;
     try {
-      const errBody = (await response.json()) as {
-        error?: { message?: string };
-      };
-      if (errBody.error?.message) detail = errBody.error.message;
+      const body = (await response.json()) as OpenAIChatResponse;
+      if (body.error?.message) detail = body.error.message;
     } catch {
-      /* ignore */
+      /* fall through */
     }
     return {
       ok: false,
@@ -118,9 +147,9 @@ export async function complete(
     };
   }
 
-  let json: unknown;
+  let json: OpenAIChatResponse;
   try {
-    json = await response.json();
+    json = (await response.json()) as OpenAIChatResponse;
   } catch (err) {
     return {
       ok: false,
@@ -129,61 +158,59 @@ export async function complete(
     };
   }
 
-  const parsed = json as {
-    content?: { type: string; text?: string }[];
-    usage?: { input_tokens?: number; output_tokens?: number };
-    model?: string;
-  };
-
-  const textBlock = parsed.content?.find((b) => b.type === "text");
-  if (!textBlock?.text) {
+  const text = json.choices?.[0]?.message?.content;
+  if (!text) {
     return {
       ok: false,
       reason: "invalid-response",
-      message: "Response contained no text block",
+      message: "Response contained no message content",
     };
   }
 
   return {
     ok: true,
-    text: textBlock.text,
+    text,
     usage: {
-      inputTokens: parsed.usage?.input_tokens ?? 0,
-      outputTokens: parsed.usage?.output_tokens ?? 0,
+      inputTokens: json.usage?.prompt_tokens ?? 0,
+      outputTokens: json.usage?.completion_tokens ?? 0,
     },
-    model: parsed.model ?? model,
+    model: json.model ?? model,
   };
 }
 
 /**
- * Streaming variant — yields text deltas as they arrive. Not used in the
- * initial intake-assist demo but kept here so feature work can opt in.
+ * Streaming variant — yields text deltas as they arrive. Same OpenAI
+ * server-sent-events convention as the non-streaming version.
  */
 export async function* completeStream(
   prompt: string,
   options: CompleteOptions = {}
 ): AsyncGenerator<string, void, void> {
-  const key = getClaudeKey();
-  if (!key) {
-    throw new Error("No Claude API key configured");
+  if (!hasAIConfigured()) {
+    throw new Error("AI gateway not configured");
   }
 
-  const model = options.model ?? getClaudeModel() ?? DEFAULT_CLAUDE_MODEL;
+  const endpoint = getEndpoint();
+  const apiKey = getApiKey();
+  const model = options.model ?? getModel();
 
-  const response = await fetch(ENDPOINT, {
+  const messages: OpenAIChatMessage[] = [];
+  if (options.system) messages.push({ role: "system", content: options.system });
+  messages.push({ role: "user", content: prompt });
+
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
+  };
+  if (apiKey) headers["authorization"] = `Bearer ${apiKey}`;
+
+  const response = await fetch(endpoint, {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": key,
-      "anthropic-version": ANTHROPIC_VERSION,
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
+    headers,
     body: JSON.stringify({
       model,
+      messages,
       max_tokens: options.maxTokens ?? 2000,
       temperature: options.temperature ?? 0.4,
-      ...(options.system ? { system: options.system } : {}),
-      messages: [{ role: "user", content: prompt }],
       stream: true,
     }),
   });
@@ -211,17 +238,9 @@ export async function* completeStream(
         .join("");
       if (!data || data === "[DONE]") continue;
       try {
-        const parsed = JSON.parse(data) as {
-          type: string;
-          delta?: { type: string; text?: string };
-        };
-        if (
-          parsed.type === "content_block_delta" &&
-          parsed.delta?.type === "text_delta" &&
-          parsed.delta.text
-        ) {
-          yield parsed.delta.text;
-        }
+        const parsed = JSON.parse(data) as OpenAIChatResponse;
+        const delta = parsed.choices?.[0]?.delta?.content;
+        if (delta) yield delta;
       } catch {
         /* skip malformed chunk */
       }
