@@ -64,13 +64,18 @@ export function MapboxStates({
     if (!containerRef.current) return;
     let cancelled = false;
     (async () => {
+      try {
       // Parallel: load mapbox-gl runtime + the topojson geometry.
       const [mapboxgl, topoRes] = await Promise.all([
         loadMapbox(),
-        fetch(STATES_TOPO_URL).then((r) => r.json() as Promise<Topology>),
+        fetch(STATES_TOPO_URL).then((r) => {
+          if (!r.ok) throw new Error(`TopoJSON fetch ${r.status}`);
+          return r.json() as Promise<Topology>;
+        }),
       ]);
-      if (cancelled || !mapboxgl) {
-        if (!cancelled) setError("Map couldn't load.");
+      if (cancelled) return;
+      if (!mapboxgl) {
+        setError("Couldn't load mapbox-gl from the CDN.");
         return;
       }
 
@@ -271,6 +276,21 @@ export function MapboxStates({
 
         setReady(true);
       });
+      map.on("error", (e: any) => {
+        if (cancelled) return;
+        // Mapbox error events carry { error: Error } — flag the token/style
+        // failure visibly so a missing or rejected token isn't silent.
+        const msg = e?.error?.message ?? "Mapbox runtime error";
+        console.error("[MapboxStates]", msg, e);
+        setError(msg.includes("401") || msg.includes("403")
+          ? "Mapbox token rejected — check VITE_MAPBOX_TOKEN."
+          : `Mapbox: ${msg}`);
+      });
+      } catch (err) {
+        if (cancelled) return;
+        console.error("[MapboxStates] init failed", err);
+        setError(err instanceof Error ? err.message : "Map couldn't load.");
+      }
     })();
     return () => {
       cancelled = true;
@@ -352,6 +372,11 @@ export function MapboxStates({
           <div className="text-sm text-[hsl(40_30%_90%)]">
             {pdLabel(hovered)} cases per public defender · ${pdSpend(hovered)} / resident
           </div>
+        </div>
+      )}
+      {!ready && !error && (
+        <div className="absolute inset-0 flex items-center justify-center text-[10px] uppercase tracking-widest text-[hsl(40_20%_55%)] pointer-events-none">
+          Loading map…
         </div>
       )}
       {error && (

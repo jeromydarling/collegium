@@ -54,6 +54,9 @@ html, body {
   font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+:where(.collegium-theme h1, .collegium-theme h2, .collegium-theme h3, .collegium-theme h4, .collegium-theme h5, .collegium-theme h6, .collegium-display) {
   color: hsl(var(--c-ink));
 }
 
