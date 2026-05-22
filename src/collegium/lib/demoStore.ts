@@ -19,6 +19,9 @@ export type DemoState = {
   savedExcerpts: string[]; // library excerpt IDs
   enrolledTracks: string[]; // formation track IDs
   rsvps: string[]; // event IDs
+  acceptedCases: string[]; // Patrocinium matter IDs accepted by the visitor
+  savedCases: string[]; // Patrocinium matter IDs saved for later
+  loggedHours: { matterId: string; hours: number; date: string; note?: string }[];
 };
 
 const defaultState: DemoState = {
@@ -28,6 +31,9 @@ const defaultState: DemoState = {
   savedExcerpts: [],
   enrolledTracks: [],
   rsvps: [],
+  acceptedCases: [],
+  savedCases: [],
+  loggedHours: [],
 };
 
 function load(): DemoState {
@@ -91,6 +97,32 @@ export const demoStore = {
       ...s,
       rsvps: s.rsvps.includes(id) ? s.rsvps.filter((x) => x !== id) : [...s.rsvps, id],
     })),
+  acceptCase: (id: string) =>
+    setState((s) =>
+      s.acceptedCases.includes(id)
+        ? s
+        : {
+            ...s,
+            acceptedCases: [...s.acceptedCases, id],
+            // accepting clears the saved-for-later mark, if present
+            savedCases: s.savedCases.filter((x) => x !== id),
+          }
+    ),
+  declineCase: (id: string) =>
+    setState((s) => ({
+      ...s,
+      acceptedCases: s.acceptedCases.filter((x) => x !== id),
+      savedCases: s.savedCases.filter((x) => x !== id),
+    })),
+  toggleSavedCase: (id: string) =>
+    setState((s) => ({
+      ...s,
+      savedCases: s.savedCases.includes(id)
+        ? s.savedCases.filter((x) => x !== id)
+        : [...s.savedCases, id],
+    })),
+  logHours: (entry: { matterId: string; hours: number; date: string; note?: string }) =>
+    setState((s) => ({ ...s, loggedHours: [...s.loggedHours, entry] })),
   reset: () => setState(() => defaultState),
 };
 
