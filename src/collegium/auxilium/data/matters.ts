@@ -39,6 +39,14 @@ export type MatterType = {
   perplexityTopic: string;
 };
 
+/**
+ * Matter type order is the build priority. Eviction is the ready
+ * worked example. Debt collection is matter #2 because it's the
+ * largest single category of state-court civil work (~42% of dockets,
+ * 4.7M filings/yr, 70%+ default judgment rate). Protection orders +
+ * SSI/SSDI follow. Annulment lives last because it's the Collegium
+ * crossover, not the volume play.
+ */
 export const matterTypes: MatterType[] = [
   {
     slug: "eviction",
@@ -52,26 +60,26 @@ export const matterTypes: MatterType[] = [
     perplexityTopic: "tenant eviction defense",
   },
   {
-    slug: "expungement",
-    title: "Record sealing & expungement",
-    triggerPhrase: "an old charge you want sealed",
-    icon: Scissors,
+    slug: "debt",
+    title: "Debt collection lawsuit",
+    triggerPhrase: "a debt-collection lawsuit or threats from a collector",
+    icon: Banknote,
     blurb:
-      "Old arrests and dismissed cases can usually be sealed. The forms and timing vary by state, but the path is real and you can usually walk it yourself with help.",
-    defaultUrgency: "planning",
+      "70% of debt-collection lawsuits end in default judgment — because the person sued never showed up. Showing up, with the right paperwork, is most of the battle. We'll get you ready.",
+    defaultUrgency: "now",
     status: "scaffold",
-    perplexityTopic: "criminal record expungement",
+    perplexityTopic: "consumer debt collection lawsuit defense",
   },
   {
     slug: "family",
-    title: "Family & custody",
-    triggerPhrase: "divorce, custody, or a family-court matter",
+    title: "Family & protection orders",
+    triggerPhrase: "divorce, custody, a protection order, or a family-court matter",
     icon: Users,
     blurb:
-      "Family-court rules are local, the paperwork is heavy, and emotions are high. We'll help you understand the steps before you walk into a hearing.",
+      "Family court rules are local and the paperwork is heavy. Protection orders save lives — reported physical violence drops about 80% after one is issued. We'll get you ready.",
     defaultUrgency: "soon",
     status: "scaffold",
-    perplexityTopic: "family court divorce custody",
+    perplexityTopic: "family court divorce custody protection order",
   },
   {
     slug: "public-benefits",
@@ -79,32 +87,21 @@ export const matterTypes: MatterType[] = [
     triggerPhrase: "an SSI, SSDI, Medicaid, or SNAP denial",
     icon: HeartPulse,
     blurb:
-      "Most denials are reversible on appeal — but the appeal deadlines are short. Bring your denial letter; we'll walk you through the next 30 days.",
+      "Most denials are reversible on appeal — but the appeal deadlines are short, often 60 days. Approval at SSDI hearings nearly doubles with help. Bring your denial letter; we'll walk you through it.",
     defaultUrgency: "now",
     status: "scaffold",
     perplexityTopic: "SSI SSDI Medicaid SNAP appeals",
   },
   {
-    slug: "debt",
-    title: "Debt collection",
-    triggerPhrase: "a debt-collection lawsuit or threats from a collector",
-    icon: Banknote,
+    slug: "expungement",
+    title: "Record sealing & expungement",
+    triggerPhrase: "an old charge you want sealed",
+    icon: Scissors,
     blurb:
-      "Most consumer debt-collection lawsuits are won by default because the person sued never showed up. Showing up is most of the battle.",
-    defaultUrgency: "soon",
-    status: "scaffold",
-    perplexityTopic: "consumer debt collection lawsuit defense",
-  },
-  {
-    slug: "estate",
-    title: "Will & health-care proxy",
-    triggerPhrase: "a will, a power of attorney, or end-of-life documents",
-    icon: ScrollText,
-    blurb:
-      "Most adults need three documents: a will, a durable power of attorney, and a health-care proxy. We'll help you gather what's needed before the consult.",
+      "Old arrests, dismissed cases, and some convictions can be sealed. It opens doors that have been closed for years — housing, jobs, professional licenses. You can usually walk this yourself with help.",
     defaultUrgency: "planning",
     status: "scaffold",
-    perplexityTopic: "simple will power of attorney health care proxy",
+    perplexityTopic: "criminal record expungement sealing",
   },
   {
     slug: "immigration",
@@ -112,10 +109,21 @@ export const matterTypes: MatterType[] = [
     triggerPhrase: "an immigration question or a status change",
     icon: Plane,
     blurb:
-      "Immigration law is federal but immigration help is local. We'll help you gather your documents and find a DOJ-accredited representative.",
+      "Immigration law is federal but immigration help is local. We'll help you gather your documents and connect you to a DOJ-accredited representative — the only people other than attorneys who can represent you.",
     defaultUrgency: "soon",
     status: "scaffold",
     perplexityTopic: "immigration intake DOJ BIA accreditation",
+  },
+  {
+    slug: "estate",
+    title: "Will & health-care proxy",
+    triggerPhrase: "a will, a power of attorney, or end-of-life documents",
+    icon: ScrollText,
+    blurb:
+      "Most adults need three documents: a will, a durable power of attorney, and a health-care proxy. We'll help you gather what's needed before the consult — these are usually free or low-cost to draft.",
+    defaultUrgency: "planning",
+    status: "scaffold",
+    perplexityTopic: "simple will power of attorney health care proxy",
   },
   {
     slug: "annulment",
@@ -123,7 +131,7 @@ export const matterTypes: MatterType[] = [
     triggerPhrase: "a Catholic annulment process",
     icon: Church,
     blurb:
-      "A canonical annulment is not a civil divorce — it asks whether a sacramental bond existed. The process is pastoral, document-heavy, and free or low-cost.",
+      "A canonical annulment is not a civil divorce — it asks whether a sacramental bond existed. The process is pastoral, document-heavy, and usually free or very low-cost through your diocese.",
     defaultUrgency: "planning",
     status: "scaffold",
     perplexityTopic: "Catholic diocesan marriage tribunal annulment",

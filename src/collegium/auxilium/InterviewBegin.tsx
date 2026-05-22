@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ArrowRight, Clock, ShieldCheck, MessageCircle } from "lucide-react";
+import { InfoNotAdviceFooter } from "./components/InfoNotAdviceFooter";
 
 export function InterviewBegin() {
   const navigate = useNavigate();
@@ -69,11 +70,12 @@ export function InterviewBegin() {
         </button>
 
         <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-5 leading-relaxed">
-          We start with eviction and housing — the most time-sensitive matter
-          we handle. Other matter types (benefits, debt collection, family,
-          immigration) will get their own interviews in the coming weeks.
+          We start with eviction and housing — the most time-sensitive
+          matter we handle. Debt collection, protection orders, benefits
+          appeals, and immigration intake are next, in that order.
         </p>
       </div>
+      <InfoNotAdviceFooter />
     </div>
   );
 }

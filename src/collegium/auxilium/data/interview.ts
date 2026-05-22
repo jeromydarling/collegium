@@ -164,9 +164,13 @@ function detectYesNo(text: string): boolean | undefined {
 export const evictionInterview: InterviewScript = {
   greeting:
     "I'm going to ask you some questions about what's happening. " +
-    "I'm not your lawyer, and nothing I say is legal advice. " +
-    "I'm here to help you organize your story so when you sit down with " +
-    "a real attorney — paid or free — you can use that hour well. " +
+    "I am not a lawyer and I cannot give you legal advice. What I can " +
+    "do is help you understand the system and organize your story so " +
+    "that when you sit down with a real attorney — paid or free — you " +
+    "can use that hour well.\n\n" +
+    "Everything you tell me stays on your device. I don't share with " +
+    "ICE, CPS, your landlord, your creditor, or anyone else. You can " +
+    "delete the whole conversation at any time.\n\n" +
     "Take your time. Skip anything you don't want to answer.",
 
   questions: [

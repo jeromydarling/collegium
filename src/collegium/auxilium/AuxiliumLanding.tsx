@@ -5,14 +5,20 @@ import {
   HelpCircle,
   MapPin,
   ShieldCheck,
+  AlertTriangle,
 } from "lucide-react";
 import { matterTypes } from "./data/matters";
+import { InfoNotAdviceFooter } from "./components/InfoNotAdviceFooter";
 
 /**
  * Auxilium landing — the second front door of Collegium.
  *
  * Voice: plain English, mobile-first, calm. The reader is probably already
  * panicking; the page should feel like a deep breath, not a sales pitch.
+ *
+ * Posture: post-Upsolve-2d-Cir-reversal, we explicitly stay in the court
+ * self-help center doctrinal lane. Information, not advice. Visible on
+ * every screen.
  */
 export function AuxiliumLanding() {
   return (
@@ -33,9 +39,9 @@ export function AuxiliumLanding() {
             gather, the deadlines to know, and the questions to ask.
           </p>
           <p className="text-sm sm:text-base text-[hsl(var(--c-slate-soft))] max-w-xl mx-auto leading-relaxed mb-8 sm:mb-10">
-            We are not your lawyer and we do not give legal advice. We help you
-            understand the system and bring your whole case into the room
-            before the meter starts running.
+            We are not your lawyer. Auxilium provides information, not legal
+            advice. We help you understand the system and bring your whole
+            story into the room before the meter starts running.
           </p>
           <Link
             to="/auxilium/begin"
@@ -48,11 +54,96 @@ export function AuxiliumLanding() {
             your device unless you choose to share it.
           </p>
           <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-3">
-            Or{" "}
-            <Link to="/auxilium/start" className="collegium-link">
-              skip the interview and browse matter types
+            Already know what you need?{" "}
+            <Link to="/auxilium/find-help" className="collegium-link">
+              Find free or low-cost legal help near you
             </Link>
             .
+          </p>
+        </div>
+      </section>
+
+      {/* THE REALITY — the brutal numbers, up front. */}
+      <section className="bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+          <div className="flex items-center gap-2 text-[hsl(38_60%_70%)] mb-3">
+            <AlertTriangle size={16} />
+            <p className="collegium-latin text-sm">Quae vera sunt</p>
+          </div>
+          <h2 className="collegium-display text-3xl sm:text-4xl mb-3 text-[hsl(40_40%_94%)] leading-tight">
+            In America, the poor are denied justice almost universally.
+          </h2>
+          <p className="text-[hsl(40_20%_82%)] max-w-3xl leading-relaxed mb-10 sm:mb-12">
+            We say "everyone has a right to a lawyer." That's true in
+            criminal cases. In civil cases — eviction, debt, child custody,
+            benefits, deportation, domestic violence — there is no such
+            right. The people most often in need of legal help can almost
+            never afford it. Here is what that looks like by the numbers.
+          </p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <Stat
+              big="92%"
+              label="of substantial civil legal problems of low-income Americans get inadequate or no legal help."
+              source="LSC Justice Gap Report (2022). Up from 86% in 2017."
+              sourceUrl="https://justicegap.lsc.gov/the-report/"
+            />
+            <Stat
+              big="49%"
+              label="of eligible people who walk through the door of an LSC-funded legal aid program are turned away."
+              source="Legal Services Corporation, 2022."
+              sourceUrl="https://www.lsc.gov/press-release/low-income-americans-face-immense-justice-gap-according-new-legal-services-corporation-report"
+            />
+            <Stat
+              big="70%"
+              label="of consumer debt-collection lawsuits end in default judgment — because the person sued never showed up."
+              source="Pew Charitable Trusts, 2020. Debt is now ~42% of state civil dockets."
+              sourceUrl="https://www.pew.org/en/research-and-analysis/reports/2020/05/how-debt-collectors-are-transforming-the-business-of-state-courts"
+            />
+            <Stat
+              big="84%"
+              label="of tenants with a lawyer stay in their homes. Only 42% of eligible NYC tenants currently get one — down from 71%."
+              source="NYC Right to Counsel evaluation, Urban Institute."
+              sourceUrl="https://housingmatters.urban.org/articles/right-counsel-eviction-lessons-new-york-city"
+            />
+            <Stat
+              big="60–90%"
+              label="of family court cases have at least one party without a lawyer. California hits 80% by judgment."
+              source="IAALS, Cases Without Counsel."
+              sourceUrl="https://iaals.du.edu/sites/default/files/documents/publications/cases_without_counsel_research_report.pdf"
+            />
+            <Stat
+              big="10.5×"
+              label="more likely to win an immigration case when represented. Only 27% of represented detainees are deported, vs. 62% of pro se."
+              source="Vera Institute."
+              sourceUrl="https://www.vera.org/publications/the-impact-of-legal-representation-on-detained-immigrants-facing-deportation"
+            />
+            <Stat
+              big="54"
+              label="U.S. counties have zero practicing lawyers. About 1,300 (41%) have fewer than one per 1,000 residents."
+              source="ABA Profile of the Legal Profession."
+              sourceUrl="https://www.2civility.org/aba-profile-of-the-legal-profession-legal-deserts-and-law-school-debt/"
+            />
+            <Stat
+              big="$300–$450"
+              label="per hour is what private representation typically costs above the LSC income cliff (125–200% of poverty)."
+              source="Bar association survey data; LSC income eligibility, 45 CFR 1611."
+              sourceUrl="https://www.ecfr.gov/current/title-45/subtitle-B/chapter-XVI/part-1611"
+            />
+            <Stat
+              big="~80%"
+              label="reduction in reported physical violence when a domestic-violence survivor gets a protection order."
+              source="LSC analysis."
+              sourceUrl="https://www.lsc.gov/our-impact/publications/other-publications-and-reports/how-legal-aid-helps-domestic-violence"
+            />
+          </div>
+
+          <p className="text-sm text-[hsl(40_20%_75%)] mt-10 sm:mt-12 max-w-3xl leading-relaxed italic">
+            "Justice removed, then, what are kingdoms but great robberies?"
+            <br />
+            <span className="text-xs not-italic text-[hsl(40_20%_60%)]">
+              Augustine, City of God, Book IV
+            </span>
           </p>
         </div>
       </section>
@@ -60,6 +151,15 @@ export function AuxiliumLanding() {
       {/* Three promises */}
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+          <div className="text-center mb-10 sm:mb-12">
+            <h2 className="collegium-display text-3xl sm:text-4xl mb-3">
+              What we actually do for you.
+            </h2>
+            <p className="text-[hsl(var(--c-slate-soft))] max-w-2xl mx-auto">
+              No advice. No promises. Real preparation, real documents,
+              real questions, real referrals to people who can help.
+            </p>
+          </div>
           <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
             <Promise
               icon={FileText}
@@ -74,7 +174,7 @@ export function AuxiliumLanding() {
             <Promise
               icon={MapPin}
               title="Help that's local to you"
-              body="We look up what's true in your state and city today — statutes, deadlines, programs, free clinics."
+              body="We look up what's true in your state and city today — statutes, deadlines, programs, free clinics, paid options."
             />
           </div>
         </div>
@@ -92,17 +192,22 @@ export function AuxiliumLanding() {
                 Information, not advice. On purpose.
               </h2>
               <p className="text-[hsl(var(--c-slate))] leading-relaxed mb-3">
-                A 2022 federal court decision confirmed something every paralegal
-                already knew: explaining how the legal system works is
-                information, not the practice of law. Telling you what you
-                personally should do — that's advice, and that's what licensed
+                Auxilium is a court self-help tool, not a lawyer. We can
+                explain what an eviction is, what a deadline is, what
+                statute applies, and what documents a real attorney will
+                want to see. We cannot tell you what <em>you</em> should
+                do — that's legal advice, and that's what licensed
                 attorneys are for.
               </p>
+              <p className="text-[hsl(var(--c-slate))] leading-relaxed mb-3">
+                We do not share your information with ICE, CPS, your
+                landlord, your creditor, or anyone else. Your matter file
+                stays on your device. It moves only when you choose to
+                send it to a clinic, an attorney, or a trusted person.
+              </p>
               <p className="text-[hsl(var(--c-slate))] leading-relaxed">
-                Auxilium stays on the information side of that line, on
-                purpose. Every fact we surface comes with a citation you can
-                verify. When you need advice, we'll help you find someone who
-                can give it to you — for free, if your income qualifies.
+                When you need advice, we'll help you find someone who can
+                give it — free if you qualify, low-cost if you don't.
               </p>
             </div>
           </div>
@@ -117,8 +222,9 @@ export function AuxiliumLanding() {
               What kind of help do you need?
             </h2>
             <p className="text-[hsl(var(--c-slate-soft))] max-w-xl mx-auto px-2">
-              These are the matters we handle most often. Start with the one
-              that fits.
+              These are the matters we handle most often. Start with the
+              one that fits — or take the interview and we'll figure it
+              out together.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
@@ -152,27 +258,27 @@ export function AuxiliumLanding() {
         </div>
       </section>
 
-      {/* Christian framing — present, not pushy */}
-      <section className="bg-[hsl(220_30%_12%)] text-[hsl(40_35%_92%)]">
+      {/* Why a Christian-founded platform */}
+      <section className="bg-[hsl(var(--c-cream-warm))] border-b border-[hsl(var(--c-border))]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
-          <p className="collegium-latin text-sm text-[hsl(38_60%_70%)] mb-3">
+          <p className="collegium-latin text-sm text-[hsl(var(--c-wine))] mb-3">
             Cur Auxilium?
           </p>
-          <h2 className="collegium-display text-2xl sm:text-3xl mb-5 sm:mb-6 text-[hsl(40_40%_94%)]">
+          <h2 className="collegium-display text-2xl sm:text-3xl mb-5 sm:mb-6">
             Why a Christian-founded help platform?
           </h2>
-          <p className="text-[hsl(40_20%_85%)] leading-relaxed mb-4">
-            Because Catholic Social Teaching has been saying since 1891 that
-            shelter, work, dignity, and access to justice are not privileges
-            granted to the poor by the powerful — they are foundations the
-            law was made to protect.
+          <p className="text-[hsl(var(--c-slate))] leading-relaxed mb-4">
+            Because Catholic Social Teaching has been saying since 1891
+            that shelter, work, dignity, and access to justice are not
+            privileges granted to the poor by the powerful — they are
+            foundations the law was made to protect.
           </p>
-          <p className="text-[hsl(40_20%_85%)] leading-relaxed mb-6">
-            We're built by a network of Christian and Catholic lawyers,
-            students, and chapters who believe that. You don't need to share
-            our faith to use this tool — but you should know we mean it.
+          <p className="text-[hsl(var(--c-slate))] leading-relaxed mb-6">
+            Built by a network of Christian and Catholic lawyers,
+            students, and chapters who believe that. You don't need to
+            share our faith to use this tool. You just need help.
           </p>
-          <p className="collegium-latin text-base text-[hsl(38_60%_70%)]">
+          <p className="collegium-latin text-base text-[hsl(var(--c-wine))]">
             Lex caritas est. The law is love made just.
           </p>
         </div>
@@ -185,8 +291,8 @@ export function AuxiliumLanding() {
             Take a breath. Start.
           </h2>
           <p className="text-[hsl(var(--c-slate))] mb-8 sm:mb-10 leading-relaxed">
-            You don't need to know what kind of legal matter this is. You just
-            need to tell us what happened.
+            You don't need to know what kind of legal matter this is. You
+            just need to tell us what happened.
           </p>
           <Link
             to="/auxilium/begin"
@@ -196,6 +302,45 @@ export function AuxiliumLanding() {
           </Link>
         </div>
       </section>
+
+      <InfoNotAdviceFooter />
+    </div>
+  );
+}
+
+function Stat({
+  big,
+  label,
+  source,
+  sourceUrl,
+}: {
+  big: string;
+  label: string;
+  source: string;
+  sourceUrl?: string;
+}) {
+  return (
+    <div className="border-l-2 border-[hsl(38_60%_60%)] pl-4 sm:pl-5">
+      <div className="collegium-display text-3xl sm:text-4xl text-[hsl(38_60%_75%)] leading-none mb-2">
+        {big}
+      </div>
+      <p className="text-sm sm:text-base text-[hsl(40_30%_92%)] leading-snug mb-2">
+        {label}
+      </p>
+      {sourceUrl ? (
+        <a
+          href={sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] uppercase tracking-widest text-[hsl(40_20%_65%)] hover:text-[hsl(38_60%_70%)] underline decoration-dotted underline-offset-2"
+        >
+          {source}
+        </a>
+      ) : (
+        <p className="text-[10px] uppercase tracking-widest text-[hsl(40_20%_65%)]">
+          {source}
+        </p>
+      )}
     </div>
   );
 }

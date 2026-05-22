@@ -20,6 +20,9 @@ import {
   useJurisdiction,
 } from "./components/JurisdictionPicker";
 import { LocalInfoPanel } from "./components/LocalInfoPanel";
+import { PreCallCoaching } from "./components/PreCallCoaching";
+import { CourtDateReminder } from "./components/CourtDateReminder";
+import { InfoNotAdviceFooter } from "./components/InfoNotAdviceFooter";
 import { evictionGuide } from "./data/eviction";
 
 const SESSION_KEY = "auxilium_interview_session";
@@ -144,16 +147,41 @@ export function MatterFile() {
           </Section>
         )}
 
-        {/* Possible defenses */}
+        {/* Court-date reminder — highest-leverage non-lawyer intervention
+            measured to date (Uptrust RCT, 20–30% FTA reduction). */}
+        <Section title="If you have a court date" icon={Clock} latin="Diem habes">
+          <CourtDateReminder
+            matterType={file.matterType}
+            jurisdiction={jurisdiction}
+          />
+        </Section>
+
+        {/* Pre-call coaching — what to say (and not say) before you talk
+            to the landlord, creditor, or other party. The research is
+            clear: most matters get an informal call before any legal
+            step, and the call shapes the case. */}
+        <Section
+          title="Before you call the other side"
+          icon={HelpCircle}
+          latin="Ante colloquium"
+        >
+          <PreCallCoaching matterType={file.matterType} />
+        </Section>
+
+        {/* Doctrines to ask the lawyer about — framed as questions, never as
+            assertions. Auxilium does not select defenses; it surfaces
+            doctrines a lawyer should evaluate. */}
         {file.possibleDefenses.length > 0 && (
           <Section
-            title="Defenses worth exploring with a lawyer"
+            title="Doctrines to ask your lawyer about"
             icon={ShieldCheck}
-            latin="Defensiones"
+            latin="Quaerenda"
           >
             <p className="text-sm text-[hsl(var(--c-slate-soft))] mb-4">
-              These are not promises. They're starting points the attorney can
-              evaluate against your jurisdiction's law.
+              Based on what you told me, these are areas of law your
+              attorney should evaluate. <strong>Auxilium is not
+              recommending you raise these as defenses</strong> — that's the
+              attorney's call. We're just naming what's worth asking about.
             </p>
             <ul className="space-y-3">
               {file.possibleDefenses.map((d, i) => (
@@ -162,7 +190,7 @@ export function MatterFile() {
                   className="collegium-card p-4 sm:p-5 border-l-2 border-l-[hsl(var(--c-gold))]"
                 >
                   <h4 className="font-medium text-[hsl(var(--c-ink))] mb-1 leading-snug">
-                    {d.headline}
+                    Ask about: {d.headline}
                   </h4>
                   <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed">
                     {d.why}
@@ -355,6 +383,7 @@ export function MatterFile() {
           </button>
         </div>
       </div>
+      <InfoNotAdviceFooter />
     </div>
   );
 }
