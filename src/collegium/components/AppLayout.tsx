@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Inbox,
+  Globe,
 } from "lucide-react";
 import { useDemoState, roleLabel } from "../lib/demoStore";
 
@@ -24,6 +25,7 @@ const items = [
   { to: "/app/mentorship", label: "Mentorship", icon: Compass },
   { to: "/app/service", label: "Service", icon: Scale },
   { to: "/app/service/inbox", label: "Network Inbox", icon: Inbox },
+  { to: "/app/communio", label: "Communio", icon: Globe },
   { to: "/app/formation", label: "Formation", icon: Library },
   { to: "/app/advancement", label: "Advancement", icon: TrendingUp },
   { to: "/app/pulse", label: "NRI Pulse", icon: Activity },

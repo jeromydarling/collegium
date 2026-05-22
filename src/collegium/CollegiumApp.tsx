@@ -22,6 +22,7 @@ import { Advancement } from "./app/Advancement";
 import { NRIPulse } from "./app/NRIPulse";
 import { DailyOffice } from "./app/DailyOffice";
 import { CalendarPage } from "./app/Calendar";
+import { CommunioDirectory, CommunioPeer } from "./app/Communio";
 
 import { AuxiliumLanding } from "./auxilium/AuxiliumLanding";
 import { MatterPicker } from "./auxilium/MatterPicker";
@@ -96,6 +97,8 @@ export default function CollegiumApp() {
           <Route path="mentorship" element={<Mentorship />} />
           <Route path="service" element={<Service />} />
           <Route path="service/inbox" element={<NetworkInbox />} />
+          <Route path="communio" element={<CommunioDirectory />} />
+          <Route path="communio/:slug" element={<CommunioPeer />} />
           <Route path="formation" element={<Formation />} />
           <Route path="advancement" element={<Advancement />} />
           <Route path="pulse" element={<NRIPulse />} />
