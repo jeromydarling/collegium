@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { ChevronLeft, ChevronRight, ExternalLink, X, Layers } from "lucide-react";
 import { ModeSwitcher } from "./components/ModeSwitcher";
+import { MapboxStates } from "./components/MapboxStates";
 import { chapters, chapterById, type Chapter } from "./data/chapters";
 import {
   stateMetrics,
@@ -12,6 +13,7 @@ import {
 } from "./data/stateMetrics";
 import { getFraming, type StateFraming } from "./data/stateFramings";
 import { STATE_FIPS_TO_CODE, stateData as civilStateData } from "../auxilium/data/justiceByState";
+import { MAPBOX_TOKEN } from "../auxilium/lib/maps";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -62,56 +64,66 @@ export function MapView() {
           </div>
 
           <div className="relative bg-[hsl(220_30%_5%)]">
-            <ComposableMap
-              projection="geoAlbersUsa"
-              width={900}
-              height={520}
-              style={{ width: "100%", height: "auto" }}
-            >
-              <Geographies geography={GEO_URL}>
-                {({ geographies }) =>
-                  geographies.map((geo) => {
-                    const fips = String(geo.id).padStart(2, "0");
-                    const code = STATE_FIPS_TO_CODE[fips];
-                    const m = code
-                      ? metricValue(code, currentChapter.metric)
-                      : null;
-                    const fill = code
-                      ? colorOnRamp(m, currentChapter.ramp, currentChapter.domain)
-                      : "hsl(220 20% 18%)";
-                    const isSelected = code === selected;
-                    return (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        fill={fill}
-                        stroke={isSelected ? "hsl(38 60% 70%)" : "hsl(220 30% 10%)"}
-                        strokeWidth={isSelected ? 1.8 : 0.5}
-                        onMouseEnter={() => setHovered(code ?? null)}
-                        onMouseLeave={() => setHovered(null)}
-                        onClick={() => code && setSelected(code)}
-                        style={{
-                          default: { outline: "none", cursor: code ? "pointer" : "default" },
-                          hover: { outline: "none", opacity: 0.85 },
-                          pressed: { outline: "none" },
-                        }}
-                      />
-                    );
-                  })
-                }
-              </Geographies>
-            </ComposableMap>
+            {MAPBOX_TOKEN ? (
+              <MapboxStates
+                chapter={currentChapter}
+                selected={selected}
+                onSelect={(code) => setSelected(code)}
+              />
+            ) : (
+              <>
+                <ComposableMap
+                  projection="geoAlbersUsa"
+                  width={900}
+                  height={520}
+                  style={{ width: "100%", height: "auto" }}
+                >
+                  <Geographies geography={GEO_URL}>
+                    {({ geographies }) =>
+                      geographies.map((geo) => {
+                        const fips = String(geo.id).padStart(2, "0");
+                        const code = STATE_FIPS_TO_CODE[fips];
+                        const m = code
+                          ? metricValue(code, currentChapter.metric)
+                          : null;
+                        const fill = code
+                          ? colorOnRamp(m, currentChapter.ramp, currentChapter.domain)
+                          : "hsl(220 20% 18%)";
+                        const isSelected = code === selected;
+                        return (
+                          <Geography
+                            key={geo.rsmKey}
+                            geography={geo}
+                            fill={fill}
+                            stroke={isSelected ? "hsl(38 60% 70%)" : "hsl(220 30% 10%)"}
+                            strokeWidth={isSelected ? 1.8 : 0.5}
+                            onMouseEnter={() => setHovered(code ?? null)}
+                            onMouseLeave={() => setHovered(null)}
+                            onClick={() => code && setSelected(code)}
+                            style={{
+                              default: { outline: "none", cursor: code ? "pointer" : "default" },
+                              hover: { outline: "none", opacity: 0.85 },
+                              pressed: { outline: "none" },
+                            }}
+                          />
+                        );
+                      })
+                    }
+                  </Geographies>
+                </ComposableMap>
 
-            {/* Hover readout */}
-            {hovered && !selected && (
-              <div className="hidden sm:block absolute bottom-3 left-3 right-3 bg-[hsl(220_30%_14%/0.95)] backdrop-blur border border-[hsl(220_20%_24%)] rounded-lg px-4 py-3 pointer-events-none">
-                <div className="text-xs text-[hsl(38_60%_70%)] uppercase tracking-widest mb-0.5">
-                  {civilStateData[hovered]?.name ?? hovered}
-                </div>
-                <div className="text-sm text-[hsl(40_30%_90%)]">
-                  {hoverReadout(hovered, currentChapter)}
-                </div>
-              </div>
+                {/* Hover readout — react-simple-maps fallback only */}
+                {hovered && !selected && (
+                  <div className="hidden sm:block absolute bottom-3 left-3 right-3 bg-[hsl(220_30%_14%/0.95)] backdrop-blur border border-[hsl(220_20%_24%)] rounded-lg px-4 py-3 pointer-events-none">
+                    <div className="text-xs text-[hsl(38_60%_70%)] uppercase tracking-widest mb-0.5">
+                      {civilStateData[hovered]?.name ?? hovered}
+                    </div>
+                    <div className="text-sm text-[hsl(40_30%_90%)]">
+                      {hoverReadout(hovered, currentChapter)}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 

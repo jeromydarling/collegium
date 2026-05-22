@@ -23,6 +23,7 @@ import { LocalInfoPanel } from "./components/LocalInfoPanel";
 import { PreCallCoaching } from "./components/PreCallCoaching";
 import { CourtDateReminder } from "./components/CourtDateReminder";
 import { InfoNotAdviceFooter } from "./components/InfoNotAdviceFooter";
+import { AskForHelp } from "./components/AskForHelp";
 import { evictionGuide } from "./data/eviction";
 
 const SESSION_KEY = "auxilium_interview_session";
@@ -345,6 +346,15 @@ export function MatterFile() {
         {/* Consult packet — a single text block to copy */}
         <Section title="Your consult packet" icon={Sparkles} latin="Sarcina">
           <ConsultPacket file={file} jurisdiction={jurisdiction} />
+        </Section>
+
+        {/* Ask for help — V1 mutual-aid (SVdP + KofC + GoFundMe draft) */}
+        <Section
+          title="Need money to make this real?"
+          icon={HelpCircle}
+          latin="Concurrentes"
+        >
+          <AskForHelp matter={file} jurisdiction={jurisdiction} />
         </Section>
 
         {/* Goals + next step */}

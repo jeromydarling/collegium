@@ -245,11 +245,176 @@ function mockFor(prompt: string): Promise<PerplexityAnswer> {
       fetchedAt: new Date().toISOString(),
       prompt,
     };
+  } else if (lower.includes("society of st. vincent de paul") || lower.includes("svdp")) {
+    // SVdP nearest-conference lookup.
+    const cityM = prompt.match(/to ([A-Z][\w. ]+?),\s*([A-Z][\w. ]+?)\./);
+    const city = cityM?.[1] || "your city";
+    const state = cityM?.[2] || "your state";
+    body = {
+      answer:
+        `The Society of St. Vincent de Paul (SVdP) operates as a federation of parish-based conferences. ` +
+        `For ${city}, ${state}, search the SVdP USA member directory by zip to find your nearest conference; ` +
+        `most are attached to a specific Catholic parish and serve households within a few zip codes of that parish. ` +
+        `Typical intake process: the household calls the conference's published phone line (usually 9am–noon on ` +
+        `weekdays), the conference logs the request, and trained Vincentians arrange a home or telephone visit ` +
+        `before disbursing aid. Most conferences disburse $50–$500 directly to vendors (landlord, utility, ` +
+        `pharmacy) within several days of the visit. The diocesan SVdP council may also operate a ` +
+        `"Friends of the Poor" grant program for larger needs up to $5,000.`,
+      citations: [
+        {
+          url: "https://members.ssvpusa.org/contact-us/contact-us-find-vincentian-help",
+          title: "SVdP USA — Find Vincentian Help (zip-code locator)",
+        },
+        {
+          url: "https://members.ssvpusa.org/fundraising-development/fop-grants/",
+          title: "SVdP USA — Friends of the Poor Grants",
+        },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (lower.includes("catholic charities") && lower.includes("diocesan")) {
+    body = {
+      answer:
+        `Catholic Charities operates as 168 independent diocesan agencies across the country. ` +
+        `Find your nearest agency through catholiccharitiesusa.org's "Find Help" locator by zip code; ` +
+        `many diocesan agencies run immigration legal services (most are CLINIC affiliates), ` +
+        `family services, emergency rental assistance, food pantries, and case management. ` +
+        `Intake is typically by phone or web form; same-week response is common for emergency aid.`,
+      citations: [
+        { url: "https://www.catholiccharitiesusa.org/find-help/", title: "Catholic Charities USA — Find Help locator" },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (lower.includes("lutheran social services") || lower.includes("lutheran family services") || (lower.includes("lutheran") && lower.includes("agency"))) {
+    body = {
+      answer:
+        `Lutheran Social Services (LSS) operates as a network of independent state and regional agencies under ` +
+        `Lutheran Services in America. Lutheran Family Services (LFS) operates in the South and Mountain West. ` +
+        `Many local ELCA and LCMS congregations operate parish-level benevolence funds for emergency needs ($100–$1,000), ` +
+        `disbursing within days. Global Refuge (formerly LIRS) handles immigration legal services in 24 states; ` +
+        `many of its sites recently joined CLINIC as affiliates.`,
+      citations: [
+        { url: "https://www.lutheranservices.org/find-services", title: "Lutheran Services in America — Find Services" },
+        { url: "https://www.globalrefuge.org/what-we-do/immigration-legal-services/", title: "Global Refuge — Immigration Legal Services" },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (lower.includes("christian legal aid") || (lower.includes("christian legal society") && lower.includes("clinic"))) {
+    body = {
+      answer:
+        `The Christian Legal Society maintains a directory of 65+ church-attached Christian Legal Aid clinics. ` +
+        `Find the nearest through christianlegalsociety.org/cla/clinic-directory. Most clinics run monthly ` +
+        `Saturday consultations at a host parish, with attorney-led brief consults covering housing, family, ` +
+        `expungement, estate planning, and immigration. Intake is typically by phone with a callback within 72 hours.`,
+      citations: [
+        { url: "https://www.christianlegalsociety.org/cla/clinic-directory/", title: "Christian Legal Society — Clinic Directory" },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (lower.includes("clinic ") && lower.includes("immigration")) {
+    body = {
+      answer:
+        `CLINIC (Catholic Legal Immigration Network) is the largest national network of immigration legal-services ` +
+        `nonprofits, with 420+ affiliates across 49 states and DC. Find the nearest at cliniclegal.org/find-legal-help/affiliates/directory. ` +
+        `Most affiliates are DOJ-accredited and represent clients in adjustment, naturalization, asylum, and family ` +
+        `petitions. Intake is by appointment.`,
+      citations: [
+        { url: "https://www.cliniclegal.org/find-legal-help/affiliates/directory", title: "CLINIC — Affiliate Directory" },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (lower.includes("world relief")) {
+    body = {
+      answer:
+        `World Relief operates a network of 25+ evangelical church-based immigration legal services sites under ` +
+        `the Legal Support Network. Most offices schedule immigration consultations by phone; DOJ-accredited ` +
+        `representation is available at most sites.`,
+      citations: [
+        { url: "https://worldrelief.org/legal-support-network/", title: "World Relief — Legal Support Network" },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (lower.includes("administer justice") || lower.includes("gospel justice center")) {
+    body = {
+      answer:
+        `Administer Justice supports 80+ church-based "Gospel Justice Centers" nationally. Each holds a monthly ` +
+        `Saturday clinic with brief consults; web intake is available beforehand. The five-role volunteer model ` +
+        `(Justice Champion, Attorney, Intake Specialist, Community Advocate, Client Advocate) lets non-attorneys ` +
+        `do the bulk of intake and follow-up.`,
+      citations: [
+        { url: "https://www.administerjustice.org/gethelp/", title: "Administer Justice — Get Help" },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (lower.includes("salvation army")) {
+    body = {
+      answer:
+        `The Salvation Army operates 7,000+ corps community centers across the U.S. Most run walk-in or phone ` +
+        `intake for emergency financial assistance (rent, utilities, food, clothing). The Pathway of Hope program ` +
+        `is the longer-term case-management offering for families with children.`,
+      citations: [
+        { url: "https://www.salvationarmyusa.org/usn/ways-we-help/", title: "Salvation Army USA — Ways We Help" },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
+  } else if (
+    lower.includes("knights of columbus") ||
+    lower.includes("kofc") ||
+    lower.includes("k of c")
+  ) {
+    const cityM = prompt.match(/to ([A-Z][\w. ]+?),\s*([A-Z][\w. ]+?)\./);
+    const city = cityM?.[1] || "your city";
+    const state = cityM?.[2] || "your state";
+    body = {
+      answer:
+        `The Knights of Columbus operate over 16,000 local councils, most attached to a Catholic parish. ` +
+        `Each council elects a Grand Knight annually. For ${city}, ${state}, use the official council ` +
+        `locator at kofc.org to find the nearest council. Councils run charitable programs varying by ` +
+        `local interest — common ones include Coats for Kids, Helping Hands (emergency household-need ` +
+        `grants from $100–$2,000), ultrasound funding, and parish-aligned almsgiving funds. ` +
+        `Most councils route requests through the Grand Knight or the council's Faith in Action chair, ` +
+        `who reviews the matter and may convene the council to vote. State Councils typically ` +
+        `administer larger discretionary funds. The K of C Charitable Fund (knightscharitable.org) is ` +
+        `the national infrastructure for donor-advised giving.`,
+      citations: [
+        {
+          url: "https://www.kofc.org/un/en/find-council",
+          title: "Knights of Columbus — Council Locator",
+        },
+        {
+          url: "https://www.kofc.org/un/en/programs/faith/index.html",
+          title: "Knights of Columbus — Faith in Action programs",
+        },
+        {
+          url: "https://www.knightscharitable.org/",
+          title: "Knights of Columbus Charitable Fund",
+        },
+      ],
+      source: "mock",
+      fetchedAt: new Date().toISOString(),
+      prompt,
+    };
   } else {
     body = {
       answer:
-        `Live legal-information lookup is on its way. When the Perplexity proxy is wired up, this panel will return ` +
-        `a current, source-grounded answer with citations to court websites, statutes, and legal-aid organizations.`,
+        `Live look-up is on its way. When the Perplexity proxy is wired up, this panel will return ` +
+        `a current, source-grounded answer with citations.`,
       citations: [],
       source: "mock",
       fetchedAt: new Date().toISOString(),
