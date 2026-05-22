@@ -270,18 +270,18 @@ export const chapters: Chapter[] = [
     ramp: RAMP_RED,
     domain: [25, 80],
     unit: "% of jail population held pretrial",
-    headline: "60%",
-    subline: "of U.S. jail population on any given day is unconvicted, awaiting trial.",
+    headline: "70%",
+    subline: "of U.S. jail population at midyear 2023 was unconvicted — about 467,600 people on any given day.",
     body:
-      "On any given day in America, more than 400,000 people are held in jail without having been convicted of a crime. They are there because they were arrested, denied release, and could not post the bail amount a judge set. About 60% of every jail population in the country, on average, is unconvicted. That share has held steady for thirty years, even as the absolute number of jail beds has grown.\n\n" +
-      "The bail amounts are not exotic. Median felony bail nationally is around $10,000. For low-level offenses it's $500 to $2,000. Federal research has documented for decades that people who could not post less than $500 stayed in jail for weeks, months, sometimes a year — for charges that, on conviction, would have carried no incarceration at all.\n\n" +
-      "What that time inside actually costs is a job, an apartment, a child's placement, a court date in family court, a chance at the plea deal the prosecutor would have offered to a defendant who was not visibly imprisoned. The Bail Project, a national fund that pays bail for the people who can't, has demonstrated in tens of thousands of cases that releasing low-income defendants pretrial does not increase failure-to-appear rates or rearrest rates in any meaningful way. The thing that bail accomplishes, in the cases the Bail Project tracks, is the time inside.\n\n" +
-      "The Supreme Court has held repeatedly that excessive bail violates the Eighth Amendment, that pretrial detention based on inability to pay raises equal-protection concerns, that liberty is the norm and detention the exception. The decisions are eloquent. The practice in every county jail in America is the opposite.",
+      "On any given day in America, about 467,600 people sit in jail without having been convicted of a crime. They were arrested, denied release, and could not post the amount a magistrate set. The Bureau of Justice Statistics figure for midyear 2023 — 70% of every jail bed in the country — is the highest unconvicted share in more than a decade. The convicted jail population has fallen about 29% over the last ten years. The unconvicted has grown.\n\n" +
+      "The bail amounts are not exotic. Median felony bail nationally is around $10,000 — about eight months of income for a typical detained defendant. For low-level offenses the amounts run $500 to $2,000. The Harris County study by Heaton, Mayson, and Stevenson showed in 2017 what every working defender already knew: detained misdemeanor defendants pleaded guilty 25% more often, were sentenced to jail 43% more often, and served sentences more than twice as long. They reoffended at higher rates, not lower. Pretrial detention does not predict guilt. It manufactures it.\n\n" +
+      "Three states have run the natural experiment. New Jersey abolished cash bail in 2017; pretrial jail populations fell 27%. New York reformed in 2019; 96% of pretrial-released defendants were not rearrested. Illinois became the first state to abolish cash bail outright when the Pretrial Fairness Act took effect in September 2023; rural jail populations fell 25%, urban populations 14%, and the comparable-period crime rate dropped 11%. About $140 million a year that had been extracted from working families in Illinois as bail money now stays in those families.\n\n" +
+      "The Eighth Amendment, ratified in 1791, declares that excessive bail shall not be required. The Supreme Court has spent 234 years declining to say what that means when the amount is $500 and the defendant does not have $500. Layleen Polanco was 27 years old in 2019 when her bail was set at $500. She could not pay. She died of an epileptic seizure in solitary at Rikers eight weeks later.",
     sting:
       "The wealthy go home. The poor wait. Then the poor plead.",
     source: {
-      label: "Prison Policy Initiative — Pretrial Detention; The Bail Project — Annual Report",
-      url: "https://www.prisonpolicy.org/reports/pretrial.html",
+      label: "BJS Jail Inmates 2023; Prison Policy Initiative — Mass Incarceration: The Whole Pie",
+      url: "https://bjs.ojp.gov/library/publications/jail-inmates-2023-statistical-tables",
     },
     status: "ready",
   },
@@ -297,15 +297,15 @@ export const chapters: Chapter[] = [
     headline: "2%",
     subline: "of U.S. counties have produced more than half of the death sentences issued since 1976.",
     body:
-      "The death penalty is constitutional. The Supreme Court has said so. Twenty-seven states still authorize it. Three of those states — California, Pennsylvania, and Oregon — have executive moratoria; eleven others have functional moratoria, with no executions in over a decade. Twenty-three states have abolished it outright or do not authorize it.\n\n" +
-      "Of the states that do still use it, the geography narrows again. The Death Penalty Information Center has documented that just 2% of U.S. counties — roughly fifty in total — have produced more than half of every death sentence handed down since the modern era of capital punishment began in 1976. Most of these counties are in Texas, Florida, Alabama, Oklahoma, and a handful of other Southern jurisdictions. Within those states, a single elected prosecutor's office often accounts for the majority of capital cases.\n\n" +
-      "Who lives in the 2% determines whether the state kills them. Race of victim, more than race of defendant, drives the prosecutor's choice to seek death. Indigent defense in capital cases is even more under-funded than indigent defense in non-capital felony cases: many states pay flat fees, capped at the lowest amounts in the country, for the most complex litigation imaginable. The exoneration rate from death row has been higher than from any other category of conviction — about 1 in 8 people sentenced to death since 1976 have been exonerated.\n\n" +
-      "An entire moral architecture has been constructed to justify the practice. The architecture works for the 2%. The other 98% of America manages without it.",
+      "The death penalty is constitutional. The Supreme Court has said so for half a century. Twenty-seven states still authorize it; twenty-three have abolished it or never adopted it. Of the twenty-seven, only a handful actually use it in any given year: in 2024 the country executed 25 people, 19 of them in the South, six in Alabama alone. New death sentences in 2024 numbered 26. Both figures are near historic lows.\n\n" +
+      "And yet the trend is also a map. The Death Penalty Information Center has documented that just 2% of U.S. counties — about 50 in total — have produced more than half of every death sentence handed down since 1976. In recent years three counties alone — Riverside CA, Clark NV, and Maricopa AZ — have generated nearly a third of the country's new death sentences. Whether the state kills you depends, far more than on what you did, on which county line you were standing inside when it was done. Robert Macy of Oklahoma County personally obtained 54 death sentences; nearly half were reversed; three ended in exoneration. Harris County, Texas — once the national leader — produced zero new death sentences in 2015 after a different generation of prosecutors took the office. The crime rate had not changed. The decisions had.\n\n" +
+      "Since 1973, 200 people have been exonerated from death row — about one for every nine sentenced to die. Official misconduct drove 69% of those exonerations. Anthony Ray Hinton spent 30 years on Alabama's death row before the U.S. Supreme Court unanimously reversed in 2014; new firearms testing showed the bullets could not have come from his mother's gun. Toforest Johnson still sits on Alabama's death row, despite the original prosecutor, the current district attorney, three former state attorneys general, and the original trial judge all publicly calling for him to receive a new trial.\n\n" +
+      "On December 23, 2024, President Biden commuted 37 of the 40 federal death sentences to life without parole. Four weeks later, President Trump signed Executive Order 14164, directing the Justice Department to resume federal executions and to pressure state prosecutors into filing fresh capital charges. In February 2025, the Supreme Court vacated Richard Glossip's death sentence in a 5–3 opinion after Oklahoma's own Republican Attorney General conceded prosecutorial error. The morning that opinion came down, Kenneth Smith had already been dead for thirteen months. Alabama executed Smith by nitrogen hypoxia in January 2024 — the first such execution in American history; eyewitnesses reported he writhed for at least four minutes before death.",
     sting:
       "The federal Constitution allows the death penalty. A handful of counties choose it. Most of America does not.",
     source: {
-      label: "Death Penalty Information Center — Facts & Research",
-      url: "https://deathpenaltyinfo.org/facts-and-research",
+      label: "Death Penalty Information Center — Year End Reports 2024 & 2023; The 2% Death Penalty (2013)",
+      url: "https://deathpenaltyinfo.org/research/analysis/reports/year-end-reports/the-death-penalty-in-2024/executions",
     },
     status: "ready",
   },
@@ -318,18 +318,18 @@ export const chapters: Chapter[] = [
     ramp: RAMP_RED,
     domain: [50, 85],
     unit: "% of state prisoners rearrested within 3 years of release",
-    headline: "68%",
-    subline: "of people released from state prison are rearrested within three years; 83% within nine.",
+    headline: "82%",
+    subline: "of people released from state prison are rearrested within ten years; 66% within three.",
     body:
-      "The Bureau of Justice Statistics has tracked one cohort of state prisoners — about 400,000 people released across thirty states — for nine years. Within one year, 44% were rearrested. Within three years, 68%. Within nine years, 83%. The federal numbers are slightly lower; the state numbers are the relevant ones for the vast majority of the incarcerated population.\n\n" +
-      "Recidivism is usually reported as if it were a personal failure. The data tells a different story. The single largest predictor of rearrest is the absence of stable housing, followed by the absence of stable employment, followed by mental-health and substance-use treatment access. Most American states release people from prison with a small amount of \"gate money\" — sometimes as little as $25 — a bus ticket, and, often, no government-issued identification. Without ID, a returning citizen cannot get a job, rent an apartment, open a bank account, or apply for benefits. Public-housing waiting lists are years long; many ban people with felony records outright. Felony conviction strips voting rights in most states.\n\n" +
-      "The closed door is not metaphorical. It is the literal apartment that won't rent, the literal employer who runs a background check, the literal occupational license the state has stripped from anyone with a record. Forty-eight states impose at least one occupational licensing restriction on returning citizens — for jobs ranging from barber to home health aide. The system that incarcerated them did not, on release, fund a door out.\n\n" +
-      "The states that have invested in reentry — Massachusetts, Minnesota, Oregon, Connecticut — see recidivism rates 15 to 25 percentage points lower than national averages. The investment is not enormous. Nor is its absence accidental.",
+      "The Bureau of Justice Statistics tracked 408,300 state prisoners released across 24 states for ten years. Within three years, 66% were rearrested. Within ten, 82%. Within ten, 61% had been returned to prison — either for a new sentence or for a supervision violation. The numbers are sometimes cited as proof of an incorrigible criminal class. They are better read as a description of the country a released person walks back into.\n\n" +
+      "The National Inventory of Collateral Consequences of Conviction is a federally funded catalog of every civil legal disability American law attaches to a criminal record. As of 2024 it counts approximately 44,000 of them. Employment bars, occupational-licensing bars, public-housing bars, public-benefit bars, voter disqualifications, jury disqualifications, firearm prohibitions, immigration triggers, parental-rights terminations. Most are mandatory. Most are permanent. They begin the moment the gavel falls and they do not, in most cases, end with the sentence.\n\n" +
+      "Devah Pager's 2003 Milwaukee audit study demonstrated what every reentry caseworker had already seen. A white applicant with no record was called back 34% of the time; with a felony, 17%. A Black applicant with no record, 14%. A Black applicant with a felony, 5%. A Black man without a criminal record was less likely to be called back than a white man with one. The Prison Policy Initiative measured the unemployment rate of the formerly incarcerated at 27.3% — Depression-era levels. The Sentencing Project counts roughly 4 million Americans disenfranchised by felony conviction; in Florida alone, 730,000 have completed their sentences but cannot vote because they cannot pay outstanding fines and fees.\n\n" +
+      "Thirteen states plus DC have now passed Clean Slate automatic record-clearance laws — Pennsylvania first in 2018, most recently Illinois in 2024. The Center for Employment Opportunities' transitional-jobs program returns $1.26 to $3.85 in reduced recidivism and tax revenue for every dollar spent. The investments that work, work. Their absence is what's accidental.",
     sting:
       "The system that put them in did not build a way out. It was not built to.",
     source: {
-      label: "BJS Recidivism Study (9-Year Follow-up); The Sentencing Project; Council of State Governments Reentry Programs",
-      url: "https://bjs.ojp.gov/library/publications/recidivism-prisoners-released-30-states-2005-patterns-2005-2014",
+      label: "BJS Recidivism of Prisoners Released in 24 States (2008–2018); NICCC; Sentencing Project Locked Out 2024",
+      url: "https://bjs.ojp.gov/library/publications/recidivism-prisoners-released-24-states-2008-10-year-follow-period-2008-2018",
     },
     status: "ready",
   },

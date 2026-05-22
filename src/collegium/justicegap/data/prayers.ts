@@ -104,6 +104,27 @@ export const meditations: Meditation[] = [
       "Defend the poor and fatherless:\ndo justice to the afflicted and needy.\n\n" +
       "Deliver the poor and needy:\nrid them out of the hand of the wicked.",
   },
+  {
+    id: "proverbs-22-gate",
+    eyebrow: "Proverbs",
+    title: "Oppress not the afflicted in the gate",
+    body:
+      "Rob not the poor, because he is poor:\n" +
+      "neither oppress the afflicted in the gate:\n\n" +
+      "For the LORD will plead their cause,\n" +
+      "and spoil the soul of those that spoiled them.",
+  },
+  {
+    id: "isaiah-61-liberty",
+    eyebrow: "Hebrew prophets · Isaiah",
+    title: "Liberty to the captives",
+    body:
+      "The Spirit of the Lord GOD is upon me;\n" +
+      "because the LORD hath anointed me to preach good tidings unto the meek;\n\n" +
+      "he hath sent me to bind up the brokenhearted,\n" +
+      "to proclaim liberty to the captives,\n" +
+      "and the opening of the prison to them that are bound.",
+  },
 ];
 
 export function meditationById(id: string): Meditation | undefined {

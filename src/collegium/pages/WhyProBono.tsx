@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { ProBonoCalculator } from "./components/ProBonoCalculator";
 
 /**
  * "Why pro bono?" — the homepage homily for Christian lawyers.
@@ -292,6 +293,8 @@ export function WhyProBono() {
             live in.
           </P>
         </Section>
+
+        <ProBonoCalculator />
 
         <Section number="VII" title="The thread.">
           <P>
