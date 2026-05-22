@@ -46,22 +46,53 @@ export type SendResult = {
   source: "live" | "mock";
 };
 
-const MOCK = !import.meta.env.VITE_RESEND_PROXY_URL;
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL ||
+  import.meta.env.VITE_COLLEGIUM_SUPABASE_URL ||
+  "";
+
+/**
+ * Resolve the Resend proxy URL. Precedence:
+ *   1. VITE_RESEND_PROXY_URL — explicit override (any backend)
+ *   2. VITE_SUPABASE_URL + /functions/v1/auxilium-resend (Lovable default)
+ *   3. empty string → mock mode
+ */
+function resolveProxyUrl(): string {
+  if (import.meta.env.VITE_RESEND_PROXY_URL)
+    return import.meta.env.VITE_RESEND_PROXY_URL as string;
+  if (SUPABASE_URL) return `${SUPABASE_URL}/functions/v1/auxilium-resend`;
+  return "";
+}
+
+const SUPABASE_ANON_KEY: string =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  "";
+
+const PROXY_URL = resolveProxyUrl();
+const MOCK = !PROXY_URL;
 
 export async function sendEmail(args: SendArgs): Promise<SendResult> {
   if (MOCK) return mockSend(args);
-  const url = import.meta.env.VITE_RESEND_PROXY_URL!;
   try {
-    const res = await fetch(url, {
+    const res = await fetch(PROXY_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // Supabase Edge Functions require the anon key; harmless on
+        // any other proxy that ignores it.
+        ...(SUPABASE_ANON_KEY
+          ? {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            }
+          : {}),
+      },
       body: JSON.stringify({
         to: args.to,
         subject: args.subject,
-        // Resend accepts text and html separately; we send text for
-        // referral packets (mail clients render fine).
         text: args.body,
-        from: args.from ?? "Auxilium <referrals@collegium.app>",
+        from: args.from,
         reply_to: args.replyTo,
       }),
     });

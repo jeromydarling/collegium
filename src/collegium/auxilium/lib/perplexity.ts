@@ -43,7 +43,33 @@ export type PerplexityAnswer = {
   prompt: string;
 };
 
-const MOCK = import.meta.env.VITE_PERPLEXITY_API_KEY ? false : true;
+const _SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL ||
+  import.meta.env.VITE_COLLEGIUM_SUPABASE_URL ||
+  "";
+const _SUPABASE_ANON_KEY: string =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  "";
+
+/**
+ * Resolve the Perplexity proxy URL. Precedence:
+ *   1. VITE_PERPLEXITY_PROXY_URL — explicit override
+ *   2. VITE_SUPABASE_URL + /functions/v1/auxilium-perplexity (Lovable default)
+ *   3. empty string → mock mode with canned responses
+ *
+ * VITE_PERPLEXITY_API_KEY is still honored as a dev override (calls
+ * Perplexity directly from the client, exposing the key — only for
+ * local development).
+ */
+function _resolveProxyUrl(): string {
+  if (import.meta.env.VITE_PERPLEXITY_PROXY_URL)
+    return import.meta.env.VITE_PERPLEXITY_PROXY_URL as string;
+  if (_SUPABASE_URL) return `${_SUPABASE_URL}/functions/v1/auxilium-perplexity`;
+  return "";
+}
+const _PROXY_URL = _resolveProxyUrl();
+const MOCK = !_PROXY_URL && !import.meta.env.VITE_PERPLEXITY_API_KEY;
 
 /**
  * Run a single Perplexity query. Caller passes the prompt with any
@@ -55,45 +81,36 @@ export async function runPerplexityQuery(
 ): Promise<PerplexityAnswer> {
   if (MOCK) return mockFor(prompt);
 
-  // Real path. The fetch goes to a proxy we control — the Perplexity
-  // API key never touches the client. Replace VITE_PERPLEXITY_PROXY_URL
-  // with the Cloudflare Worker URL or Lovable connector endpoint.
-  const proxy =
-    import.meta.env.VITE_PERPLEXITY_PROXY_URL ||
-    "https://api.collegium.app/perplexity";
-  const res = await fetch(proxy, {
+  // Real path. Calls go through the Supabase Edge Function
+  // (auxilium-perplexity) which holds the API key. The function
+  // already shapes Perplexity's response into { answer, citations }.
+  const res = await fetch(_PROXY_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(_SUPABASE_ANON_KEY
+        ? {
+            apikey: _SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${_SUPABASE_ANON_KEY}`,
+          }
+        : {}),
+    },
     body: JSON.stringify({
       model: "sonar",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a legal information assistant for Auxilium, a Christian-founded legal-help platform. " +
-            "You provide INFORMATION, never legal advice. You cite primary sources (statutes, court rules, " +
-            "government agency websites, established legal-aid organizations) wherever possible. If a " +
-            "question cannot be answered from current public sources, say so plainly.",
-        },
-        { role: "user", content: prompt },
-      ],
+      prompt,
       return_citations: true,
       temperature: 0.2,
     }),
     signal,
   });
   if (!res.ok) throw new Error(`Perplexity proxy returned ${res.status}`);
-  const data = await res.json();
-
-  // Standard Perplexity response shape — see api.perplexity.ai docs.
-  const answer = data.choices?.[0]?.message?.content ?? "";
-  const citations: PerplexityCitation[] = (data.citations || []).map(
-    (c: string | { url: string; title?: string }) =>
-      typeof c === "string" ? { url: c } : c
-  );
+  const data = (await res.json()) as {
+    answer: string;
+    citations: PerplexityCitation[];
+  };
   return {
-    answer,
-    citations,
+    answer: data.answer ?? "",
+    citations: data.citations ?? [],
     source: "live",
     fetchedAt: new Date().toISOString(),
     prompt,

@@ -44,6 +44,14 @@ const ALLOWED_ORIGINS: string[] = [
   'https://www.viapublica.com',
   'https://thefabrica.lovable.app',
   'https://vrtmethod.lovable.app',
+  // ── Collegium + Auxilium + Justice Gap ──────────────────────────
+  'https://collegium.lovable.app',
+  'https://auxilium.lovable.app',
+  'https://justicegap.lovable.app',
+  'https://collegium.app',
+  'https://www.collegium.app',
+  'https://auxilium.collegium.app',
+  'https://justicegap.collegium.app',
 ];
 
 /**

@@ -103,6 +103,13 @@ project_id = "zmeawjhxbgvtcfcfcygf"
     verify_jwt = false
   [functions.unsubscribe]
     verify_jwt = false
+  # ── Auxilium proxies (public — called from the static demo) ──────
+  [functions.auxilium-resend]
+    verify_jwt = false
+  [functions.auxilium-deepl]
+    verify_jwt = false
+  [functions.auxilium-perplexity]
+    verify_jwt = false
 
 [functions.health]
 verify_jwt = false

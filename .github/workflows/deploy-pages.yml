@@ -36,17 +36,16 @@ jobs:
           # safe to ship in client bundle. Set as a repo secret named
           # VITE_MAPBOX_TOKEN.
           VITE_MAPBOX_TOKEN: ${{ secrets.VITE_MAPBOX_TOKEN }}
-          # DeepL translation proxy. Holds the DeepL API key server-side;
-          # client POSTs { text, target_lang, source_lang } and receives
-          # { translations: [{text}] }.
+          # Proxy URL overrides. By default the Auxilium client points
+          # at the Supabase Edge Functions in supabase/functions/
+          # (auxilium-deepl, auxilium-resend, auxilium-perplexity),
+          # using VITE_SUPABASE_URL + the function name. These env vars
+          # are an explicit override — set them if you want to route
+          # to a self-hosted Worker or a different backend. Leaving
+          # them unset is the right default once the repo is in
+          # Lovable. See docs/lovable-setup.md.
           VITE_DEEPL_PROXY_URL: ${{ secrets.VITE_DEEPL_PROXY_URL }}
-          # Resend email proxy. Holds the Resend API key server-side;
-          # client POSTs { to, subject, text, from, reply_to } and
-          # receives Resend's response. See docs/resend-worker.md for
-          # the ~30-line Cloudflare Worker.
           VITE_RESEND_PROXY_URL: ${{ secrets.VITE_RESEND_PROXY_URL }}
-          # Perplexity proxy (Sonar with citations) — used by the local
-          # legal-info panels + the SVdP/KofC/etc. nearest-charity lookups.
           VITE_PERPLEXITY_PROXY_URL: ${{ secrets.VITE_PERPLEXITY_PROXY_URL }}
         run: npm run build
 

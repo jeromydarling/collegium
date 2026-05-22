@@ -95,7 +95,28 @@ export function localeFor(code: LocaleCode): Locale {
 // DeepL translation client
 // ─────────────────────────────────────────────────────────────────────
 
-const MOCK = !import.meta.env.VITE_DEEPL_PROXY_URL;
+const _SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL ||
+  import.meta.env.VITE_COLLEGIUM_SUPABASE_URL ||
+  "";
+const _SUPABASE_ANON_KEY: string =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  "";
+/**
+ * Resolve the DeepL proxy URL. Precedence:
+ *   1. VITE_DEEPL_PROXY_URL — explicit override
+ *   2. VITE_SUPABASE_URL + /functions/v1/auxilium-deepl (Lovable default)
+ *   3. empty string → mock with [LOCALE] marker
+ */
+function _resolveProxyUrl(): string {
+  if (import.meta.env.VITE_DEEPL_PROXY_URL)
+    return import.meta.env.VITE_DEEPL_PROXY_URL as string;
+  if (_SUPABASE_URL) return `${_SUPABASE_URL}/functions/v1/auxilium-deepl`;
+  return "";
+}
+const _PROXY_URL = _resolveProxyUrl();
+const MOCK = !_PROXY_URL;
 
 export type TranslateOpts = {
   target: LocaleCode;
@@ -128,11 +149,18 @@ export async function translateBatch(texts: string[], opts: TranslateOpts): Prom
   if (opts.target === "en-US") return texts;
   if (MOCK) return Promise.all(texts.map((t) => translateText(t, opts)));
   // Live path: single call.
-  const proxy = import.meta.env.VITE_DEEPL_PROXY_URL!;
   const target = localeFor(opts.target).deeplTarget;
-  const res = await fetch(proxy, {
+  const res = await fetch(_PROXY_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(_SUPABASE_ANON_KEY
+        ? {
+            apikey: _SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${_SUPABASE_ANON_KEY}`,
+          }
+        : {}),
+    },
     body: JSON.stringify({
       text: texts,
       target_lang: target,
