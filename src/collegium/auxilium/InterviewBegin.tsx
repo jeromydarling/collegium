@@ -21,7 +21,7 @@ export function InterviewBegin() {
           Before you do anything else, let's talk.
         </h1>
         <p className="text-base sm:text-lg text-[hsl(var(--c-slate))] leading-relaxed mb-6">
-          For the next 10 to 15 minutes, an AI interviewer will ask you about
+          For the next 10 to 15 minutes, an NRI interviewer will ask you about
           what's happening — the way a calm legal-aid lawyer would in a first
           intake. One question at a time. Plain English.
         </p>
@@ -47,7 +47,7 @@ export function InterviewBegin() {
           <Row
             icon={ShieldCheck}
             title="Information, not advice"
-            body="The AI doesn't tell you what to do. It gathers your story so a real lawyer can."
+            body="NRI doesn't tell you what to do. It gathers your story so a real lawyer can."
           />
         </div>
 

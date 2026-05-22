@@ -160,7 +160,7 @@ export function buildReferralEmailBody(args: {
     greeting,
     "",
     `${firstName}${where ? `, in ${where}` : ""}, is facing a ${matterPhrase}. ` +
-      `They have completed an intake with Auxilium — a free, AI-driven intake tool for ` +
+      `They have completed an intake with Auxilium — a free, NRI-driven intake tool for ` +
       `people in legal crisis — and have a verified matter file ready to bring to a lawyer.`,
     "",
     `They are requesting $${goalDollars} from ${program} to cover the following ` +

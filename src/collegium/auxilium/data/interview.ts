@@ -211,6 +211,13 @@ export const evictionInterview: InterviewScript = {
       text:
         "How long have you lived in this apartment? An approximate year is fine — " +
         "if you can remember the month, that's even better.",
+      quickAnswers: [
+        "Less than a year",
+        "1–2 years",
+        "3–5 years",
+        "More than 5 years",
+        "I'm not sure",
+      ],
       extract: (reply, current) => {
         const yearMatch = reply.match(/\b(20\d{2}|19\d{2})\b/);
         const months = [
@@ -244,6 +251,13 @@ export const evictionInterview: InterviewScript = {
       id: "rent",
       text:
         "What's the rent each month? And have you fallen behind — if so, how many months are you behind?",
+      quickAnswers: [
+        "I'm caught up",
+        "1 month behind",
+        "2 months behind",
+        "3 months behind",
+        "4+ months behind",
+      ],
       extract: (reply, current) => {
         const cents = detectMoney(reply);
         const next: ExtractedFacts = { ...current };
@@ -260,6 +274,13 @@ export const evictionInterview: InterviewScript = {
       text:
         "When was the last time you paid rent in full? If you've made any partial " +
         "payments since, mention those too.",
+      quickAnswers: [
+        "This month",
+        "Last month",
+        "2–3 months ago",
+        "Longer than that",
+        "I can't remember",
+      ],
       skipIf: (f) => !f.arrearsMonths || f.arrearsMonths === 0,
       extract: (reply, current) => {
         // Light date capture — pulls the first month-name + year, or "today" etc.
@@ -357,6 +378,13 @@ export const evictionInterview: InterviewScript = {
         "What have you received from the landlord on paper? A notice, a letter, " +
         "a court summons? When was it given to you, and how — handed to you, " +
         "taped to the door, in the mail?",
+      quickAnswers: [
+        "Notice to quit",
+        "Court summons",
+        "Letter from landlord",
+        "Nothing in writing yet",
+        "I'm not sure",
+      ],
       extract: (reply, current) => {
         const docType = detectDocumentType(reply);
         if (!docType) return current;
@@ -388,6 +416,13 @@ export const evictionInterview: InterviewScript = {
       text:
         "Do you receive any housing help — Section 8, public housing, RAFT, " +
         "MRVP, anything like that? It changes what protections you have.",
+      quickAnswers: [
+        "Section 8 voucher",
+        "Public housing",
+        "RAFT or MRVP",
+        "No subsidy",
+        "I'm not sure",
+      ],
       extract: (reply, current) => {
         const lower = reply.toLowerCase();
         let subsidy: string | undefined;
@@ -405,6 +440,13 @@ export const evictionInterview: InterviewScript = {
       id: "household",
       text:
         "Who else lives with you in the apartment? Are any children involved?",
+      quickAnswers: [
+        "Just me",
+        "Me and my partner",
+        "Me and my children",
+        "Multi-generational household",
+        "Other adults sharing",
+      ],
       extract: (reply, current) => {
         const lower = reply.toLowerCase();
         const children =
@@ -423,6 +465,13 @@ export const evictionInterview: InterviewScript = {
         "I have to ask a few sensitive questions — they matter for what we do next. " +
         "Skip any you don't want to answer. Is there anything you're worried about " +
         "coming up in court — old issues, debts, immigration status, anything?",
+      quickAnswers: [
+        "Nothing to add",
+        "Immigration status",
+        "Prior eviction",
+        "Disability or health",
+        "Skip this one",
+      ],
       extract: (reply, current) => {
         const lower = reply.toLowerCase();
         const next: ExtractedFacts = { ...current };
@@ -451,6 +500,12 @@ export const evictionInterview: InterviewScript = {
       text:
         "Last one. If everything worked out as well as it possibly could from here, " +
         "what would that look like for you?",
+      quickAnswers: [
+        "Stay in my home",
+        "More time to move out",
+        "A payment plan I can afford",
+        "Keep this off my record",
+      ],
       extract: (reply, current) => ({ ...current, goals: reply.trim() }),
     },
   ],

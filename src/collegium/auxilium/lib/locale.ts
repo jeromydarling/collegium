@@ -237,11 +237,13 @@ export const EN: Record<StringKey, string> = {
     "I understand Auxilium will redact my surname, address, employer, and case number before producing any referral. I am in control of every send. Auxilium never touches the money.",
 };
 
-/** Per-locale dictionaries — populate as translations land. */
+/**
+ * Per-locale dictionaries — hand-translated for the 9 launch locales so
+ * the static UI ships at zero translation-quota cost. Dynamic content
+ * (the matter file, the referral packets, the Perplexity panels) goes
+ * through translateText / translateBatch above.
+ */
 const DICT: Partial<Record<LocaleCode, Partial<Record<StringKey, string>>>> = {
-  // Seeded Spanish hand-translations — proof that the i18n surface
-  // works without waiting for the DeepL proxy. Add more locales as we
-  // ship.
   "es-US": {
     "voice.toggle.on": "Voz activada",
     "voice.toggle.off": "Voz desactivada",
@@ -261,6 +263,146 @@ const DICT: Partial<Record<LocaleCode, Partial<Record<StringKey, string>>>> = {
     "ask.working": "Buscando toda la ayuda cercana…",
     "ask.consent":
       "Entiendo que Auxilium eliminará mi apellido, dirección, empleador y número de caso antes de generar cualquier referencia. Yo controlo cada envío. Auxilium nunca toca el dinero.",
+  },
+  "fr-CA": {
+    "voice.toggle.on": "Voix activée",
+    "voice.toggle.off": "Voix désactivée",
+    "voice.speak": "Parler",
+    "voice.stop": "Arrêter",
+    "voice.listening": "À l'écoute",
+    "voice.placeholder": "À l'écoute… parlez maintenant",
+    "compose.send": "Envoyer",
+    "compose.skip": "Passer",
+    "compose.startOver": "Recommencer",
+    "compose.placeholder": "Tapez votre réponse…",
+    "compose.disclaimer":
+      "Information, pas un conseil. Sauvegardé uniquement sur votre appareil.",
+    "matter.heading": "Voici ce que nous avons pour vous.",
+    "ask.title": "Envoyez le dossier à tous ceux qui sont censés aider.",
+    "ask.cta": "Trouver toute l'aide à proximité",
+    "ask.working": "Recherche de toute l'aide à proximité…",
+    "ask.consent":
+      "Je comprends qu'Auxilium supprimera mon nom de famille, mon adresse, mon employeur et mon numéro de dossier avant de produire toute référence. Je contrôle chaque envoi. Auxilium ne touche jamais à l'argent.",
+  },
+  "ht-HT": {
+    "voice.toggle.on": "Vwa aktive",
+    "voice.toggle.off": "Vwa fèmen",
+    "voice.speak": "Pale",
+    "voice.stop": "Sispann",
+    "voice.listening": "M ap koute",
+    "voice.placeholder": "M ap koute… pale kounye a",
+    "compose.send": "Voye",
+    "compose.skip": "Sote",
+    "compose.startOver": "Rekòmanse",
+    "compose.placeholder": "Tape repons ou…",
+    "compose.disclaimer":
+      "Enfòmasyon, se pa konsèy. Sove sèlman sou aparèy ou.",
+    "matter.heading": "Men sa nou genyen pou ou.",
+    "ask.title": "Voye pake a bay tout moun ki sipoze ede w.",
+    "ask.cta": "Jwenn tout èd ki tou pre",
+    "ask.working": "Ap chèche tout èd ki tou pre…",
+    "ask.consent":
+      "Mwen konprann Auxilium pral retire siyati mwen, adrès mwen, anplwayè mwen, ak nimewo ka mwen anvan li pwodui nenpòt referans. Se mwen ki kontwole chak voye. Auxilium pa janm manyen lajan.",
+  },
+  "vi-VN": {
+    "voice.toggle.on": "Bật giọng nói",
+    "voice.toggle.off": "Tắt giọng nói",
+    "voice.speak": "Nói",
+    "voice.stop": "Dừng",
+    "voice.listening": "Đang lắng nghe",
+    "voice.placeholder": "Đang lắng nghe… vui lòng nói",
+    "compose.send": "Gửi",
+    "compose.skip": "Bỏ qua",
+    "compose.startOver": "Bắt đầu lại",
+    "compose.placeholder": "Nhập câu trả lời của bạn…",
+    "compose.disclaimer":
+      "Thông tin, không phải tư vấn pháp lý. Chỉ lưu trên thiết bị của bạn.",
+    "matter.heading": "Đây là những gì chúng tôi có cho bạn.",
+    "ask.title":
+      "Gửi gói thông tin đến tất cả những người được cho là sẽ giúp đỡ.",
+    "ask.cta": "Tìm mọi sự giúp đỡ gần đây",
+    "ask.working": "Đang tìm mọi sự giúp đỡ gần đây…",
+    "ask.consent":
+      "Tôi hiểu rằng Auxilium sẽ ẩn họ, địa chỉ, chủ lao động, và số hồ sơ của tôi trước khi tạo bất kỳ giới thiệu nào. Tôi kiểm soát mọi lần gửi. Auxilium không bao giờ chạm vào tiền.",
+  },
+  "zh-CN": {
+    "voice.toggle.on": "语音已开启",
+    "voice.toggle.off": "语音已关闭",
+    "voice.speak": "说话",
+    "voice.stop": "停止",
+    "voice.listening": "正在聆听",
+    "voice.placeholder": "正在聆听…请说话",
+    "compose.send": "发送",
+    "compose.skip": "跳过",
+    "compose.startOver": "重新开始",
+    "compose.placeholder": "输入您的答案…",
+    "compose.disclaimer": "信息，非法律建议。仅保存在您的设备上。",
+    "matter.heading": "这是我们为您准备的内容。",
+    "ask.title": "将资料包发送给所有应当提供帮助的人。",
+    "ask.cta": "查找附近所有的帮助",
+    "ask.working": "正在查找附近所有的帮助…",
+    "ask.consent":
+      "我理解 Auxilium 将在生成任何转介之前隐去我的姓氏、地址、雇主和案件编号。我控制每一次发送。Auxilium 从不经手资金。",
+  },
+  "ar": {
+    "voice.toggle.on": "الصوت قيد التشغيل",
+    "voice.toggle.off": "الصوت متوقف",
+    "voice.speak": "تحدث",
+    "voice.stop": "إيقاف",
+    "voice.listening": "جارٍ الاستماع",
+    "voice.placeholder": "جارٍ الاستماع… تحدث الآن",
+    "compose.send": "إرسال",
+    "compose.skip": "تخطي",
+    "compose.startOver": "البدء من جديد",
+    "compose.placeholder": "اكتب إجابتك…",
+    "compose.disclaimer":
+      "معلومات وليست نصيحة قانونية. محفوظة فقط على جهازك.",
+    "matter.heading": "إليك ما لدينا من أجلك.",
+    "ask.title": "أرسل الملف إلى كل من يُفترض به أن يساعد.",
+    "ask.cta": "ابحث عن كل مساعدة قريبة",
+    "ask.working": "جارٍ البحث عن كل مساعدة قريبة…",
+    "ask.consent":
+      "أفهم أن Auxilium سيحذف اسم عائلتي وعنواني وصاحب عملي ورقم قضيتي قبل إنتاج أي إحالة. أنا أتحكم في كل إرسال. Auxilium لا يلمس الأموال أبدًا.",
+  },
+  "ru": {
+    "voice.toggle.on": "Голос включён",
+    "voice.toggle.off": "Голос отключён",
+    "voice.speak": "Говорить",
+    "voice.stop": "Остановить",
+    "voice.listening": "Слушаю",
+    "voice.placeholder": "Слушаю… говорите",
+    "compose.send": "Отправить",
+    "compose.skip": "Пропустить",
+    "compose.startOver": "Начать заново",
+    "compose.placeholder": "Введите ваш ответ…",
+    "compose.disclaimer":
+      "Информация, а не юридический совет. Сохранено только на вашем устройстве.",
+    "matter.heading": "Вот что у нас есть для вас.",
+    "ask.title": "Отправьте пакет всем, кто должен помочь.",
+    "ask.cta": "Найти всю помощь поблизости",
+    "ask.working": "Ищем всю помощь поблизости…",
+    "ask.consent":
+      "Я понимаю, что Auxilium удалит мою фамилию, адрес, работодателя и номер дела перед созданием любого направления. Я контролирую каждую отправку. Auxilium никогда не касается денег.",
+  },
+  "pt-BR": {
+    "voice.toggle.on": "Voz ativada",
+    "voice.toggle.off": "Voz desativada",
+    "voice.speak": "Falar",
+    "voice.stop": "Parar",
+    "voice.listening": "Escutando",
+    "voice.placeholder": "Escutando… fale agora",
+    "compose.send": "Enviar",
+    "compose.skip": "Pular",
+    "compose.startOver": "Recomeçar",
+    "compose.placeholder": "Digite sua resposta…",
+    "compose.disclaimer":
+      "Informação, não aconselhamento jurídico. Salvo apenas no seu dispositivo.",
+    "matter.heading": "Aqui está o que temos para você.",
+    "ask.title": "Envie o pacote para todos que deveriam ajudar.",
+    "ask.cta": "Encontre toda ajuda próxima",
+    "ask.working": "Procurando toda ajuda próxima…",
+    "ask.consent":
+      "Entendo que o Auxilium removerá meu sobrenome, endereço, empregador e número do caso antes de produzir qualquer encaminhamento. Eu controlo cada envio. O Auxilium nunca toca no dinheiro.",
   },
 };
 
