@@ -30,6 +30,15 @@ import { InterviewBegin } from "./auxilium/InterviewBegin";
 import { Interview } from "./auxilium/Interview";
 import { MatterFile } from "./auxilium/MatterFile";
 
+import { JusticeGapLanding } from "./justicegap/Landing";
+import { MapView as JusticeGapMap } from "./justicegap/MapView";
+import { EssayView as JusticeGapEssay } from "./justicegap/EssayView";
+import {
+  StoriesView as JusticeGapStories,
+  NewsView as JusticeGapNews,
+  SolutionView as JusticeGapSolution,
+} from "./justicegap/StubViews";
+
 import "./styles.css";
 
 // Vite injects the base URL at build time (e.g. "/" locally, "/collegium/" on
@@ -67,6 +76,15 @@ export default function CollegiumApp() {
         <Route path="auxilium/start" element={<MatterPicker />} />
         <Route path="auxilium/matter/:slug" element={<MatterGuide />} />
         <Route path="auxilium/find-help" element={<FindHelp />} />
+
+        {/* Justice Gap — third front door. Polemic + data viz. */}
+        <Route path="justicegap" element={<JusticeGapLanding />} />
+        <Route path="justicegap/map" element={<JusticeGapMap />} />
+        <Route path="justicegap/map/:chapter" element={<JusticeGapMap />} />
+        <Route path="justicegap/essay" element={<JusticeGapEssay />} />
+        <Route path="justicegap/stories" element={<JusticeGapStories />} />
+        <Route path="justicegap/news" element={<JusticeGapNews />} />
+        <Route path="justicegap/solution" element={<JusticeGapSolution />} />
 
         {/* Demo app */}
         <Route path="app" element={<AppLayout />}>

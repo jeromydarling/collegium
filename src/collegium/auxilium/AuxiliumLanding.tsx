@@ -153,6 +153,30 @@ export function AuxiliumLanding() {
       {/* The justice crisis, mapped — interactive choropleth */}
       <JusticeMap />
 
+      {/* Door to the deeper polemic — Justice Gap */}
+      <section className="bg-[hsl(220_30%_6%)] border-y border-[hsl(220_20%_18%)]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center">
+          <p className="collegium-latin text-sm text-[hsl(38_60%_70%)] mb-3">
+            Iustitia rapta
+          </p>
+          <h3 className="collegium-display text-2xl sm:text-3xl text-[hsl(40_40%_94%)] mb-4 leading-tight">
+            The deeper reckoning — Justice Gap.
+          </h3>
+          <p className="text-[hsl(40_30%_82%)] leading-relaxed mb-6 max-w-2xl mx-auto">
+            For the wider question — what the Constitution promised in
+            1963, what we have actually built, and what the cost has been —
+            open the polemic. Twelve chapters. The map, the essay, the
+            stories, the news, the solution.
+          </p>
+          <Link
+            to="/justicegap"
+            className="inline-flex items-center justify-center gap-2 bg-[hsl(38_60%_60%)] text-[hsl(220_30%_10%)] rounded-full px-5 py-3 font-medium hover:bg-[hsl(38_60%_70%)] transition-colors text-sm"
+          >
+            Open Justice Gap <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
+
       {/* LegalShield breakthrough — the solution that already exists */}
       <LegalShieldFeatured />
 
