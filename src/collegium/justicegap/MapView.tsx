@@ -9,7 +9,6 @@ import {
   metricValue,
   colorOnRamp,
   formatMetric,
-  type StateMetrics,
 } from "./data/stateMetrics";
 import { STATE_FIPS_TO_CODE, stateData as civilStateData } from "../auxilium/data/justiceByState";
 
@@ -72,7 +71,7 @@ export function MapView() {
                     const fips = String(geo.id).padStart(2, "0");
                     const code = STATE_FIPS_TO_CODE[fips];
                     const m = code
-                      ? metricValue(code, currentChapter.metric as keyof StateMetrics)
+                      ? metricValue(code, currentChapter.metric)
                       : null;
                     const fill = code
                       ? colorOnRamp(m, currentChapter.ramp, currentChapter.domain)
@@ -242,7 +241,7 @@ function StateBreakdown({
       </div>
     );
   }
-  const currentVal = metricValue(code, chapter.metric as keyof StateMetrics);
+  const currentVal = metricValue(code, chapter.metric);
   return (
     <div className="flex-1 p-5 sm:p-6 overflow-y-auto">
       <div className="flex items-start justify-between gap-3 mb-4">
@@ -265,7 +264,7 @@ function StateBreakdown({
       {currentVal != null && (
         <div className="mb-5 pb-5 border-b border-[hsl(220_20%_22%)]">
           <div className="collegium-display text-4xl text-[hsl(38_60%_70%)] mb-1">
-            {formatMetric(chapter.metric as keyof StateMetrics, currentVal)}
+            {formatMetric(chapter.metric, currentVal)}
           </div>
           <div className="text-xs text-[hsl(40_20%_75%)]">{chapter.unit}</div>
         </div>
@@ -288,6 +287,30 @@ function StateBreakdown({
         <Row label="Documented exonerations (1989–)" value={m.exonerations_total.toLocaleString()} />
         <Row label="Felony cases by plea" value={`${m.plea_pct.toFixed(0)}%`} />
         <Row label="Jail population, pretrial" value={`${m.pretrial_pct.toFixed(0)}%`} />
+        <Row
+          label="Juvenile court referrals"
+          value={`${m.juvenile_contact_rate.toFixed(0)} per 1,000`}
+        />
+        <Row
+          label="Court fines / fees, % of revenue"
+          value={`${m.court_fines_pct.toFixed(1)}%`}
+        />
+        <Row
+          label="Death sentences per 1K murders"
+          value={
+            m.death_sentences_per_murder === 0
+              ? "—"
+              : m.death_sentences_per_murder.toFixed(1)
+          }
+        />
+        <Row
+          label="3-year recidivism"
+          value={`${m.recidivism_3yr_pct.toFixed(0)}%`}
+        />
+        <Row
+          label="Justice Gap Index"
+          value={`${metricValue(code, "justice_gap_index") ?? "—"} / 100`}
+        />
       </dl>
 
       <Link
@@ -310,7 +333,7 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 function hoverReadout(code: string, chapter: Chapter): string {
-  const v = metricValue(code, chapter.metric as keyof StateMetrics);
+  const v = metricValue(code, chapter.metric);
   if (v == null) return "Data unavailable";
-  return formatMetric(chapter.metric as keyof StateMetrics, v);
+  return formatMetric(chapter.metric, v);
 }

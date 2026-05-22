@@ -19,11 +19,11 @@ export type Metric =
   | "lsc_attys_per_10k_poor"
   | "exonerations_total"
   | "plea_pct"
+  | "juvenile_contact_rate"
   | "court_fines_pct"
   | "pretrial_pct"
-  | "felony_disenfranchisement"
   | "death_sentences_per_murder"
-  | "recidivism_pct"
+  | "recidivism_3yr_pct"
   | "justice_gap_index";
 
 export type Chapter = {
@@ -214,22 +214,29 @@ export const chapters: Chapter[] = [
     },
     status: "ready",
   },
-  // Scaffolded chapters — metric defined, full body / sting to come.
   {
     id: "juvenile",
     number: "07",
     title: "The juvenile bench.",
     eyebrow: "Children in the system",
-    metric: "felony_disenfranchisement",
+    metric: "juvenile_contact_rate",
     ramp: RAMP_RED,
-    domain: [0, 8],
-    unit: "% of voting-age citizens disenfranchised by felony record",
-    headline: "Coming",
-    subline: "scaffold — full chapter under construction",
-    body: "Juvenile justice contact rates, with the racial overlay that defines them.",
-    sting: "",
-    source: { label: "Sentencing Project" },
-    status: "scaffold",
+    domain: [5, 60],
+    unit: "juvenile court referrals per 1,000 children, per year",
+    headline: "5×",
+    subline: "the rate at which Black youth are detained, compared to white youth, for the same conduct.",
+    body:
+      "American juvenile justice was supposed to be different. It has its own courts, its own statutes, its own rehabilitative language. The cases are sealed. The records, in principle, end at eighteen. The idea was that children are not adults, and the law should remember that.\n\n" +
+      "In practice, we built a parallel system that does most of what the adult system does, applied to children, with the constitutional protections quietly thinned. Most states allow children to be tried as adults; almost all allow them to be questioned by police without a parent, without a lawyer, sometimes for hours. Public defenders for juveniles carry caseloads that make the adult ones look generous — 500 or more cases per attorney per year, often without dedicated juvenile-court specialists.\n\n" +
+      "Black children are referred to juvenile court at roughly five times the rate of white children. Detained at higher rates. Transferred to adult court at higher rates. Sentenced more severely for the same offenses. The disparity widens, not narrows, at every successive decision point in the system.\n\n" +
+      "The disparity is not new. The disparity is not a mistake. It is what the system, as built, produces.",
+    sting:
+      "We tell children of color that the juvenile court will treat them as children. Then we don't.",
+    source: {
+      label: "The Sentencing Project — Youth Justice; Annie E. Casey Foundation Race & Ethnicity Disparities",
+      url: "https://www.sentencingproject.org/research/youth-and-the-justice-system/",
+    },
+    status: "ready",
   },
   {
     id: "fines",
@@ -238,14 +245,21 @@ export const chapters: Chapter[] = [
     eyebrow: "Court debt as municipal revenue",
     metric: "court_fines_pct",
     ramp: RAMP_WINE,
-    domain: [0, 12],
-    unit: "% of local government revenue from court fines / fees",
-    headline: "Coming",
-    subline: "scaffold — Ferguson Report follow-ups by jurisdiction",
-    body: "When local governments fund themselves on the backs of the people they prosecute.",
-    sting: "",
-    source: { label: "Fines and Fees Justice Center" },
-    status: "scaffold",
+    domain: [0, 25],
+    unit: "% of local government general revenue from fines / fees / forfeitures",
+    headline: "23%",
+    subline: "of Ferguson, MO's general revenue, the year before Michael Brown was killed.",
+    body:
+      "The 2015 Department of Justice report on Ferguson, Missouri, documented a small American city that had quietly redesigned its police department, its municipal court, and its budget around a single function: extracting fines and fees from poor, mostly Black residents to fund the city government. Ferguson's police chief was told, in writing, to increase ticket revenue. Officers were measured by how many citations they wrote. Failure to pay a fine became a separate arrestable offense, with its own fee. Failure to appear at the hearing to discuss the fee became another offense. The compound interest of poverty became a balance sheet.\n\n" +
+      "Ferguson is not unique. The Fines and Fees Justice Center has documented the pattern across thousands of small American jurisdictions: court debt as municipal revenue, suspended driver's licenses as a collection tool, jail as a method of forced payment. The Constitution permits state and local governments to raise revenue. It does not, in principle, permit them to raise it from the criminal-legal system itself. In practice, that's how many of them stay solvent.\n\n" +
+      "Court debt also closes doors that were already mostly closed. An unpaid municipal fine in many states can suspend a driver's license. The license suspension makes it harder to get to work. The lost income makes it harder to pay the fine. The unpaid fine becomes a warrant. The warrant becomes a jail booking. The jail booking becomes another fee.",
+    sting:
+      "We figured out how to fund the police department on the backs of the people the police arrest. We called it justice.",
+    source: {
+      label: "Fines and Fees Justice Center; U.S. DOJ Civil Rights Division — Ferguson Report (2015)",
+      url: "https://finesandfeesjusticecenter.org/",
+    },
+    status: "ready",
   },
   {
     id: "bail",
@@ -254,19 +268,22 @@ export const chapters: Chapter[] = [
     eyebrow: "Pretrial detention",
     metric: "pretrial_pct",
     ramp: RAMP_RED,
-    domain: [20, 80],
+    domain: [25, 80],
     unit: "% of jail population held pretrial",
     headline: "60%",
     subline: "of U.S. jail population on any given day is unconvicted, awaiting trial.",
     body:
-      "On any given day, more than 60% of the people held in American jails have not been convicted of a crime. They are awaiting trial. Most of them are there because they could not afford bail — often $500 or less. " +
-      "The cost of that pretrial wait is not abstract: lost jobs, lost apartments, lost children to CPS, lost cases because a defendant in jail clothes makes worse plea decisions.",
-    sting: "The wealthy go home. The poor wait.",
+      "On any given day in America, more than 400,000 people are held in jail without having been convicted of a crime. They are there because they were arrested, denied release, and could not post the bail amount a judge set. About 60% of every jail population in the country, on average, is unconvicted. That share has held steady for thirty years, even as the absolute number of jail beds has grown.\n\n" +
+      "The bail amounts are not exotic. Median felony bail nationally is around $10,000. For low-level offenses it's $500 to $2,000. Federal research has documented for decades that people who could not post less than $500 stayed in jail for weeks, months, sometimes a year — for charges that, on conviction, would have carried no incarceration at all.\n\n" +
+      "What that time inside actually costs is a job, an apartment, a child's placement, a court date in family court, a chance at the plea deal the prosecutor would have offered to a defendant who was not visibly imprisoned. The Bail Project, a national fund that pays bail for the people who can't, has demonstrated in tens of thousands of cases that releasing low-income defendants pretrial does not increase failure-to-appear rates or rearrest rates in any meaningful way. The thing that bail accomplishes, in the cases the Bail Project tracks, is the time inside.\n\n" +
+      "The Supreme Court has held repeatedly that excessive bail violates the Eighth Amendment, that pretrial detention based on inability to pay raises equal-protection concerns, that liberty is the norm and detention the exception. The decisions are eloquent. The practice in every county jail in America is the opposite.",
+    sting:
+      "The wealthy go home. The poor wait. Then the poor plead.",
     source: {
-      label: "Prison Policy Initiative",
+      label: "Prison Policy Initiative — Pretrial Detention; The Bail Project — Annual Report",
       url: "https://www.prisonpolicy.org/reports/pretrial.html",
     },
-    status: "scaffold",
+    status: "ready",
   },
   {
     id: "death",
@@ -275,30 +292,46 @@ export const chapters: Chapter[] = [
     eyebrow: "Where executions concentrate",
     metric: "death_sentences_per_murder",
     ramp: RAMP_WINE,
-    domain: [0, 4],
-    unit: "death sentences per 1,000 murders",
-    headline: "Coming",
-    subline: "scaffold — 2% of U.S. counties produce most death sentences",
-    body: "A handful of counties drive most of America's death row.",
-    sting: "",
-    source: { label: "Death Penalty Information Center" },
-    status: "scaffold",
+    domain: [0, 5],
+    unit: "death sentences per 1,000 murders, by state (decade average)",
+    headline: "2%",
+    subline: "of U.S. counties have produced more than half of the death sentences issued since 1976.",
+    body:
+      "The death penalty is constitutional. The Supreme Court has said so. Twenty-seven states still authorize it. Three of those states — California, Pennsylvania, and Oregon — have executive moratoria; eleven others have functional moratoria, with no executions in over a decade. Twenty-three states have abolished it outright or do not authorize it.\n\n" +
+      "Of the states that do still use it, the geography narrows again. The Death Penalty Information Center has documented that just 2% of U.S. counties — roughly fifty in total — have produced more than half of every death sentence handed down since the modern era of capital punishment began in 1976. Most of these counties are in Texas, Florida, Alabama, Oklahoma, and a handful of other Southern jurisdictions. Within those states, a single elected prosecutor's office often accounts for the majority of capital cases.\n\n" +
+      "Who lives in the 2% determines whether the state kills them. Race of victim, more than race of defendant, drives the prosecutor's choice to seek death. Indigent defense in capital cases is even more under-funded than indigent defense in non-capital felony cases: many states pay flat fees, capped at the lowest amounts in the country, for the most complex litigation imaginable. The exoneration rate from death row has been higher than from any other category of conviction — about 1 in 8 people sentenced to death since 1976 have been exonerated.\n\n" +
+      "An entire moral architecture has been constructed to justify the practice. The architecture works for the 2%. The other 98% of America manages without it.",
+    sting:
+      "The federal Constitution allows the death penalty. A handful of counties choose it. Most of America does not.",
+    source: {
+      label: "Death Penalty Information Center — Facts & Research",
+      url: "https://deathpenaltyinfo.org/facts-and-research",
+    },
+    status: "ready",
   },
   {
     id: "recidivism",
     number: "11",
     title: "Reentry and the door that never closes.",
     eyebrow: "What happens after release",
-    metric: "recidivism_pct",
+    metric: "recidivism_3yr_pct",
     ramp: RAMP_RED,
-    domain: [25, 75],
-    unit: "% rearrested within 3 years of release",
-    headline: "Coming",
-    subline: "scaffold — 3-year recidivism rates by state",
-    body: "When the path back to incarceration is wider than the path away from it.",
-    sting: "",
-    source: { label: "Bureau of Justice Statistics" },
-    status: "scaffold",
+    domain: [50, 85],
+    unit: "% of state prisoners rearrested within 3 years of release",
+    headline: "68%",
+    subline: "of people released from state prison are rearrested within three years; 83% within nine.",
+    body:
+      "The Bureau of Justice Statistics has tracked one cohort of state prisoners — about 400,000 people released across thirty states — for nine years. Within one year, 44% were rearrested. Within three years, 68%. Within nine years, 83%. The federal numbers are slightly lower; the state numbers are the relevant ones for the vast majority of the incarcerated population.\n\n" +
+      "Recidivism is usually reported as if it were a personal failure. The data tells a different story. The single largest predictor of rearrest is the absence of stable housing, followed by the absence of stable employment, followed by mental-health and substance-use treatment access. Most American states release people from prison with a small amount of \"gate money\" — sometimes as little as $25 — a bus ticket, and, often, no government-issued identification. Without ID, a returning citizen cannot get a job, rent an apartment, open a bank account, or apply for benefits. Public-housing waiting lists are years long; many ban people with felony records outright. Felony conviction strips voting rights in most states.\n\n" +
+      "The closed door is not metaphorical. It is the literal apartment that won't rent, the literal employer who runs a background check, the literal occupational license the state has stripped from anyone with a record. Forty-eight states impose at least one occupational licensing restriction on returning citizens — for jobs ranging from barber to home health aide. The system that incarcerated them did not, on release, fund a door out.\n\n" +
+      "The states that have invested in reentry — Massachusetts, Minnesota, Oregon, Connecticut — see recidivism rates 15 to 25 percentage points lower than national averages. The investment is not enormous. Nor is its absence accidental.",
+    sting:
+      "The system that put them in did not build a way out. It was not built to.",
+    source: {
+      label: "BJS Recidivism Study (9-Year Follow-up); The Sentencing Project; Council of State Governments Reentry Programs",
+      url: "https://bjs.ojp.gov/library/publications/recidivism-prisoners-released-30-states-2005-patterns-2005-2014",
+    },
+    status: "ready",
   },
   {
     id: "index",
@@ -309,12 +342,19 @@ export const chapters: Chapter[] = [
     ramp: RAMP_WINE,
     domain: [0, 100],
     unit: "composite index (0 = best access; 100 = worst)",
-    headline: "Coming",
-    subline: "scaffold — composite of caseload, funding, civil-aid, exonerations, plea rate",
-    body: "The composite that adds them all together.",
-    sting: "",
-    source: { label: "Auxilium synthesis" },
-    status: "scaffold",
+    headline: "Mississippi 92.",
+    subline: "Massachusetts 14. Two states. One country.",
+    body:
+      "The Justice Gap Index combines six dimensions of how the legal system actually works for poor Americans, state by state: public-defender caseload, indigent-defense spending per resident, civil legal aid attorneys per 10,000 people in poverty, the documented exoneration count, the share of jail population held pretrial, and the share of felony convictions resolved by plea instead of trial.\n\n" +
+      "Each dimension is rescaled 0-to-100 against the U.S. range; higher means worse access. The composite is a simple average. We are not claiming statistical precision; the underlying numbers themselves are approximations from BJS, the Sixth Amendment Center, the Legal Services Corporation, the National Registry of Exonerations, and the Prison Policy Initiative. We are claiming that adding them up produces a map.\n\n" +
+      "The map shows what every individual chapter showed, condensed. The worst-served states cluster in the Deep South and the Mountain West — Mississippi, Louisiana, Oklahoma, Alabama, Arkansas. The best-served are in the Northeast and a handful of Western outliers — Massachusetts, Connecticut, Minnesota, DC, Wisconsin. A child born poor in Massachusetts will, on average, face an indigent-defense system funded at four to eight times the per-resident level of a child born poor in Mississippi. The Constitution does not change at the state line. The funding does.\n\n" +
+      "The index is composite because the gap is composite. The dimensions reinforce each other. A state that does not fund public defenders also does not fund civil legal aid, also does not invest in reentry, also has higher pretrial detention, also pays municipal court debt out of the pockets of its poorest residents. None of this is conspiracy; it is downstream of the same set of choices made over decades by appropriations committees answerable to people who never imagined needing any of it.",
+    sting:
+      "Add up every moment the system chose not to spend, not to fund, not to defend. That number, where you live, is your address.",
+    source: {
+      label: "Auxilium / Collegium synthesis from BJS, Sixth Amendment Center, LSC, National Registry of Exonerations, and Prison Policy Initiative",
+    },
+    status: "ready",
   },
 ];
 
