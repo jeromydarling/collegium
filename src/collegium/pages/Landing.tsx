@@ -51,6 +51,37 @@ export function Landing() {
               Read the manifesto
             </Link>
           </div>
+
+          {/* Second front door — Auxilium. For the person, not the steward. */}
+          <div className="mt-10 sm:mt-12 max-w-2xl mx-auto px-2">
+            <hr className="collegium-gold-rule" />
+            <Link
+              to="/auxilium"
+              className="block mt-6 sm:mt-8 group text-left bg-white border border-[hsl(var(--c-border))] rounded-xl p-5 sm:p-6 hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+                  <ArrowRight size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="collegium-latin text-xs text-[hsl(var(--c-wine))] mb-0.5">
+                    Auxilium
+                  </div>
+                  <h3 className="collegium-display text-xl sm:text-2xl mb-1 leading-tight">
+                    Need legal help yourself?
+                  </h3>
+                  <p className="text-sm sm:text-base text-[hsl(var(--c-slate))] leading-snug">
+                    A plain-English guide — your situation, your documents,
+                    your questions — so you walk into help prepared.{" "}
+                    <span className="text-[hsl(var(--c-wine))] font-medium underline decoration-[hsl(var(--c-gold)/0.5)] underline-offset-2 group-hover:decoration-[hsl(var(--c-wine))]">
+                      Open Auxilium →
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </div>
+
           <div className="collegium-divider-ornament mt-12 sm:mt-16">⁂</div>
           <blockquote className="collegium-quote max-w-2xl mx-auto text-left text-base sm:text-lg md:text-xl">
             "Law is nothing else than an ordinance of reason for the common good,

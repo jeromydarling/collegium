@@ -22,6 +22,11 @@ import { NRIPulse } from "./app/NRIPulse";
 import { DailyOffice } from "./app/DailyOffice";
 import { CalendarPage } from "./app/Calendar";
 
+import { AuxiliumLanding } from "./auxilium/AuxiliumLanding";
+import { MatterPicker } from "./auxilium/MatterPicker";
+import { MatterGuide } from "./auxilium/MatterGuide";
+import { FindHelp } from "./auxilium/FindHelp";
+
 import "./styles.css";
 
 // Vite injects the base URL at build time (e.g. "/" locally, "/collegium/" on
@@ -50,6 +55,12 @@ export default function CollegiumApp() {
           <Route path="contact" element={<Contact />} />
           <Route path="demo" element={<DemoGate />} />
         </Route>
+
+        {/* Auxilium — second front door. Plain English, public-facing. */}
+        <Route path="auxilium" element={<AuxiliumLanding />} />
+        <Route path="auxilium/start" element={<MatterPicker />} />
+        <Route path="auxilium/matter/:slug" element={<MatterGuide />} />
+        <Route path="auxilium/find-help" element={<FindHelp />} />
 
         {/* Demo app */}
         <Route path="app" element={<AppLayout />}>
