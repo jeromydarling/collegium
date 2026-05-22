@@ -32,6 +32,10 @@ jobs:
         env:
           VITE_COLLEGIUM_BASE: /${{ github.event.repository.name }}/
           VITE_COLLEGIUM_DEMO: "1"
+          # Mapbox public token (pk.*) — referrer-restricted server-side,
+          # safe to ship in client bundle. Set as a repo secret named
+          # VITE_MAPBOX_TOKEN.
+          VITE_MAPBOX_TOKEN: ${{ secrets.VITE_MAPBOX_TOKEN }}
         run: npm run build
 
       - name: Add SPA 404 fallback

@@ -18,6 +18,7 @@ import {
   type Resource,
 } from "./data/directory";
 import { InfoNotAdviceFooter } from "./components/InfoNotAdviceFooter";
+import { LocalMap, type MapResource } from "./components/LocalMap";
 
 /**
  * FindHelp — the comprehensive Auxilium legal-help directory.
@@ -112,6 +113,17 @@ export function FindHelp() {
             );
           })}
         </div>
+
+        {/* Local map view — visual context for what's near the user. */}
+        {jurisdiction.state && filterCat === "all" && (
+          <section className="mb-8 sm:mb-10">
+            <SectionHeader>What's near you</SectionHeader>
+            <LocalMap
+              jurisdiction={jurisdiction}
+              resources={buildMapResources(networkLocal, jurisdiction)}
+            />
+          </section>
+        )}
 
         {/* Collegium-network chapters near the user, if any */}
         {networkLocal.length > 0 && filterCat === "all" && (
@@ -286,6 +298,37 @@ function Chip({
       {label}
     </button>
   );
+}
+
+/** Build MapResource[] for the LocalMap from chapters + select directory entries. */
+function buildMapResources(
+  networkLocal: ReturnType<typeof chapters.filter>,
+  jurisdiction: { city?: string; state?: string }
+): MapResource[] {
+  const out: MapResource[] = networkLocal.map((c) => ({
+    id: c.id,
+    name: c.name,
+    address: `${c.city}, ${c.state}`,
+    kind: "clinic" as const,
+  }));
+  // Demo enhancement: add a couple of canonical legal-aid spots in the
+  // user's metro so the map has more than one pin to fit bounds around.
+  // Real geocoding happens via Mapbox in the component.
+  if (jurisdiction.city) {
+    out.push({
+      id: "demo-court",
+      name: `${jurisdiction.city} courthouse self-help center`,
+      address: `${jurisdiction.city} ${jurisdiction.state ?? ""}`,
+      kind: "court",
+    });
+    out.push({
+      id: "demo-library",
+      name: `${jurisdiction.city} public library — legal information desk`,
+      address: `${jurisdiction.city} public library`,
+      kind: "library",
+    });
+  }
+  return out;
 }
 
 /** Loose US-state-name-to-abbreviation helper. */

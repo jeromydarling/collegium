@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { matterTypes } from "./data/matters";
 import { InfoNotAdviceFooter } from "./components/InfoNotAdviceFooter";
+import { JusticeMap } from "./components/JusticeMap";
+import { LegalShieldFeatured } from "./components/LegalShieldFeatured";
 
 /**
  * Auxilium landing — the second front door of Collegium.
@@ -147,6 +149,12 @@ export function AuxiliumLanding() {
           </p>
         </div>
       </section>
+
+      {/* The justice crisis, mapped — interactive choropleth */}
+      <JusticeMap />
+
+      {/* LegalShield breakthrough — the solution that already exists */}
+      <LegalShieldFeatured />
 
       {/* Three promises */}
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
