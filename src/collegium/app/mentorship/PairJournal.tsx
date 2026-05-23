@@ -80,7 +80,12 @@ export function PairJournal() {
       a === mentee.stage || (mentee.stage === "young-lawyer" && a === "lawyer")
     )
   );
-  const excerpts = recommended.length > 0 ? recommended : libraryExcerpts;
+  // Saved-by-the-user excerpts come first; then stage-recommended (deduped).
+  const savedSet = new Set(state.savedExcerpts);
+  const savedExcerpts = libraryExcerpts.filter((ex) => savedSet.has(ex.id));
+  const fillSource = recommended.length > 0 ? recommended : libraryExcerpts;
+  const restExcerpts = fillSource.filter((ex) => !savedSet.has(ex.id));
+  const excerpts = [...savedExcerpts, ...restExcerpts];
 
   function startWithExcerpt(excerptId: string) {
     const ex = libraryExcerpts.find((e) => e.id === excerptId);
@@ -173,14 +178,28 @@ export function PairJournal() {
 
       {tab === "excerpts" && (
         <div className="space-y-3 collegium-safe-bottom">
-          <p className="text-xs text-[hsl(var(--c-slate-soft))] mb-2">
-            Recommended for {mentee.name.split(" ")[0]} ({mentee.stage.replace(/-/g, " ")}).
-            Pick one to anchor this month's journal entry.
-          </p>
+          {savedExcerpts.length > 0 && (
+            <p className="text-xs text-[hsl(var(--c-wine))] mb-2">
+              Your {savedExcerpts.length} saved reading{savedExcerpts.length === 1 ? "" : "s"} first.
+              Then recommendations for {mentee.name.split(" ")[0]} ({mentee.stage.replace(/-/g, " ")}).
+            </p>
+          )}
+          {savedExcerpts.length === 0 && (
+            <p className="text-xs text-[hsl(var(--c-slate-soft))] mb-2">
+              Recommended for {mentee.name.split(" ")[0]} ({mentee.stage.replace(/-/g, " ")}).
+              Pick one to anchor this month's journal entry.
+            </p>
+          )}
           {excerpts.map((ex) => {
             const work = libraryWorks.find((w) => w.id === ex.workId);
+            const isSaved = savedSet.has(ex.id);
             return (
-              <article key={ex.id} className="collegium-card p-4 sm:p-5">
+              <article
+                key={ex.id}
+                className={`collegium-card p-4 sm:p-5 ${
+                  isSaved ? "border-l-4 border-[hsl(var(--c-gold))]" : ""
+                }`}
+              >
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
                     <div className="text-xs text-[hsl(var(--c-slate-soft))]">

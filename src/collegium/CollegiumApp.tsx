@@ -27,12 +27,15 @@ import { VolunteerRoster } from "./app/service/VolunteerRoster";
 import { FollowUpQueue } from "./app/service/FollowUpQueue";
 import { Formation } from "./app/Formation";
 import { TrackRunner } from "./app/formation/TrackRunner";
+import { WorkReader } from "./app/formation/WorkReader";
 import { Advancement } from "./app/Advancement";
 import { LeadershipPipeline } from "./app/advancement/LeadershipPipeline";
 import { EventDetail } from "./app/advancement/EventDetail";
 import { EventEdit } from "./app/advancement/EventEdit";
 import { NRIPulse } from "./app/NRIPulse";
 import { DailyOffice } from "./app/DailyOffice";
+import { DevotionalIndex } from "./app/devotional/DevotionalIndex";
+import { DevotionalDayView } from "./app/devotional/DevotionalDayView";
 import { CalendarPage } from "./app/Calendar";
 import { CommunioDirectory, CommunioPeer } from "./app/Communio";
 import { IntakeAssist } from "./app/IntakeAssist";
@@ -149,6 +152,8 @@ export default function CollegiumApp() {
           <Route path="communio/:slug" element={<CommunioPeer />} />
           <Route path="formation" element={<Formation />} />
           <Route path="formation/track/:id" element={<TrackRunner />} />
+          <Route path="formation/work/:workId" element={<WorkReader />} />
+          <Route path="formation/work/:workId/section/:sectionId" element={<WorkReader />} />
           <Route path="advancement" element={<Advancement />} />
           <Route path="advancement/pipeline" element={<LeadershipPipeline />} />
           <Route path="advancement/event/new" element={<EventEdit />} />
@@ -164,6 +169,9 @@ export default function CollegiumApp() {
           <Route path="appeals" element={<AppealManagement />} />
           <Route path="intake-assist" element={<IntakeAssist />} />
           <Route path="office" element={<DailyOffice />} />
+          <Route path="devotional" element={<DevotionalIndex />} />
+          <Route path="devotional/today" element={<DevotionalDayView today />} />
+          <Route path="devotional/day/:day" element={<DevotionalDayView />} />
           <Route path="calendar" element={<CalendarPage />} />
         </Route>
 

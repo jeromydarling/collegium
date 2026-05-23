@@ -20,14 +20,18 @@ import {
 } from "../data/demo";
 import { peerGuilds, peerSignals } from "../data/communio";
 import { generateBriefings } from "../lib/nri/engine";
-import { devotionalForDate } from "../content/devotional";
+import { devotionalForDate as weekRhythmForDate } from "../content/weekRhythm";
+import { devotionalForDate as yearForDate } from "../content/devotional";
+import { libraryExcerpts, libraryWorks } from "../content/library";
+import { sectionForExcerpt } from "../content/workSections";
 
 export function Dashboard() {
   const state = useDemoState();
   const r = roleLabel[state.role];
 
   const today = new Date();
-  const office = devotionalForDate(today);
+  const office = weekRhythmForDate(today);
+  const yearEntry = yearForDate(today);
 
   const nriBriefings = generateBriefings({
     chapters,
@@ -115,6 +119,91 @@ export function Dashboard() {
           </div>
         </Link>
       </div>
+
+      {/* ── The Lawyer's Year + Saved readings ── */}
+      {(yearEntry || state.savedExcerpts.length > 0) && (
+        <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 mb-8">
+          {yearEntry && (
+            <Link
+              to={`/app/devotional/day/${yearEntry.day}`}
+              className="collegium-card p-5 sm:p-6 hover:shadow-md transition-shadow group block bg-gradient-to-br from-[hsl(var(--c-cream-warm))] to-[hsl(40_30%_85%)]"
+            >
+              <div className="flex items-center gap-2 mb-3 text-[hsl(var(--c-wine))]">
+                <CalendarDays size={16} />
+                <span className="text-xs uppercase tracking-widest">
+                  The Lawyer's Year · Day {yearEntry.day}
+                </span>
+              </div>
+              <div className="collegium-latin text-sm mb-1">
+                {yearEntry.weekArcLatin}
+              </div>
+              <h3 className="collegium-display text-xl mb-2 leading-tight">
+                {yearEntry.title}
+              </h3>
+              <p className="text-xs text-[hsl(var(--c-slate-soft))] mb-3">
+                {yearEntry.scripture.reference} · {yearEntry.excerpt.author}
+              </p>
+              <div className="flex items-center gap-1 text-sm text-[hsl(var(--c-wine))] font-medium">
+                Read today's entry{" "}
+                <ArrowRight
+                  size={14}
+                  className="group-hover:translate-x-0.5 transition-transform"
+                />
+              </div>
+            </Link>
+          )}
+          {state.savedExcerpts.length > 0 && (
+            <div className="collegium-card p-5 sm:p-6">
+              <div className="flex items-center gap-2 mb-3 text-[hsl(var(--c-wine))]">
+                <Library size={16} />
+                <span className="text-xs uppercase tracking-widest">
+                  Saved readings ({state.savedExcerpts.length})
+                </span>
+              </div>
+              <ul className="space-y-2">
+                {state.savedExcerpts.slice(0, 4).map((id) => {
+                  const ex = libraryExcerpts.find((e) => e.id === id);
+                  if (!ex) return null;
+                  const work = libraryWorks.find((w) => w.id === ex.workId);
+                  const sec = sectionForExcerpt(ex.id);
+                  return (
+                    <li
+                      key={id}
+                      className="border-l-2 border-[hsl(var(--c-gold))] pl-3"
+                    >
+                      <div className="text-sm text-[hsl(var(--c-ink))] leading-snug line-clamp-2 italic">
+                        "{ex.text}"
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] text-[hsl(var(--c-slate-soft))] mt-0.5">
+                        <span className="collegium-latin text-[hsl(var(--c-wine))]">
+                          {ex.citation}
+                        </span>
+                        {work && <span>· {work.author}</span>}
+                        {sec && (
+                          <Link
+                            to={`/app/formation/work/${work?.id}/section/${sec.id}?excerpt=${ex.id}`}
+                            className="collegium-link ml-auto"
+                          >
+                            Read in context →
+                          </Link>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              {state.savedExcerpts.length > 4 && (
+                <Link
+                  to="/app/formation"
+                  className="collegium-link text-xs mt-3 inline-flex items-center gap-1"
+                >
+                  See all {state.savedExcerpts.length} saved →
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Modules quick-access ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">

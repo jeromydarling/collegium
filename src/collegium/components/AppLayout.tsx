@@ -23,6 +23,7 @@ import {
   DollarSign,
   PhoneIncoming,
   Quote,
+  BookOpen,
 } from "lucide-react";
 import { useDemoState, roleLabel } from "../lib/demoStore";
 
@@ -34,6 +35,7 @@ const items = [
   { to: "/app/service/inbox", label: "Network Inbox", icon: Inbox },
   { to: "/app/communio", label: "Communio", icon: Globe },
   { to: "/app/formation", label: "Formation", icon: Library },
+  { to: "/app/devotional", label: "The Lawyer's Year", icon: BookOpen },
   { to: "/app/advancement", label: "Advancement", icon: TrendingUp },
   { to: "/app/pulse", label: "NRI Pulse", icon: Activity },
   { to: "/app/hours", label: "Pro Bono Hours", icon: Award },

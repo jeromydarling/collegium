@@ -343,3 +343,41 @@ html, body {
   display: inline-flex;
   align-items: center;
 }
+
+/* On-site reader (WorkReader) — typography + excerpt highlight pulse. */
+.collegium-reader-prose p {
+  margin: 0 0 1em 0;
+  text-align: justify;
+  hyphens: auto;
+}
+.collegium-reader-prose p:first-of-type::first-letter {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 3em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  margin: 0.1em 0.08em 0 0;
+  color: hsl(var(--c-wine));
+}
+.collegium-reader-prose h3 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1.05em;
+  color: hsl(var(--c-wine));
+  margin: 1.5em 0 0.5em 0;
+}
+.collegium-reader-prose blockquote {
+  border-left: 3px solid hsl(var(--c-gold));
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: hsl(var(--c-slate));
+}
+.reader-excerpt-highlight {
+  background: hsl(var(--c-gold) / 0.18);
+  transition: background 1.2s ease-out;
+  border-radius: 3px;
+  padding: 0.25em 0.4em;
+  margin: 0 -0.4em;
+}

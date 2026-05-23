@@ -1,10 +1,19 @@
-import { devotionalForDate, weekdayRhythm, type Weekday } from "../content/devotional";
-import { Sun, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  devotionalForDate as weekRhythmForDate,
+  weekdayRhythm,
+  type Weekday,
+} from "../content/weekRhythm";
+import { devotionalForDate, dayOfYear } from "../content/devotional";
+import { Sun, ChevronLeft, ChevronRight, BookOpen, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export function DailyOffice() {
   const [date, setDate] = useState(() => new Date());
-  const entry = devotionalForDate(date);
+  const entry = weekRhythmForDate(date);
+  // 365-day "Lawyer's Year" entry (null if today is not yet seeded)
+  const yearEntry = devotionalForDate(date);
+  const todayDay = dayOfYear(date);
 
   function shift(days: number) {
     const next = new Date(date);
@@ -40,6 +49,52 @@ export function DailyOffice() {
           </button>
         </div>
       </div>
+
+      {yearEntry && (
+        <Link
+          to={`/app/devotional/day/${yearEntry.day}`}
+          className="collegium-card p-4 mb-6 flex items-center gap-3 bg-[hsl(var(--c-cream-warm))] hover:shadow-md transition-shadow group"
+        >
+          <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine))] text-[hsl(var(--c-cream))] flex items-center justify-center shrink-0">
+            <BookOpen size={16} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))]">
+              The Lawyer's Year · Day {yearEntry.day} · {yearEntry.weekArc}
+            </div>
+            <div className="collegium-display text-base leading-tight truncate">
+              {yearEntry.title}
+            </div>
+          </div>
+          <ArrowRight
+            size={16}
+            className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+          />
+        </Link>
+      )}
+      {!yearEntry && (
+        <Link
+          to="/app/devotional"
+          className="collegium-card p-4 mb-6 flex items-center gap-3 bg-[hsl(var(--c-cream-warm))] hover:shadow-md transition-shadow group"
+        >
+          <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine))] text-[hsl(var(--c-cream))] flex items-center justify-center shrink-0">
+            <BookOpen size={16} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))]">
+              The Lawyer's Year
+            </div>
+            <div className="collegium-display text-base leading-tight">
+              Browse the 365-day devotional
+            </div>
+          </div>
+          <ArrowRight
+            size={16}
+            className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+          />
+        </Link>
+      )}
+      <div className="hidden">{todayDay}</div>
 
       <article className="collegium-card p-5 sm:p-8 md:p-10">
         <div className="text-center mb-6 sm:mb-8">
