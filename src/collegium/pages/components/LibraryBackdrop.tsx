@@ -55,7 +55,9 @@ function HeroBackdrop({
   align: "left" | "center" | "right";
   children?: React.ReactNode;
 }) {
-  const bgUrl = image ? `/assets/library/${image.slug}.jpg` : null;
+  const bgUrl = image
+    ? `${import.meta.env.BASE_URL}assets/library/${image.slug}.jpg`
+    : null;
   const alignClass =
     align === "left" ? "text-left" : align === "right" ? "text-right" : "text-center";
 
@@ -173,7 +175,7 @@ function FeatureBackdrop({
       className={`relative rounded-xl overflow-hidden border border-[hsl(var(--c-border))] shadow-sm ${className}`}
     >
       <img
-        src={`/assets/library/${image.slug}.jpg`}
+        src={`${import.meta.env.BASE_URL}assets/library/${image.slug}.jpg`}
         alt={`${image.name}, ${image.location}`}
         loading="lazy"
         className="w-full h-full object-cover aspect-[4/3]"

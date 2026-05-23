@@ -169,8 +169,8 @@ export function Landing() {
             </div>
             <div className="relative rounded-xl overflow-hidden border border-[hsl(var(--c-border))] shadow-sm bg-[hsl(var(--c-cream-warm))] aspect-video">
               <video
-                src="/intro.mp4"
-                poster="/intro-poster.svg"
+                src={`${import.meta.env.BASE_URL}intro.mp4`}
+                poster={`${import.meta.env.BASE_URL}intro-poster.svg`}
                 controls
                 preload="metadata"
                 playsInline
