@@ -26,7 +26,9 @@
       }
       .clip {
         position: absolute;
-        opacity: 0;
+        /* Visibility is managed by the hyperframes runtime via data-start /
+           data-duration — DO NOT set opacity:0 here, it fights with
+           GSAP .from() animations and clips end up invisible the whole time. */
       }
       .latin {
         font-style: italic;
