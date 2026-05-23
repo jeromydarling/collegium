@@ -32,5 +32,5 @@ collegium-walkthrough/.hyperframes
 collegium-walkthrough/dist
 collegium-walkthrough/transcript.json
 collegium-walkthrough/captions.vtt
-
-collegium-walkthrough/assets/music.mp3
+# (music.mp3 IS tracked — committed by the render-video CI workflow so
+# renders are reproducible without re-calling the ElevenLabs API every time.)

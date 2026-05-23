@@ -1,0 +1,146 @@
+name: Render walkthrough video
+
+# Builds the homepage walkthrough video end-to-end:
+#   1. Calls ElevenLabs Music API (using ELEVENLABS_API_KEY secret) to
+#      regenerate the background track, OR reuses the committed
+#      collegium-walkthrough/assets/music.mp3 from the previous run.
+#   2. Renders the hyperframes composition to public/intro.mp4.
+#   3. Commits both files back to the branch.
+#
+# Trigger:
+#   - Manually from the Actions tab ("Run workflow") — supports a
+#     "regenerate_music" toggle.
+#   - Automatically when something in the composition or render script
+#     changes (push to main affecting collegium-walkthrough/** or
+#     scripts/generate-music.mjs).
+#
+# Required repo secret:
+#   ELEVENLABS_API_KEY  — your ElevenLabs key (only needed when
+#                          regenerate_music = true)
+
+on:
+  workflow_dispatch:
+    inputs:
+      regenerate_music:
+        description: "Regenerate music via ElevenLabs (otherwise reuse committed music.mp3)"
+        type: boolean
+        default: true
+      commit_message:
+        description: "Commit message for the rendered output"
+        type: string
+        default: "Re-render walkthrough video"
+  push:
+    branches: [main]
+    paths:
+      - "collegium-walkthrough/**"
+      - "scripts/generate-music.mjs"
+      - ".github/workflows/render-video.yml"
+
+# Only one render at a time per branch — kills stale workflows so we
+# never push two competing renders.
+concurrency:
+  group: render-video-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          # We push back to the branch — fetch the full history so the
+          # commit lands cleanly.
+          fetch-depth: 0
+          # Use the default GITHUB_TOKEN so the push triggers no further
+          # workflows (avoids infinite loops on push events).
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install system dependencies (ffmpeg)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Install root npm dependencies
+        run: npm ci
+
+      - name: Install walkthrough project dependencies
+        working-directory: collegium-walkthrough
+        run: npm install --no-audit --no-fund
+
+      - name: Cache hyperframes browser (chrome-headless-shell)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/hyperframes
+          key: hyperframes-cache-v1-${{ runner.os }}
+          restore-keys: hyperframes-cache-v1-
+
+      - name: Ensure headless Chrome for hyperframes
+        working-directory: collegium-walkthrough
+        run: npx hyperframes browser ensure
+
+      - name: Regenerate background music (ElevenLabs)
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.regenerate_music == true }}
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          if [ -z "$ELEVENLABS_API_KEY" ]; then
+            echo "::warning::ELEVENLABS_API_KEY secret is not set — skipping music regeneration and reusing committed music.mp3 (if present)."
+          else
+            npm run music:generate
+          fi
+
+      - name: Lint composition (advisory)
+        working-directory: collegium-walkthrough
+        run: npx hyperframes lint || true
+
+      - name: Render walkthrough video
+        run: npm run video:render
+
+      - name: Probe the rendered output
+        run: |
+          ffprobe -v error \
+            -show_entries format=duration:stream=codec_type,codec_name,width,height,r_frame_rate \
+            -of default=noprint_wrappers=1 \
+            public/intro.mp4
+          ls -lh public/intro.mp4 collegium-walkthrough/assets/music.mp3 2>/dev/null || true
+
+      - name: Commit and push rendered artefacts
+        env:
+          COMMIT_MSG: ${{ inputs.commit_message || 'Re-render walkthrough video (auto)' }}
+        run: |
+          git config user.name "collegium-render-bot"
+          git config user.email "collegium-render-bot@users.noreply.github.com"
+          git add public/intro.mp4
+          # Force-add the music file past any .gitignore (the file IS tracked
+          # but extra-safe in case the gitignore rules drift).
+          git add -f collegium-walkthrough/assets/music.mp3 || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit — output is byte-identical to the existing file."
+            exit 0
+          fi
+          git commit -m "$COMMIT_MSG
+
+          - public/intro.mp4 ($(du -h public/intro.mp4 | cut -f1))
+          - collegium-walkthrough/assets/music.mp3 ($(du -h collegium-walkthrough/assets/music.mp3 2>/dev/null | cut -f1 || echo 'unchanged'))
+          - Composition: 1920×1080 · 30fps · 92s
+          - Triggered by: ${{ github.event_name }}"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload rendered video as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: intro-video
+          path: public/intro.mp4
+          retention-days: 30
