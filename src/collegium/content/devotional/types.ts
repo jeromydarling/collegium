@@ -40,12 +40,20 @@ export type DevotionalDay = {
     citation: string;
     text: string;
   };
-  /** The meditation — 900–1200 words, prose paragraphs separated by \n\n. */
-  meditation: string;
-  /** A short closing prayer (2–5 sentences). */
-  prayer: string;
-  /** A single reflection prompt the reader can sit with. */
-  prompt: string;
+  /**
+   * Optional, deprecated — earlier weeks shipped with LLM-written
+   * meditations, prayers, and prompts. The book has since been
+   * re-scoped as a curated anthology of Scripture + the public-domain
+   * canon, with real traditional Catholic prayers attached only where
+   * one naturally belongs (looked up via traditionalPrayers.ts).
+   *
+   * These optional fields stay on the type so legacy seed entries
+   * compile; they are not rendered anywhere in the app or in the
+   * production manuscript.
+   */
+  meditation?: string;
+  prayer?: string;
+  prompt?: string;
   /**
    * Situations this entry speaks to — drives the Field Guide's
    * situational index. A day may carry 1–3 tags. See `situationalTagCatalog`
