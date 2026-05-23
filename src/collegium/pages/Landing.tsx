@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { brand, moduleOrder, principles } from "../brand";
 import { aquinasQuotes } from "../content/aquinas";
+import { LiveProductShowcase } from "./components/LiveProductShowcase";
 
 const moduleIcons: Record<string, typeof Users> = {
   chapters: Users,
@@ -186,6 +187,9 @@ export function Landing() {
           </blockquote>
         </div>
       </section>
+
+      {/* ─────────────────── Live product showcase ─────────────────── */}
+      <LiveProductShowcase />
 
       {/* ─────────────────── What it is ─────────────────── */}
       <section className="bg-white border-b border-[hsl(var(--c-border))]">
