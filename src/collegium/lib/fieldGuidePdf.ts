@@ -31,9 +31,9 @@ import {
 } from "../content/devotional/curation";
 import {
   situationalCategories,
-  tagLabel,
   type SituationalTag,
 } from "../content/devotional/situations";
+import { prayerForDay } from "../content/devotional/traditionalPrayers";
 
 const W = 4.25;
 const H = 6.875;
@@ -328,42 +328,21 @@ function drawEntry(doc: jsPDF, entry: DevotionalDay) {
   y = writeWrapped(doc, `“${entry.excerpt.text}”`, M_IN, y, TEXT_W, 0.15);
   y += 0.14;
 
-  // Meditation
-  y = ensurePage(doc, y, 0.4, M_IN);
-  drawSectionHeader(doc, "MEDITATION", "", y);
-  y += 0.22;
-  setFont(doc, "normal", 9.5);
-  setColor(doc, COLOR_INK);
-  const paras = entry.meditation.split(/\n\n+/);
-  for (let i = 0; i < paras.length; i++) {
-    const indent = i === 0 ? 0 : 0.15; // first line indent for subsequent paras
-    y = ensurePage(doc, y, 0.3, M_IN);
-    const lines = doc.splitTextToSize(paras[i], TEXT_W - indent);
-    for (let j = 0; j < lines.length; j++) {
-      y = ensurePage(doc, y, 0.15, M_IN);
-      doc.text(lines[j], M_IN + (j === 0 ? indent : 0), y);
-      y += 0.15;
+  // Traditional prayer (only if one is mapped to this day)
+  const prayer = prayerForDay(entry.day);
+  if (prayer) {
+    y = ensurePage(doc, y, 0.4, M_IN);
+    drawSectionHeader(doc, prayer.title.toUpperCase(), prayer.source, y);
+    y += 0.22;
+    setFont(doc, "italic", 9.5);
+    setColor(doc, COLOR_INK);
+    const paras = prayer.text.split(/\n\n+/);
+    for (let i = 0; i < paras.length; i++) {
+      y = ensurePage(doc, y, 0.2, M_IN);
+      y = writeWrapped(doc, paras[i], M_IN + 0.15, y, TEXT_W - 0.3, 0.15);
+      y += 0.08;
     }
-    y += 0.06;
   }
-  y += 0.1;
-
-  // Prayer
-  y = ensurePage(doc, y, 0.4, M_IN);
-  drawSectionHeader(doc, "PRAYER", "", y);
-  y += 0.22;
-  setFont(doc, "italic", 9.5);
-  setColor(doc, COLOR_INK);
-  y = writeWrapped(doc, entry.prayer, M_IN, y, TEXT_W, 0.15);
-  y += 0.14;
-
-  // Prompt
-  y = ensurePage(doc, y, 0.4, M_IN);
-  drawSectionHeader(doc, "TO SIT WITH", "", y);
-  y += 0.22;
-  setFont(doc, "normal", 9.5);
-  setColor(doc, COLOR_INK);
-  y = writeWrapped(doc, entry.prompt, M_IN, y, TEXT_W, 0.15);
 }
 
 function drawSectionHeader(doc: jsPDF, label: string, sub: string, y: number) {

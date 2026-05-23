@@ -16,6 +16,7 @@
 
 import { jsPDF } from "jspdf";
 import type { DevotionalDay } from "../content/devotional/types";
+import { prayerForDay } from "../content/devotional/traditionalPrayers";
 
 const PAGE_W = 6;
 const PAGE_H = 9;
@@ -87,39 +88,29 @@ export function buildDevotionalDayPdf(entry: DevotionalDay): jsPDF {
   y = writeJustified(doc, `“${entry.excerpt.text}”`, MARGIN_IN, y, TEXT_W, 0.18);
   y += 0.28;
 
-  // ── Meditation (with a drop cap on the first paragraph)
-  y = ensurePage(doc, y, 0.7);
-  drawSectionBand(doc, "MEDITATION", "", y);
-  y += 0.34;
-
-  const paras = entry.meditation.split(/\n\n+/);
-  for (let i = 0; i < paras.length; i++) {
-    if (i === 0) {
-      y = drawDropCapParagraph(doc, paras[0], MARGIN_IN, y, TEXT_W);
-    } else {
+  // ── Traditional prayer (only if one is mapped to this day)
+  const prayer = prayerForDay(entry.day);
+  if (prayer) {
+    y = ensurePage(doc, y, 0.7);
+    y += 0.1;
+    drawSectionBand(doc, prayer.title.toUpperCase(), prayer.source, y);
+    y += 0.34;
+    setFont(doc, "italic", 10.5);
+    setColor(doc, C_INK);
+    const paras = prayer.text.split(/\n\n+/);
+    for (let i = 0; i < paras.length; i++) {
       y = ensurePage(doc, y, 0.3);
-      y = writeJustifiedIndented(doc, paras[i], MARGIN_IN, y, TEXT_W, 0.18);
+      y = writeJustified(
+        doc,
+        paras[i],
+        MARGIN_IN + 0.2,
+        y,
+        TEXT_W - 0.4,
+        0.18
+      );
+      y += 0.1;
     }
-    y += 0.08;
   }
-
-  // ── Prayer
-  y = ensurePage(doc, y, 0.6);
-  y += 0.1;
-  drawSectionBand(doc, "PRAYER", "", y);
-  y += 0.3;
-  setFont(doc, "italic", 10.5);
-  setColor(doc, C_INK);
-  y = writeJustified(doc, entry.prayer, MARGIN_IN + 0.2, y, TEXT_W - 0.4, 0.18);
-  y += 0.25;
-
-  // ── Prompt
-  y = ensurePage(doc, y, 0.5);
-  drawSectionBand(doc, "TO SIT WITH", "", y);
-  y += 0.3;
-  setFont(doc, "normal", 10.5);
-  setColor(doc, C_INK);
-  writeJustified(doc, entry.prompt, MARGIN_IN, y, TEXT_W, 0.18);
 
   // ── Footers + page numbers (skip the first page's centered folio;
   //     it carries the title rule instead)

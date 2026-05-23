@@ -6,7 +6,6 @@ import {
   BookOpen,
   Quote,
   Heart,
-  HelpCircle,
   Printer,
   Sun,
 } from "lucide-react";
@@ -17,12 +16,13 @@ import {
   dayOfYear,
 } from "../../content/devotional";
 import { libraryWorks } from "../../content/library";
+import { prayerForDay } from "../../content/devotional/traditionalPrayers";
 import { exportDevotionalDayPdf } from "../../lib/devotionalPdf";
 
 /**
- * Single-day devotional view — Scripture + Excerpt + Meditation + Prayer
- * + Prompt + print-to-PDF. Used at /app/devotional/day/:n and (via
- * today-resolution) at /app/devotional/today.
+ * Single-day devotional view — Scripture + Excerpt + (optional)
+ * traditional Catholic prayer + print-to-PDF. The book is an
+ * anthology, not commentary; we render the two real things and stop.
  */
 
 export function DevotionalDayView({ today }: { today?: boolean }) {
@@ -51,9 +51,10 @@ export function DevotionalDayView({ today }: { today?: boolean }) {
     );
   }
 
-  const work = entry.excerpt.workId
+  const work = entry?.excerpt.workId
     ? libraryWorks.find((w) => w.id === entry.excerpt.workId)
     : null;
+  const prayer = entry ? prayerForDay(entry.day) : undefined;
   const todayDay = dayOfYear(new Date());
   const isActuallyToday = entry.day === todayDay;
 
@@ -130,34 +131,21 @@ export function DevotionalDayView({ today }: { today?: boolean }) {
         )}
       </section>
 
-      <section className="mb-6">
-        <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2">
-          Meditation
-        </div>
-        <div className="text-base text-[hsl(var(--c-slate))] leading-relaxed font-serif space-y-4">
-          {entry.meditation.split(/\n\n+/).map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
-        </div>
-      </section>
-
-      <section className="mb-6 collegium-card-warm p-5 sm:p-6">
-        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2">
-          <Heart size={11} /> Prayer
-        </div>
-        <p className="text-base text-[hsl(var(--c-ink))] leading-relaxed font-serif italic">
-          {entry.prayer}
-        </p>
-      </section>
-
-      <section className="mb-8">
-        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2">
-          <HelpCircle size={11} /> To sit with
-        </div>
-        <p className="text-base text-[hsl(var(--c-slate))] leading-relaxed">
-          {entry.prompt}
-        </p>
-      </section>
+      {prayer && (
+        <section className="mb-8 collegium-card-warm p-5 sm:p-6">
+          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2">
+            <Heart size={11} /> {prayer.title}
+            <span className="text-[hsl(var(--c-slate-soft))] normal-case font-normal tracking-normal">
+              · {prayer.source}
+            </span>
+          </div>
+          <div className="text-base text-[hsl(var(--c-ink))] leading-relaxed font-serif italic space-y-3 whitespace-pre-wrap">
+            {prayer.text.split(/\n\n+/).map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+          </div>
+        </section>
+      )}
 
       <nav className="flex items-center justify-between border-t border-[hsl(var(--c-border))] pt-5 collegium-safe-bottom">
         {prev ? (

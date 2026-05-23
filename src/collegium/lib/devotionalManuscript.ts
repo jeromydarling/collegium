@@ -25,6 +25,7 @@ import type { DevotionalDay } from "../content/devotional/types";
 import { devotionalDays } from "../content/devotional";
 import { weekArcs } from "../content/devotional/types";
 import { dayTagOverrides } from "../content/devotional/curation";
+import { prayerForDay } from "../content/devotional/traditionalPrayers";
 
 export type ManuscriptKind = "heirloom-year" | "field-guide";
 
@@ -171,8 +172,9 @@ function renderDay(entry: DevotionalDay): string {
   const tags =
     entry.situationalTags ?? dayTagOverrides[entry.day] ?? [];
   const tagLine = tags.length > 0 ? `\n*Situations: ${tags.join(", ")}*\n` : "";
+  const prayer = prayerForDay(entry.day);
 
-  return [
+  const sections: string[] = [
     `### Day ${entry.day} · ${entry.date} · ${entry.title}`,
     tagLine,
     "",
@@ -187,19 +189,19 @@ function renderDay(entry: DevotionalDay): string {
     `**${entry.excerpt.author}** — *${entry.excerpt.citation}*`,
     "",
     `> ${escapeQuote(entry.excerpt.text)}`,
-    "",
-    "#### Meditation",
-    "",
-    entry.meditation,
-    "",
-    "#### Prayer",
-    "",
-    `*${entry.prayer}*`,
-    "",
-    "#### To Sit With",
-    "",
-    entry.prompt,
-  ].join("\n");
+  ];
+
+  if (prayer) {
+    sections.push(
+      "",
+      `#### ${prayer.title}`,
+      `*${prayer.source}*`,
+      "",
+      `> ${escapeQuote(prayer.text)}`
+    );
+  }
+
+  return sections.join("\n");
 }
 
 function escapeQuote(text: string): string {
