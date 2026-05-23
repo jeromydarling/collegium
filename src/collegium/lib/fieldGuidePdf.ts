@@ -307,8 +307,8 @@ function drawEntry(doc: jsPDF, entry: DevotionalDay) {
   y += 0.1;
 
   // Scripture
-  drawSectionHeader(doc, "SCRIPTURE", `${entry.scripture.reference} (DR)`, y);
-  y += 0.22;
+  y = drawSectionHeader(doc, "SCRIPTURE", `${entry.scripture.reference} (DR)`, y);
+  y += 0.06;
   setFont(doc, "italic", 9.5);
   setColor(doc, COLOR_INK);
   y = writeWrapped(doc, entry.scripture.text, M_IN, y, TEXT_W, 0.15);
@@ -316,13 +316,13 @@ function drawEntry(doc: jsPDF, entry: DevotionalDay) {
 
   // Excerpt
   y = ensurePage(doc, y, 0.4, M_IN);
-  drawSectionHeader(
+  y = drawSectionHeader(
     doc,
     "FROM THE CANON",
     `${entry.excerpt.author} · ${entry.excerpt.citation}`,
     y
   );
-  y += 0.22;
+  y += 0.06;
   setFont(doc, "normal", 9.5);
   setColor(doc, COLOR_INK);
   y = writeWrapped(doc, `“${entry.excerpt.text}”`, M_IN, y, TEXT_W, 0.15);
@@ -332,8 +332,8 @@ function drawEntry(doc: jsPDF, entry: DevotionalDay) {
   const prayer = prayerForDay(entry.day);
   if (prayer) {
     y = ensurePage(doc, y, 0.4, M_IN);
-    drawSectionHeader(doc, prayer.title.toUpperCase(), prayer.source, y);
-    y += 0.22;
+    y = drawSectionHeader(doc, prayer.title.toUpperCase(), prayer.source, y);
+    y += 0.06;
     setFont(doc, "italic", 9.5);
     setColor(doc, COLOR_INK);
     const paras = prayer.text.split(/\n\n+/);
@@ -345,19 +345,32 @@ function drawEntry(doc: jsPDF, entry: DevotionalDay) {
   }
 }
 
-function drawSectionHeader(doc: jsPDF, label: string, sub: string, y: number) {
+/** Draw a section header; returns the y where body content should start. */
+function drawSectionHeader(
+  doc: jsPDF,
+  label: string,
+  sub: string,
+  y: number
+): number {
   setFont(doc, "bold", 8);
   setColor(doc, COLOR_WINE);
   doc.text(label, M_IN, y);
-  if (sub) {
-    setFont(doc, "italic", 8);
-    setColor(doc, COLOR_SLATE);
-    doc.text(sub, M_IN + TEXT_W, y, { align: "right" });
-  }
-  // Decorative rule under the header
   setColor(doc, COLOR_GOLD);
   doc.setLineWidth(0.005);
   doc.line(M_IN, y + 0.05, M_IN + TEXT_W, y + 0.05);
+
+  if (sub) {
+    setFont(doc, "italic", 7.5);
+    setColor(doc, COLOR_SLATE);
+    const lines = doc.splitTextToSize(sub, TEXT_W);
+    let subY = y + 0.16;
+    for (const line of lines) {
+      doc.text(line, M_IN, subY);
+      subY += 0.11;
+    }
+    return subY + 0.04;
+  }
+  return y + 0.18;
 }
 
 function drawSituationalIndex(doc: jsPDF, entries: DevotionalDay[]) {

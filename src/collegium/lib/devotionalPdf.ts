@@ -67,8 +67,8 @@ export function buildDevotionalDayPdf(entry: DevotionalDay): jsPDF {
   y += 0.4;
 
   // ── Scripture
-  drawSectionBand(doc, "SCRIPTURE", `${entry.scripture.reference} (Douay-Rheims)`, y);
-  y += 0.3;
+  y = drawSectionBand(doc, "SCRIPTURE", `${entry.scripture.reference} (Douay-Rheims)`, y);
+  y += 0.08;
   setFont(doc, "italic", 11.5);
   setColor(doc, C_INK);
   y = writeJustified(doc, entry.scripture.text, MARGIN_IN, y, TEXT_W, 0.19);
@@ -76,13 +76,13 @@ export function buildDevotionalDayPdf(entry: DevotionalDay): jsPDF {
 
   // ── Excerpt
   y = ensurePage(doc, y, 0.6);
-  drawSectionBand(
+  y = drawSectionBand(
     doc,
     "FROM THE CANON",
     `${entry.excerpt.author} · ${entry.excerpt.citation}`,
     y
   );
-  y += 0.3;
+  y += 0.08;
   setFont(doc, "normal", 10.5);
   setColor(doc, C_INK);
   y = writeJustified(doc, `“${entry.excerpt.text}”`, MARGIN_IN, y, TEXT_W, 0.18);
@@ -93,8 +93,8 @@ export function buildDevotionalDayPdf(entry: DevotionalDay): jsPDF {
   if (prayer) {
     y = ensurePage(doc, y, 0.7);
     y += 0.1;
-    drawSectionBand(doc, prayer.title.toUpperCase(), prayer.source, y);
-    y += 0.34;
+    y = drawSectionBand(doc, prayer.title.toUpperCase(), prayer.source, y);
+    y += 0.12;
     setFont(doc, "italic", 10.5);
     setColor(doc, C_INK);
     const paras = prayer.text.split(/\n\n+/);
@@ -140,19 +140,35 @@ function drawTitlePageHeader(doc: jsPDF, entry: DevotionalDay) {
   doc.line(MARGIN_IN, 0.7, PAGE_W - MARGIN_OUT, 0.7);
 }
 
-function drawSectionBand(doc: jsPDF, label: string, sub: string, y: number) {
+/** Draw a section band; returns the y at which body content should start. */
+function drawSectionBand(
+  doc: jsPDF,
+  label: string,
+  sub: string,
+  y: number
+): number {
   setFont(doc, "bold", 8.5);
   setColor(doc, C_WINE);
   doc.text(label, MARGIN_IN, y);
-  if (sub) {
-    setFont(doc, "italic", 8.5);
-    setColor(doc, C_SLATE);
-    doc.text(sub, MARGIN_IN + TEXT_W, y, { align: "right" });
-  }
+
   // Hairline gold rule under the label
   setColor(doc, C_GOLD);
   doc.setLineWidth(0.006);
   doc.line(MARGIN_IN, y + 0.06, MARGIN_IN + TEXT_W, y + 0.06);
+
+  // Sub-text wraps on its own line(s) beneath the rule, never beside.
+  if (sub) {
+    setFont(doc, "italic", 8.5);
+    setColor(doc, C_SLATE);
+    const subLines = doc.splitTextToSize(sub, TEXT_W);
+    let subY = y + 0.18;
+    for (const line of subLines) {
+      doc.text(line, MARGIN_IN, subY);
+      subY += 0.13;
+    }
+    return subY + 0.06;
+  }
+  return y + 0.22;
 }
 
 /**
