@@ -9,6 +9,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { moduleOrder } from "../brand";
+import { LibraryBackdrop } from "./components/LibraryBackdrop";
+import { imageForModule, heroImage } from "../lib/libraryImages";
 
 const moduleIcons: Record<string, typeof Users> = {
   chapters: Users,
@@ -85,7 +87,12 @@ const detail: Record<string, { headline: string; body: string[]; example: string
 export function Modules() {
   return (
     <div className="collegium-theme">
-      <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
+      <LibraryBackdrop
+        image={heroImage()}
+        mode="hero"
+        align="left"
+        className="border-b border-[hsl(var(--c-border))]"
+      >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
           <div className="collegium-latin text-sm mb-2">Sex officia · Six functions</div>
           <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-5 sm:mb-6">
@@ -97,33 +104,49 @@ export function Modules() {
             officer, steward.
           </p>
         </div>
-      </section>
+      </LibraryBackdrop>
 
       <section className="bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 space-y-12 sm:space-y-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-16 sm:space-y-24">
           {moduleOrder.map((m, idx) => {
             const Icon = moduleIcons[m.slug] ?? Users;
             const d = detail[m.slug];
+            // Alternate image/content side per row for visual rhythm
+            const imageOnRight = idx % 2 === 0;
+            const moduleSlug = m.slug as
+              | "chapters"
+              | "mentorship"
+              | "service"
+              | "formation"
+              | "advancement"
+              | "nri";
+            const libraryImage = imageForModule(moduleSlug);
+
             return (
               <article
                 key={m.slug}
-                className="grid md:grid-cols-[7rem_1fr] gap-6 md:gap-8 items-start border-b border-[hsl(var(--c-border))] pb-12 sm:pb-16 last:border-0"
+                className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center"
               >
-                <div className="flex items-center md:block gap-4">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] md:mb-3 shrink-0">
-                    <Icon size={26} />
-                  </div>
-                  <div className="collegium-display text-xl sm:text-2xl text-[hsl(var(--c-gold))]">
-                    {String(idx + 1).padStart(2, "0")}
-                  </div>
+                <div className={imageOnRight ? "lg:order-1" : "lg:order-2"}>
+                  <LibraryBackdrop image={libraryImage} mode="feature" />
                 </div>
-                <div>
+                <div className={imageOnRight ? "lg:order-2" : "lg:order-1"}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+                      <Icon size={22} />
+                    </div>
+                    <div className="collegium-display text-xl text-[hsl(var(--c-gold))]">
+                      {String(idx + 1).padStart(2, "0")}
+                    </div>
+                  </div>
                   <div className="collegium-latin text-sm mb-1">{m.latin}</div>
-                  <h2 className="collegium-display text-3xl sm:text-4xl mb-3 sm:mb-4">{m.label}</h2>
-                  <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] mb-5 sm:mb-6 leading-snug">
+                  <h2 className="collegium-display text-3xl sm:text-4xl mb-3 sm:mb-4 leading-tight">
+                    {m.label}
+                  </h2>
+                  <p className="text-lg text-[hsl(var(--c-slate))] mb-4 leading-snug">
                     {d.headline}
                   </p>
-                  <div className="space-y-3 mb-5 sm:mb-6">
+                  <div className="space-y-3 mb-5">
                     {d.body.map((p, i) => (
                       <p key={i} className="text-[hsl(var(--c-slate))] leading-relaxed">
                         {p}

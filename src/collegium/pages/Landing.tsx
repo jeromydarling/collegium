@@ -12,6 +12,8 @@ import {
 import { brand, moduleOrder, principles } from "../brand";
 import { aquinasQuotes } from "../content/aquinas";
 import { LiveProductShowcase } from "./components/LiveProductShowcase";
+import { LibraryBackdrop } from "./components/LibraryBackdrop";
+import { heroImage } from "../lib/libraryImages";
 
 const moduleIcons: Record<string, typeof Users> = {
   chapters: Users,
@@ -26,7 +28,12 @@ export function Landing() {
   return (
     <div className="collegium-theme">
       {/* ─────────────────── Hero ─────────────────── */}
-      <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
+      <LibraryBackdrop
+        image={heroImage()}
+        mode="hero"
+        align="center"
+        className="collegium-illuminated border-b border-[hsl(var(--c-border))]"
+      >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 md:pt-28 pb-14 sm:pb-20 text-center">
           <div className="collegium-latin text-xs sm:text-sm mb-4 sm:mb-5 tracking-wider px-2">
             <span className="hidden sm:inline">Collegium · Capitula · Tirocinium · Ministerium · Eruditio · Provectio</span>
@@ -186,7 +193,7 @@ export function Landing() {
             </footer>
           </blockquote>
         </div>
-      </section>
+      </LibraryBackdrop>
 
       {/* ─────────────────── Live product showcase ─────────────────── */}
       <LiveProductShowcase />
