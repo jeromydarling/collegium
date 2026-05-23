@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import { events, chapters } from "../data/demo";
 import { demoStore, useDemoState } from "../lib/demoStore";
-import { Calendar, MapPin } from "lucide-react";
+import { MapPin, TrendingUp, ArrowRight } from "lucide-react";
 
 export function Advancement() {
   const state = useDemoState();
@@ -9,13 +10,35 @@ export function Advancement() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Provectio</div>
-        <h1 className="collegium-display text-3xl sm:text-4xl">Advancement</h1>
-        <p className="text-[hsl(var(--c-slate-soft))] mt-1">
-          Conferences, Red Masses, formation days, CLE-quality gatherings, and
-          the slow shaping of the next generation of officers.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 sm:mb-8">
+        <div>
+          <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Provectio</div>
+          <h1 className="collegium-display text-3xl sm:text-4xl">Advancement</h1>
+          <p className="text-[hsl(var(--c-slate-soft))] mt-1 max-w-2xl">
+            Conferences, Red Masses, formation days, CLE-quality gatherings, and
+            the slow shaping of the next generation of officers.
+          </p>
+        </div>
+        <Link
+          to="/app/advancement/pipeline"
+          className="collegium-card p-4 hover:shadow-md transition-shadow flex items-center gap-3 group shrink-0"
+        >
+          <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+            <TrendingUp size={18} />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+              Synthesis
+            </div>
+            <div className="collegium-display text-lg leading-tight">
+              Leadership pipeline
+            </div>
+          </div>
+          <ArrowRight
+            size={16}
+            className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+          />
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 sm:mb-8">
@@ -78,6 +101,12 @@ export function Advancement() {
                   >
                     {rsvped ? "RSVP'd ✓" : "RSVP"}
                   </button>
+                  <Link
+                    to={`/app/advancement/event/${e.id}`}
+                    className="collegium-btn-ghost text-xs flex-1 justify-center inline-flex items-center gap-1"
+                  >
+                    Detail <ArrowRight size={11} />
+                  </Link>
                 </div>
               </div>
             </article>

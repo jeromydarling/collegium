@@ -64,12 +64,12 @@ const detail: Record<string, { headline: string; body: string[]; example: string
   advancement: {
     headline: "Events, formation days, and the leadership pipeline.",
     body: [
-      "Conferences, Red Masses, formation days, CLE-quality gatherings. Registration, attendance, speaker records.",
-      "Leadership pipeline: emerging chapter officers, mentor candidates, future spiritual advisors. Identified by NRI from across the modules.",
-      "Affiliate growth dashboard for national stewards — chapter membership, formation engagement, service capacity, succession risk by region.",
+      "Conferences, Red Masses, formation days, CLE-quality gatherings. Registration, attendance tracking by member, speaker records.",
+      "Leadership pipeline: officers nearing term-end, thriving long-arc mentor pairs, students and young lawyers anchoring service work — synthesized from across the modules into one steward view.",
+      "Network signals — chapter health, succession risk, service surge — surface in /pulse and /insights for the national stewardship layer.",
     ],
     example:
-      "Arlington CBA affiliate runs an Annual Formation Day on the Treatise on Law each September. 41 RSVPs so far; capacity 120. Prof. Hartmann and Fr. Cale are the named speakers.",
+      "Arlington CBA affiliate runs an Annual Formation Day on the Treatise on Law each September. 41 RSVPs so far; capacity 120. Prof. Hartmann and Fr. Cale are the named speakers. Attendance gets ticked off member-by-member on the day.",
   },
   nri: {
     headline: "Narrative Relational Intelligence — patent pending.",

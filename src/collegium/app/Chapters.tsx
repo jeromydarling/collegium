@@ -99,14 +99,34 @@ export function ChapterDetail() {
         </div>
 
         <div className="collegium-card p-5 sm:p-6">
-          <h3 className="collegium-display text-xl mb-4">Officers</h3>
+          <div className="flex items-baseline justify-between gap-2 mb-4">
+            <h3 className="collegium-display text-xl">Officers</h3>
+            <Link
+              to={`/app/chapters/${c.slug}/handoff`}
+              className="text-xs collegium-link inline-flex items-center gap-1"
+            >
+              Handoff workspace →
+            </Link>
+          </div>
           <ul className="space-y-3">
-            {c.officers.map((o) => (
-              <li key={o.name} className="flex items-baseline justify-between gap-3">
-                <span className="text-sm font-medium text-[hsl(var(--c-ink))]">{o.name}</span>
-                <span className="text-xs text-[hsl(var(--c-slate-soft))]">{o.role}</span>
-              </li>
-            ))}
+            {c.officers.map((o) => {
+              const termSoon =
+                o.termEnd &&
+                (new Date(o.termEnd).getTime() - Date.now()) / 86_400_000 < 90;
+              return (
+                <li key={o.name} className="flex items-baseline justify-between gap-3">
+                  <span className="text-sm font-medium text-[hsl(var(--c-ink))]">{o.name}</span>
+                  <span className="text-xs text-[hsl(var(--c-slate-soft))] inline-flex items-center gap-1.5">
+                    {o.role}
+                    {termSoon && (
+                      <span className="text-[9px] uppercase tracking-widest font-semibold px-1 py-0.5 rounded bg-[hsl(8_55%_52%/0.14)] text-[hsl(8_55%_38%)]">
+                        Term ending
+                      </span>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

@@ -17,11 +17,19 @@ import { ClientPortal } from "./pages/ClientPortal";
 
 import { Dashboard } from "./app/Dashboard";
 import { ChaptersList, ChapterDetail } from "./app/Chapters";
+import { HandoffWorkspace } from "./app/chapters/HandoffWorkspace";
 import { Mentorship } from "./app/Mentorship";
+import { MentorMatch } from "./app/mentorship/MentorMatch";
+import { PairJournal } from "./app/mentorship/PairJournal";
 import { Service } from "./app/Service";
 import { NetworkInbox } from "./app/NetworkInbox";
+import { VolunteerRoster } from "./app/service/VolunteerRoster";
+import { FollowUpQueue } from "./app/service/FollowUpQueue";
 import { Formation } from "./app/Formation";
+import { TrackRunner } from "./app/formation/TrackRunner";
 import { Advancement } from "./app/Advancement";
+import { LeadershipPipeline } from "./app/advancement/LeadershipPipeline";
+import { EventDetail } from "./app/advancement/EventDetail";
 import { NRIPulse } from "./app/NRIPulse";
 import { DailyOffice } from "./app/DailyOffice";
 import { CalendarPage } from "./app/Calendar";
@@ -128,13 +136,21 @@ export default function CollegiumApp() {
           <Route index element={<Dashboard />} />
           <Route path="chapters" element={<ChaptersList />} />
           <Route path="chapters/:slug" element={<ChapterDetail />} />
+          <Route path="chapters/:slug/handoff" element={<HandoffWorkspace />} />
           <Route path="mentorship" element={<Mentorship />} />
+          <Route path="mentorship/match" element={<MentorMatch />} />
+          <Route path="mentorship/pair/:id" element={<PairJournal />} />
           <Route path="service" element={<Service />} />
+          <Route path="service/volunteers" element={<VolunteerRoster />} />
+          <Route path="service/follow-up" element={<FollowUpQueue />} />
           <Route path="service/inbox" element={<NetworkInbox />} />
           <Route path="communio" element={<CommunioDirectory />} />
           <Route path="communio/:slug" element={<CommunioPeer />} />
           <Route path="formation" element={<Formation />} />
+          <Route path="formation/track/:id" element={<TrackRunner />} />
           <Route path="advancement" element={<Advancement />} />
+          <Route path="advancement/pipeline" element={<LeadershipPipeline />} />
+          <Route path="advancement/event/:id" element={<EventDetail />} />
           <Route path="pulse" element={<NRIPulse />} />
           <Route path="insights" element={<JusticeGapInsights />} />
           <Route path="practice" element={<PracticeHub />} />

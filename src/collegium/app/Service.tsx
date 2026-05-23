@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { serviceMatters, people, chapters } from "../data/demo";
-import { Inbox, ArrowRight } from "lucide-react";
+import { Inbox, ArrowRight, Users, Bell } from "lucide-react";
 
 const STATUS_COLS = ["new", "triaged", "assigned", "follow-up", "closed"] as const;
 type StatusKey = (typeof STATUS_COLS)[number];
@@ -29,26 +29,68 @@ export function Service() {
             through.
           </p>
         </div>
-        <Link
-          to="/app/service/inbox"
-          className="collegium-card p-4 hover:shadow-md transition-shadow flex items-center gap-3 group shrink-0"
-        >
-          <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
-            <Inbox size={18} />
-          </div>
-          <div className="min-w-0">
-            <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
-              Network Inbox
+        <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+          <Link
+            to="/app/service/inbox"
+            className="collegium-card p-3 hover:shadow-md transition-shadow flex items-center gap-2.5 group"
+          >
+            <div className="w-9 h-9 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+              <Inbox size={16} />
             </div>
-            <div className="collegium-display text-lg leading-tight">
-              {inboxCount} referrals to route
+            <div className="min-w-0">
+              <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+                Network inbox
+              </div>
+              <div className="collegium-display text-sm leading-tight">
+                {inboxCount} to route
+              </div>
             </div>
-          </div>
-          <ArrowRight
-            size={16}
-            className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
-          />
-        </Link>
+            <ArrowRight
+              size={14}
+              className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+            />
+          </Link>
+          <Link
+            to="/app/service/follow-up"
+            className="collegium-card p-3 hover:shadow-md transition-shadow flex items-center gap-2.5 group"
+          >
+            <div className="w-9 h-9 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+              <Bell size={16} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+                Follow-up
+              </div>
+              <div className="collegium-display text-sm leading-tight">
+                queue
+              </div>
+            </div>
+            <ArrowRight
+              size={14}
+              className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+            />
+          </Link>
+          <Link
+            to="/app/service/volunteers"
+            className="collegium-card p-3 hover:shadow-md transition-shadow flex items-center gap-2.5 group"
+          >
+            <div className="w-9 h-9 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+              <Users size={16} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+                Volunteers
+              </div>
+              <div className="collegium-display text-sm leading-tight">
+                roster
+              </div>
+            </div>
+            <ArrowRight
+              size={14}
+              className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+            />
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6 sm:mb-8">

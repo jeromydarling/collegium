@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { libraryWorks, libraryExcerpts, tracksSeed } from "../content/library";
 import { useDemoState, demoStore } from "../lib/demoStore";
-import { Bookmark, BookOpen, Check } from "lucide-react";
+import { Bookmark, BookOpen, Check, ArrowRight } from "lucide-react";
 
 const tabs = ["Excerpts", "Works", "Tracks"] as const;
 type Tab = (typeof tabs)[number];
@@ -125,6 +126,11 @@ export function Formation() {
         <div className="space-y-4 sm:space-y-5 collegium-safe-bottom">
           {tracksSeed.map((t) => {
             const enrolled = state.enrolledTracks.includes(t.id);
+            const completedWeeks = state.trackProgress[t.id] ?? [];
+            const pct =
+              t.weeks.length === 0
+                ? 0
+                : Math.round((completedWeeks.length / t.weeks.length) * 100);
             return (
               <div key={t.id} className="collegium-card p-5 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3">
@@ -132,32 +138,60 @@ export function Formation() {
                     <h3 className="collegium-display text-xl sm:text-2xl mb-1 leading-tight">{t.title}</h3>
                     <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed mb-2">{t.blurb}</p>
                     <div className="text-xs text-[hsl(var(--c-slate-soft))]">
-                      {t.items.length} readings · audience: {t.audience}
+                      {t.weeks.length} weeks · audience: {t.audience}
                     </div>
                   </div>
-                  <button
-                    onClick={() => demoStore.enrollTrack(t.id)}
-                    disabled={enrolled}
-                    className={
-                      enrolled
-                        ? "collegium-btn-ghost text-sm cursor-default w-full sm:w-auto"
-                        : "collegium-btn-primary text-sm w-full sm:w-auto"
-                    }
-                  >
-                    {enrolled ? "Enrolled ✓" : "Enroll"}
-                  </button>
+                  <div className="flex flex-col sm:items-end gap-2 w-full sm:w-auto">
+                    <button
+                      onClick={() => demoStore.enrollTrack(t.id)}
+                      disabled={enrolled}
+                      className={
+                        enrolled
+                          ? "collegium-btn-ghost text-sm cursor-default w-full sm:w-auto"
+                          : "collegium-btn-primary text-sm w-full sm:w-auto"
+                      }
+                    >
+                      {enrolled ? "Enrolled ✓" : "Enroll"}
+                    </button>
+                    <Link
+                      to={`/app/formation/track/${t.id}`}
+                      className="collegium-btn-ghost text-xs inline-flex items-center gap-1 w-full sm:w-auto justify-center"
+                    >
+                      Open track <ArrowRight size={11} />
+                    </Link>
+                  </div>
                 </div>
+                {enrolled && (
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex-1 h-1.5 bg-[hsl(var(--c-cream-warm))] rounded-full overflow-hidden max-w-[260px]">
+                      <div
+                        className="h-full bg-[hsl(var(--c-gold))]"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-[hsl(var(--c-slate-soft))]">
+                      {completedWeeks.length} / {t.weeks.length} weeks
+                    </span>
+                  </div>
+                )}
                 <div className="border-t border-[hsl(var(--c-border))] pt-3 mt-3">
                   <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-slate-soft))] mb-2">
-                    Readings
+                    Weekly arc
                   </div>
                   <ol className="text-sm text-[hsl(var(--c-slate))] space-y-1 list-decimal list-inside">
-                    {t.items.map((id) => {
-                      const ex = libraryExcerpts.find((e) => e.id === id);
+                    {t.weeks.map((wk) => {
+                      const ex = libraryExcerpts.find((e) => e.id === wk.excerptId);
                       const work = libraryWorks.find((w) => w.id === ex?.workId);
+                      const done = completedWeeks.includes(wk.number);
                       return (
-                        <li key={id}>
-                          {work?.title} · <span className="collegium-latin text-xs">{ex?.citation}</span>
+                        <li
+                          key={wk.number}
+                          className={done ? "text-[hsl(145_40%_28%)]" : ""}
+                        >
+                          <span className="font-medium">{wk.title}</span> —{" "}
+                          {work?.title} ·{" "}
+                          <span className="collegium-latin text-xs">{ex?.citation}</span>
+                          {done && <Check size={12} className="inline ml-1" />}
                         </li>
                       );
                     })}

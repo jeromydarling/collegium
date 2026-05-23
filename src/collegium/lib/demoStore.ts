@@ -136,6 +136,24 @@ export type DemoState = {
    * platform NEVER deletes from this log.
    */
   conflictAuditLog: ConflictCheckSnapshot[];
+  /** Per-event attendance overrides (additions on top of the seed data). */
+  eventAttendance: Record<string, string[]>; // eventId → personIds present
+  /** Per-pair journal entries (mentor-pair reflection prompts saved). */
+  mentorJournal: MentorJournalEntry[];
+  /** Per-track week-completion progress for the visitor. */
+  trackProgress: Record<string, number[]>; // trackId → completed week numbers
+  /** Per-matter follow-up state (snoozed-until + last-nudge). */
+  followUpState: Record<string, { snoozeUntil?: string; lastNudge?: string }>;
+};
+
+export type MentorJournalEntry = {
+  id: string;
+  pairId: string;
+  /** ISO timestamp the entry was logged. */
+  at: string;
+  /** Which library-excerpt or prompt this came from. */
+  source: { kind: "excerpt" | "prompt" | "note"; id?: string };
+  body: string;
 };
 
 const defaultState: DemoState = {
@@ -154,6 +172,10 @@ const defaultState: DemoState = {
   closureSummaries: {},
   matterDrafts: [],
   conflictAuditLog: [],
+  eventAttendance: {},
+  mentorJournal: [],
+  trackProgress: {},
+  followUpState: {},
 };
 
 function load(): DemoState {
@@ -327,6 +349,62 @@ export const demoStore = {
       ),
       // Audit log is append-only — every check, cleared or not, is kept.
       conflictAuditLog: [...s.conflictAuditLog, snapshot],
+    })),
+  togglePersonAttendance: (eventId: string, personId: string) =>
+    setState((s) => {
+      const current = s.eventAttendance[eventId] ?? [];
+      const next = current.includes(personId)
+        ? current.filter((p) => p !== personId)
+        : [...current, personId];
+      return {
+        ...s,
+        eventAttendance: { ...s.eventAttendance, [eventId]: next },
+      };
+    }),
+  addJournalEntry: (entry: Omit<MentorJournalEntry, "id" | "at">) =>
+    setState((s) => ({
+      ...s,
+      mentorJournal: [
+        ...s.mentorJournal,
+        {
+          ...entry,
+          id: `mj-${entry.pairId}-${Date.now()}`,
+          at: new Date().toISOString(),
+        },
+      ],
+    })),
+  toggleWeekComplete: (trackId: string, week: number) =>
+    setState((s) => {
+      const current = s.trackProgress[trackId] ?? [];
+      const next = current.includes(week)
+        ? current.filter((w) => w !== week)
+        : [...current, week].sort((a, b) => a - b);
+      return {
+        ...s,
+        trackProgress: { ...s.trackProgress, [trackId]: next },
+      };
+    }),
+  snoozeMatterFollowUp: (matterId: string, days: number) =>
+    setState((s) => {
+      const until = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+      return {
+        ...s,
+        followUpState: {
+          ...s.followUpState,
+          [matterId]: { ...(s.followUpState[matterId] ?? {}), snoozeUntil: until },
+        },
+      };
+    }),
+  recordFollowUpNudge: (matterId: string) =>
+    setState((s) => ({
+      ...s,
+      followUpState: {
+        ...s.followUpState,
+        [matterId]: {
+          ...(s.followUpState[matterId] ?? {}),
+          lastNudge: new Date().toISOString(),
+        },
+      },
     })),
   declineCase: (id: string) =>
     setState((s) => ({

@@ -1,15 +1,39 @@
+import { Link } from "react-router-dom";
+import { Sparkles, ArrowRight, PenLine } from "lucide-react";
 import { mentorPairs, people, chapters } from "../data/demo";
 
 export function Mentorship() {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Tirocinium</div>
-        <h1 className="collegium-display text-3xl sm:text-4xl">Mentorship</h1>
-        <p className="text-[hsl(var(--c-slate-soft))] mt-1">
-          Active pairings across the network. NRI tone reflects what the
-          relationship needs this month.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 sm:mb-8">
+        <div>
+          <div className="collegium-latin text-sm text-[hsl(var(--c-wine))]">Tirocinium</div>
+          <h1 className="collegium-display text-3xl sm:text-4xl">Mentorship</h1>
+          <p className="text-[hsl(var(--c-slate-soft))] mt-1 max-w-2xl">
+            Active pairings across the network. NRI tone reflects what the
+            relationship needs this month.
+          </p>
+        </div>
+        <Link
+          to="/app/mentorship/match"
+          className="collegium-card p-4 hover:shadow-md transition-shadow flex items-center gap-3 group shrink-0"
+        >
+          <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+            <Sparkles size={18} />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+              Find a match
+            </div>
+            <div className="collegium-display text-lg leading-tight">
+              Mentor matching
+            </div>
+          </div>
+          <ArrowRight
+            size={16}
+            className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+          />
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 sm:mb-8">
@@ -59,11 +83,19 @@ export function Mentorship() {
                   <p className="text-sm text-[hsl(var(--c-slate))] leading-relaxed mb-3">
                     {pair.notes}
                   </p>
-                  <div className="text-xs text-[hsl(var(--c-slate-soft))]">
-                    Last meeting:{" "}
-                    {pair.lastMeeting
-                      ? new Date(pair.lastMeeting).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
-                      : "—"}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="text-xs text-[hsl(var(--c-slate-soft))]">
+                      Last meeting:{" "}
+                      {pair.lastMeeting
+                        ? new Date(pair.lastMeeting).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                        : "—"}
+                    </div>
+                    <Link
+                      to={`/app/mentorship/pair/${pair.id}`}
+                      className="collegium-btn-ghost text-xs inline-flex items-center gap-1"
+                    >
+                      <PenLine size={11} /> Open journal <ArrowRight size={11} />
+                    </Link>
                   </div>
                 </div>
               </div>

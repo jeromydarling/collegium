@@ -28,6 +28,26 @@ export type Person = {
   initials: string;
 };
 
+export type ChapterOfficer = {
+  name: string;
+  role: string;
+  /** Person id if the officer is in `people[]`. Used to thread mentor / formation data. */
+  personId?: string;
+  /** ISO date when this officer's term ends (and a successor must be in place). */
+  termEnd?: string;
+  /** Person id of the named or proposed successor. */
+  successorId?: string;
+  /** Where the handoff sits — surfaces on the Chapter handoff workspace. */
+  handoffStatus?:
+    | "no-successor-named"
+    | "successor-shadowing"
+    | "successor-named"
+    | "transition-in-progress"
+    | "complete";
+  /** Knowledge-transfer items the outgoing officer noted. */
+  handoffNotes?: string[];
+};
+
 export type Chapter = {
   id: string;
   name: string;
@@ -37,7 +57,7 @@ export type Chapter = {
   state: string;
   founded: number;
   membersCount: number;
-  officers: { name: string; role: string }[];
+  officers: ChapterOfficer[];
   blurb: string;
   health: {
     score: number;
@@ -60,6 +80,18 @@ export type EventItem = {
   rsvpCount: number;
   capacity: number;
   description: string;
+  /** Speakers + their role/affiliation. Empty for member-led gatherings. */
+  speakers?: EventSpeaker[];
+  /** Person IDs who actually attended (post-event); independent of RSVP. */
+  attendedBy?: string[];
+};
+
+export type EventSpeaker = {
+  name: string;
+  /** "Faculty Advisor", "Keynote", "Panelist", "Spiritual Advisor", etc. */
+  role: string;
+  /** Optional one-line affiliation (e.g. "Prof., CUA Law"). */
+  affiliation?: string;
 };
 
 export type MentorPair = {
@@ -182,10 +214,39 @@ export const chapters: Chapter[] = [
     founded: 1957,
     membersCount: 184,
     officers: [
-      { name: "Margaret Coyle", role: "President" },
-      { name: "James O'Hara", role: "Vice President" },
-      { name: "Sr. Anne Marie Falconio, OP", role: "Spiritual Advisor" },
-      { name: "Daniel Chen", role: "Membership Chair" },
+      {
+        name: "Margaret Coyle",
+        role: "President",
+        personId: "p-coyle",
+        termEnd: "2026-05-15",
+        handoffStatus: "successor-shadowing",
+        successorId: "p-ohara",
+        handoffNotes: [
+          "Athenæum luncheon vendor relationships go in the binder.",
+          "Cathedral pastoral office (Sr. Anne Marie's line) holds the closure-loop intake.",
+          "Annual Red Mass committee meets quietly in September — bring Margaret in for the first one as advisor.",
+        ],
+      },
+      {
+        name: "James O'Hara",
+        role: "Vice President",
+        personId: "p-ohara",
+        termEnd: "2026-05-15",
+        handoffStatus: "no-successor-named",
+      },
+      {
+        name: "Sr. Anne Marie Falconio, OP",
+        role: "Spiritual Advisor",
+        personId: "p-falconio",
+        handoffStatus: "complete",
+      },
+      {
+        name: "Daniel Chen",
+        role: "Membership Chair",
+        personId: "p-chen",
+        termEnd: "2027-01-31",
+        handoffStatus: "complete",
+      },
     ],
     blurb:
       "The oldest Catholic lawyers guild in New England. Monthly luncheons at the Boston Athenæum, a Red Mass at the Cathedral of the Holy Cross, and a quietly active pro bono network reaching across the Archdiocese.",
@@ -209,10 +270,34 @@ export const chapters: Chapter[] = [
     founded: 1949,
     membersCount: 312,
     officers: [
-      { name: "Rev. Msgr. Patrick Lally", role: "Spiritual Advisor" },
-      { name: "Elena Ruiz-Schwarz", role: "President" },
-      { name: "Thomas Aquinas Kelly", role: "Treasurer" },
-      { name: "Hannah Park", role: "Student Liaison" },
+      {
+        name: "Rev. Msgr. Patrick Lally",
+        role: "Spiritual Advisor",
+        personId: "p-lally",
+        handoffStatus: "complete",
+      },
+      {
+        name: "Elena Ruiz-Schwarz",
+        role: "President",
+        personId: "p-ruiz",
+        termEnd: "2027-06-30",
+        handoffStatus: "complete",
+      },
+      {
+        name: "Thomas Aquinas Kelly",
+        role: "Treasurer",
+        personId: "p-kelly",
+        termEnd: "2026-12-31",
+        handoffStatus: "successor-named",
+        handoffNotes: ["Pilsen clinic banking is the most delicate handoff — book-and-binder transfer in November."],
+      },
+      {
+        name: "Hannah Park",
+        role: "Student Liaison",
+        personId: "p-park",
+        termEnd: "2026-08-31",
+        handoffStatus: "no-successor-named",
+      },
     ],
     blurb:
       "A guild of 300+ practitioners across Cook County. Red Mass at Holy Name Cathedral every October, an active legal-aid clinic in Pilsen, and a robust mentorship program with the John Marshall and Loyola law schools.",
@@ -236,9 +321,35 @@ export const chapters: Chapter[] = [
     founded: 2014,
     membersCount: 47,
     officers: [
-      { name: "Maria del Carmen Velasquez", role: "President (3L)" },
-      { name: "Patrick Owens", role: "VP (2L)" },
-      { name: "Prof. Robert Hartmann", role: "Faculty Advisor" },
+      {
+        name: "Maria del Carmen Velasquez",
+        role: "President (3L)",
+        personId: "p-velasquez",
+        termEnd: "2026-04-30",
+        handoffStatus: "transition-in-progress",
+        successorId: "p-owens",
+        handoffNotes: [
+          "Bar prep season — limited availability through July.",
+          "Patrick is shadowing the Treatise reading-group rotation already.",
+          "Mentor-match program is the one piece that needs continuity above all else.",
+        ],
+      },
+      {
+        name: "Patrick Owens",
+        role: "VP (2L)",
+        personId: "p-owens",
+        termEnd: "2026-04-30",
+        handoffStatus: "transition-in-progress",
+        handoffNotes: [
+          "Becoming President when Maria graduates — slate for new VP is uncertain.",
+        ],
+      },
+      {
+        name: "Prof. Robert Hartmann",
+        role: "Faculty Advisor",
+        personId: "p-hartmann",
+        handoffStatus: "complete",
+      },
     ],
     blurb:
       "The student chapter at the Catholic University of America's Columbus School of Law. Reading groups in the Treatise on Law, a weekly Rosary in the chapel, and a mentor-match program with attorneys across the D.C. metro.",
@@ -262,9 +373,31 @@ export const chapters: Chapter[] = [
     founded: 1978,
     membersCount: 96,
     officers: [
-      { name: "Rebecca Mwangi-Stone", role: "Chair" },
-      { name: "David Tanner", role: "Vice Chair" },
-      { name: "Aileen Lim", role: "Student Coordinator" },
+      {
+        name: "Rebecca Mwangi-Stone",
+        role: "Chair",
+        personId: "p-mwangi-stone",
+        termEnd: "2026-09-01",
+        handoffStatus: "no-successor-named",
+        handoffNotes: [
+          "On maternity leave through August — handoff conversations on hold.",
+          "Vice Chair carrying double load; Tanner should NOT be assumed to be the next chair.",
+        ],
+      },
+      {
+        name: "David Tanner",
+        role: "Vice Chair",
+        personId: "p-tanner",
+        termEnd: "2026-09-01",
+        handoffStatus: "no-successor-named",
+      },
+      {
+        name: "Aileen Lim",
+        role: "Student Coordinator",
+        personId: "p-lim",
+        termEnd: "2026-12-31",
+        handoffStatus: "successor-shadowing",
+      },
     ],
     blurb:
       "A broadly ecumenical Christian legal community across the GTA. Monthly Bible-and-Law roundtable, religious-liberty docket, and a refugee-claim pro bono program with several downtown firms.",
@@ -288,9 +421,30 @@ export const chapters: Chapter[] = [
     founded: 2020,
     membersCount: 71,
     officers: [
-      { name: "Michael Brennan", role: "President" },
-      { name: "Anita Roy", role: "Vice President" },
-      { name: "Rev. Stephen Cale, JCL", role: "Canon-Law Advisor" },
+      {
+        name: "Michael Brennan",
+        role: "President",
+        personId: "p-brennan",
+        termEnd: "2027-03-31",
+        handoffStatus: "successor-shadowing",
+        successorId: "p-roy",
+        handoffNotes: [
+          "Anita Roy is being prepared deliberately for the VP-to-President transition; mentor pair (Brennan/Roy) is the spine of that prep.",
+        ],
+      },
+      {
+        name: "Anita Roy",
+        role: "Vice President",
+        personId: "p-roy",
+        termEnd: "2027-03-31",
+        handoffStatus: "successor-shadowing",
+      },
+      {
+        name: "Rev. Stephen Cale, JCL",
+        role: "Canon-Law Advisor",
+        personId: "p-cale",
+        handoffStatus: "complete",
+      },
     ],
     blurb:
       "A young diocesan affiliate growing rapidly. A 2024 Red Mass with Bishop Burbidge, regular formation evenings on the Treatise on Justice, and an emerging canon-law referral track for parish governance.",
@@ -522,6 +676,10 @@ export const events: EventItem[] = [
     capacity: 220,
     description:
       "Annual votive Mass invoking the Holy Spirit on the judiciary and the bar. Cardinal-archbishop presiding; reception at the Boston Athenæum.",
+    speakers: [
+      { name: "His Eminence the Cardinal-Archbishop", role: "Celebrant", affiliation: "Archdiocese of Boston" },
+      { name: "Hon. Margaret Lin", role: "Homilist", affiliation: "Mass. Supreme Judicial Court" },
+    ],
   },
   {
     id: "ev-boston-luncheon",
@@ -535,6 +693,9 @@ export const events: EventItem[] = [
     capacity: 60,
     description:
       "Speaker: Hon. Judith Mahoney (Mass. Appeals Court, ret.) on equity in family-law practice.",
+    speakers: [
+      { name: "Hon. Judith Mahoney", role: "Keynote", affiliation: "Mass. Appeals Court (ret.)" },
+    ],
   },
   {
     id: "ev-chicago-clinic",
@@ -574,6 +735,10 @@ export const events: EventItem[] = [
     capacity: 24,
     description:
       "Patrick Owens (2L) leading. Pre-reading: ST I-II, q. 96, aa. 1–6.",
+    speakers: [
+      { name: "Patrick Owens", role: "Discussion lead", affiliation: "JP II Guild · CUA 2L" },
+      { name: "Prof. Robert Hartmann", role: "Faculty respondent", affiliation: "CUA Law" },
+    ],
   },
   {
     id: "ev-cua-mentor-mixer",
@@ -612,6 +777,47 @@ export const events: EventItem[] = [
     capacity: 120,
     description:
       "Day-long conference with Prof. Hartmann (CUA Law), Fr. Cale (canon law), and a panel of practitioners on equity in administrative law.",
+    speakers: [
+      { name: "Prof. Robert Hartmann", role: "Keynote — Aquinas on Law", affiliation: "CUA Law" },
+      { name: "Rev. Stephen Cale, JCL", role: "Plenary — Canon law in civil practice", affiliation: "Diocese of Arlington" },
+      { name: "Michael Brennan", role: "Panel chair", affiliation: "Arlington CBA" },
+      { name: "Anita Roy", role: "Panelist", affiliation: "Arlington CBA" },
+    ],
+  },
+  // Past events with attendance data — feeds the chapter-detail attendance widget
+  {
+    id: "ev-boston-past-luncheon",
+    chapterId: "ch-stm-boston",
+    title: "Monthly Luncheon — 'On Discovery and Discretion'",
+    date: "2026-04-10",
+    time: "12:00 PM",
+    kind: "luncheon",
+    location: "Boston Athenæum, 10½ Beacon St.",
+    rsvpCount: 44,
+    capacity: 60,
+    description:
+      "Speaker: Adam Vasquez, Mass. AG appellate office, on discretion in misdemeanor charging.",
+    speakers: [
+      { name: "Adam Vasquez", role: "Keynote", affiliation: "Mass. Attorney General (appellate)" },
+    ],
+    // 36 of 44 RSVPs actually showed
+    attendedBy: ["p-coyle", "p-ohara", "p-falconio", "p-chen"],
+  },
+  {
+    id: "ev-chicago-past-redmass",
+    chapterId: "ch-clg-chicago",
+    title: "Red Mass — Holy Name Cathedral",
+    date: "2025-10-12",
+    time: "11:00 AM",
+    kind: "red-mass",
+    location: "Holy Name Cathedral, Chicago",
+    rsvpCount: 312,
+    capacity: 400,
+    description: "Annual Red Mass at the start of the judicial term. Msgr. Lally presiding.",
+    speakers: [
+      { name: "Rev. Msgr. Patrick Lally", role: "Celebrant", affiliation: "Holy Name Cathedral" },
+    ],
+    attendedBy: ["p-ruiz", "p-lally", "p-kelly", "p-park"],
   },
 ];
 

@@ -264,11 +264,39 @@ export const libraryExcerpts: LibraryExcerpt[] = [
   },
 ];
 
-export const tracksSeed = [
+export type TrackWeek = {
+  /** 1-indexed week number within the track. */
+  number: number;
+  title: string;
+  /** Library-excerpt id this week's reading anchors on. */
+  excerptId: string;
+  /** Suggested ~time on reading + reflection, in minutes. */
+  estimateMinutes: number;
+  /** Two-to-four discussion prompts a facilitator can read aloud. */
+  prompts: string[];
+  /** Optional supplementary reading or context, displayed as a sub-bullet. */
+  supplement?: string;
+};
+
+export type FormationTrack = {
+  id: string;
+  title: string;
+  blurb: string;
+  audience: "lawyer" | "student" | "steward" | "all";
+  /** The weeks of the track in order. */
+  weeks: TrackWeek[];
+  /** For backwards-compat with code that read `items`. */
+  items?: string[];
+  /** Notes for the chapter facilitator running the reading group. */
+  facilitatorNotes: string[];
+};
+
+export const tracksSeed: FormationTrack[] = [
   {
     id: "track-natural-law",
     title: "Natural Law: A Lawyer's Eight-Week Walk",
-    blurb: "Eight weeks with Aquinas on what law is, what justice is, and what equity remembers.",
+    blurb:
+      "Eight weeks with Aquinas on what law is, what justice is, and what equity remembers.",
     audience: "lawyer",
     items: [
       "ex-aquinas-law-def",
@@ -276,13 +304,99 @@ export const tracksSeed = [
       "ex-augustine-justice",
       "ex-blackstone-rights",
     ],
+    weeks: [
+      {
+        number: 1,
+        title: "What law IS",
+        excerptId: "ex-aquinas-law-def",
+        estimateMinutes: 40,
+        prompts: [
+          "Aquinas's definition has four parts. Which has the most teeth in your daily practice?",
+          "When does 'promulgation' fail in your jurisdiction? Who pays?",
+          "What's a rule you enforce that isn't, in this sense, law at all?",
+        ],
+      },
+      {
+        number: 2,
+        title: "Justice as a habit, not an outcome",
+        excerptId: "ex-augustine-justice",
+        estimateMinutes: 35,
+        prompts: [
+          "How does Augustine's 'right order in the soul' relate to 'right order' in a courtroom?",
+          "Where do you see disordered loves driving outcomes you've witnessed?",
+        ],
+        supplement: "Pair with Ps. 82 if the group has time.",
+      },
+      {
+        number: 3,
+        title: "Equity as memory",
+        excerptId: "ex-aquinas-equity",
+        estimateMinutes: 45,
+        prompts: [
+          "Aquinas calls equity 'a higher rule.' What does that mean when you draft a settlement?",
+          "Name a case from your practice where equity rescued a result the rule would have ruined.",
+        ],
+      },
+      {
+        number: 4,
+        title: "Rights as natural, not invented",
+        excerptId: "ex-blackstone-rights",
+        estimateMinutes: 50,
+        prompts: [
+          "Blackstone says rights are pre-political. Modern positivism says otherwise. Where do you actually stand in practice?",
+          "How does the answer change how you advise a client whose claim has no statutory hook?",
+        ],
+      },
+    ],
+    facilitatorNotes: [
+      "Open each session with the excerpt read aloud (one paragraph max). Then sit with it for a minute before the first prompt.",
+      "These prompts are designed for 8–14 people. Smaller groups: pick two prompts, go deeper.",
+      "Avoid resolving the questions. The group's job is to sit with them, not finish them.",
+      "Close every session with one minute of silent prayer for someone the group serves.",
+    ],
   },
   {
     id: "track-cst-foundations",
     title: "Catholic Social Teaching for the Practicing Bar",
-    blurb: "Rerum Novarum to Laudato Si' — the documents that shape how the Church reads the world.",
+    blurb:
+      "Rerum Novarum to Laudato Si' — the documents that shape how the Church reads the world.",
     audience: "lawyer",
     items: ["ex-rerum-property", "ex-quadragesimo-subsidiarity", "ex-more-counsel"],
+    weeks: [
+      {
+        number: 1,
+        title: "Property, dignity, and labor (Rerum Novarum)",
+        excerptId: "ex-rerum-property",
+        estimateMinutes: 45,
+        prompts: [
+          "Leo XIII writes that private property is a natural right ordered to the common good. What does 'ordered to' mean in your real-estate practice?",
+          "Where in your jurisdiction does property law honor that ordering — and where does it forget?",
+        ],
+      },
+      {
+        number: 2,
+        title: "Subsidiarity (Quadragesimo Anno)",
+        excerptId: "ex-quadragesimo-subsidiarity",
+        estimateMinutes: 40,
+        prompts: [
+          "Pius XI: 'a higher community should not arrogate to itself functions which can be performed by a lower.' Where in your work is the higher community arrogating?",
+          "When does subsidiarity become an excuse for abandonment?",
+        ],
+      },
+      {
+        number: 3,
+        title: "The lawyer's particular witness (More on counsel)",
+        excerptId: "ex-more-counsel",
+        estimateMinutes: 35,
+        prompts: [
+          "More writes to his daughter about counsel given against conscience. What's your version of that letter?",
+        ],
+      },
+    ],
+    facilitatorNotes: [
+      "CST is bottomless. Resist the urge to summarize the encyclicals — pick one paragraph and stay with it.",
+      "Most lawyers in the group will not have read these documents. The intimidation is real — name it.",
+    ],
   },
   {
     id: "track-students",
@@ -291,5 +405,38 @@ export const tracksSeed = [
       "For 1Ls finding their footing — what kind of lawyer am I being formed to be?",
     audience: "student",
     items: ["ex-newman-mind", "ex-more-counsel", "ex-aquinas-law-def"],
+    weeks: [
+      {
+        number: 1,
+        title: "The educated mind (Newman)",
+        excerptId: "ex-newman-mind",
+        estimateMinutes: 30,
+        prompts: [
+          "Newman distinguishes useful from liberal knowledge. Which is law-school giving you right now? Which do you want it to give you?",
+        ],
+      },
+      {
+        number: 2,
+        title: "Counsel against conscience (More)",
+        excerptId: "ex-more-counsel",
+        estimateMinutes: 35,
+        prompts: [
+          "If your professor or your firm asked you to make an argument you knew was wrong — not illegal, just wrong — what would you do? Have you done it?",
+        ],
+      },
+      {
+        number: 3,
+        title: "What law IS (Aquinas)",
+        excerptId: "ex-aquinas-law-def",
+        estimateMinutes: 40,
+        prompts: [
+          "Aquinas's definition. Sit with it. Where does your 1L casebook quietly disagree?",
+        ],
+      },
+    ],
+    facilitatorNotes: [
+      "1Ls are tired. Keep sessions to 45 minutes max.",
+      "The mentor relationship is at least as important as the reading. Treat the discussion as a backdrop for that.",
+    ],
   },
 ];
