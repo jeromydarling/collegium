@@ -52,9 +52,14 @@ export function DevotionalIndex() {
           >
             <Sun size={14} /> Today's reading <ArrowRight size={12} />
           </Link>
+          <Link
+            to="/app/devotional/field-guide"
+            className="collegium-btn-ghost text-sm inline-flex items-center gap-1.5"
+          >
+            <BookOpen size={14} /> The Field Guide pocketbook
+          </Link>
           <span className="text-xs text-[hsl(var(--c-slate-soft))]">
-            {totalSeeded} of 365 entries seeded · the rest coming in subsequent
-            releases
+            {totalSeeded} of 365 entries seeded
           </span>
         </div>
       </div>

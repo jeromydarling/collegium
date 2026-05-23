@@ -20,6 +20,19 @@ import { week10 } from "./seed/week-10";
 import { week11 } from "./seed/week-11";
 import { week12 } from "./seed/week-12";
 import { week13 } from "./seed/week-13";
+import { week14 } from "./seed/week-14";
+import { week15 } from "./seed/week-15";
+import { week16 } from "./seed/week-16";
+import { week17 } from "./seed/week-17";
+import { week18 } from "./seed/week-18";
+import { week19 } from "./seed/week-19";
+import { week20 } from "./seed/week-20";
+import { week21 } from "./seed/week-21";
+import { week22 } from "./seed/week-22";
+import { week23 } from "./seed/week-23";
+import { week24 } from "./seed/week-24";
+import { week25 } from "./seed/week-25";
+import { week26 } from "./seed/week-26";
 
 export const devotionalDays: DevotionalDay[] = [
   ...week01,
@@ -35,6 +48,19 @@ export const devotionalDays: DevotionalDay[] = [
   ...week11,
   ...week12,
   ...week13,
+  ...week14,
+  ...week15,
+  ...week16,
+  ...week17,
+  ...week18,
+  ...week19,
+  ...week20,
+  ...week21,
+  ...week22,
+  ...week23,
+  ...week24,
+  ...week25,
+  ...week26,
 ];
 
 /** Day-of-year (1–365) for a given Date. Feb 29 collapses onto Feb 28 (day 59). */

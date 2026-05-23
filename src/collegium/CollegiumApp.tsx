@@ -36,6 +36,7 @@ import { NRIPulse } from "./app/NRIPulse";
 import { DailyOffice } from "./app/DailyOffice";
 import { DevotionalIndex } from "./app/devotional/DevotionalIndex";
 import { DevotionalDayView } from "./app/devotional/DevotionalDayView";
+import { FieldGuide } from "./app/devotional/FieldGuide";
 import { CalendarPage } from "./app/Calendar";
 import { CommunioDirectory, CommunioPeer } from "./app/Communio";
 import { IntakeAssist } from "./app/IntakeAssist";
@@ -172,6 +173,7 @@ export default function CollegiumApp() {
           <Route path="devotional" element={<DevotionalIndex />} />
           <Route path="devotional/today" element={<DevotionalDayView today />} />
           <Route path="devotional/day/:day" element={<DevotionalDayView />} />
+          <Route path="devotional/field-guide" element={<FieldGuide />} />
           <Route path="calendar" element={<CalendarPage />} />
         </Route>
 
