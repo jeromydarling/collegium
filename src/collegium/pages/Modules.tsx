@@ -9,8 +9,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { moduleOrder } from "../brand";
-import { LibraryBackdrop } from "./components/LibraryBackdrop";
-import { imageForModule, heroImage } from "../lib/libraryImages";
+import { ModulePreview } from "./components/ModulePreviews";
 
 const moduleIcons: Record<string, typeof Users> = {
   chapters: Users,
@@ -87,12 +86,7 @@ const detail: Record<string, { headline: string; body: string[]; example: string
 export function Modules() {
   return (
     <div className="collegium-theme">
-      <LibraryBackdrop
-        image={heroImage()}
-        mode="hero"
-        align="left"
-        className="border-b border-[hsl(var(--c-border))]"
-      >
+      <section className="collegium-illuminated border-b border-[hsl(var(--c-border))]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
           <div className="collegium-latin text-sm mb-2">Sex officia · Six functions</div>
           <h1 className="collegium-display-xl text-4xl sm:text-5xl mb-5 sm:mb-6">
@@ -101,26 +95,19 @@ export function Modules() {
           <p className="text-lg sm:text-xl text-[hsl(var(--c-slate))] leading-relaxed">
             Each module is a window onto the same community. A student moves
             through all six over time — newcomer, mentee, member, mentor,
-            officer, steward.
+            officer, steward. Every section below shows a live preview of
+            what the module actually looks like.
           </p>
         </div>
-      </LibraryBackdrop>
+      </section>
 
       <section className="bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-16 sm:space-y-24">
           {moduleOrder.map((m, idx) => {
             const Icon = moduleIcons[m.slug] ?? Users;
             const d = detail[m.slug];
-            // Alternate image/content side per row for visual rhythm
+            // Alternate preview/content side per row for visual rhythm
             const imageOnRight = idx % 2 === 0;
-            const moduleSlug = m.slug as
-              | "chapters"
-              | "mentorship"
-              | "service"
-              | "formation"
-              | "advancement"
-              | "nri";
-            const libraryImage = imageForModule(moduleSlug);
 
             return (
               <article
@@ -128,7 +115,7 @@ export function Modules() {
                 className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center"
               >
                 <div className={imageOnRight ? "lg:order-1" : "lg:order-2"}>
-                  <LibraryBackdrop image={libraryImage} mode="feature" />
+                  <ModulePreview slug={m.slug} />
                 </div>
                 <div className={imageOnRight ? "lg:order-2" : "lg:order-1"}>
                   <div className="flex items-center gap-3 mb-4">
