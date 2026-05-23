@@ -111,19 +111,21 @@ function HeroBackdrop({
           className="absolute inset-0 z-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${bgUrl})`,
-            filter: "url(#duotone-wine) saturate(115%) blur(1px)",
-            transform: "scale(1.05)", // hide blur edges
+            filter: "url(#duotone-wine) saturate(120%)",
           }}
         />
       )}
 
-      {/* Cream-to-wine gradient — softer at center, denser at edges */}
+      {/* Cream wash — light enough to keep the library visible behind the
+          text, dense enough where copy actually sits so the typography
+          reads. Vertical gradient: lighter at top where the eye lands on
+          the library, denser at bottom where the doors / CTA need to pop. */}
       <div
         aria-hidden="true"
         className="absolute inset-0 z-10"
         style={{
           background: bgUrl
-            ? "radial-gradient(ellipse at center, hsl(40 35% 92% / 0.78) 0%, hsl(40 35% 92% / 0.88) 45%, hsl(40 35% 88% / 0.96) 100%)"
+            ? "linear-gradient(180deg, hsl(40 35% 92% / 0.55) 0%, hsl(40 35% 92% / 0.72) 35%, hsl(40 35% 90% / 0.85) 70%, hsl(40 35% 88% / 0.94) 100%)"
             : "linear-gradient(180deg, hsl(40 35% 92%) 0%, hsl(40 30% 86%) 100%)",
         }}
       />
