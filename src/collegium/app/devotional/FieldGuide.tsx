@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   Printer,
   ChevronRight,
+  FileDown,
 } from "lucide-react";
 import { devotionalDays } from "../../content/devotional";
 import {
@@ -14,10 +15,10 @@ import {
 } from "../../content/devotional/curation";
 import {
   situationalCategories,
-  tagLabel,
   type SituationalTag,
 } from "../../content/devotional/situations";
 import { exportFieldGuidePdf } from "../../lib/fieldGuidePdf";
+import { downloadManuscript } from "../../lib/devotionalManuscript";
 
 /**
  * The Field Guide pocketbook surface — a curated ~50-entry subset of
@@ -82,6 +83,19 @@ export function FieldGuide() {
             className="collegium-btn-primary text-sm inline-flex items-center gap-1.5"
           >
             <Printer size={14} /> Generate the Field Guide PDF
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              downloadManuscript({
+                kind: "field-guide",
+                days: pocketbookDays,
+              })
+            }
+            className="collegium-btn-ghost text-sm inline-flex items-center gap-1.5"
+            title="Download the curated selection as Markdown for InDesign / Vellum / Pandoc"
+          >
+            <FileDown size={14} /> Markdown manuscript
           </button>
           <span className="text-xs text-[hsl(var(--c-slate-soft))]">
             {selectedEntries.length} entries · Lulu pocket trim (4¼ × 6⅞)

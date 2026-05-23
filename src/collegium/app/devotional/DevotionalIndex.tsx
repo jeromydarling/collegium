@@ -1,11 +1,12 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Sun, ArrowRight, Calendar } from "lucide-react";
+import { BookOpen, Sun, ArrowRight, Calendar, FileDown } from "lucide-react";
 import {
   devotionalDays,
   dayOfYear,
 } from "../../content/devotional";
 import { weekArcs } from "../../content/devotional/types";
+import { downloadManuscript } from "../../lib/devotionalManuscript";
 
 /**
  * Devotional index — the year laid out by week. Each weekly arc is one
@@ -58,6 +59,14 @@ export function DevotionalIndex() {
           >
             <BookOpen size={14} /> The Field Guide pocketbook
           </Link>
+          <button
+            type="button"
+            onClick={() => downloadManuscript({ kind: "heirloom-year" })}
+            className="collegium-btn-ghost text-sm inline-flex items-center gap-1.5"
+            title="Download the full devotional as a Markdown manuscript for Lulu/Vellum/InDesign typesetting"
+          >
+            <FileDown size={14} /> Download manuscript (.md)
+          </button>
           <span className="text-xs text-[hsl(var(--c-slate-soft))]">
             {totalSeeded} of 365 entries seeded
           </span>
