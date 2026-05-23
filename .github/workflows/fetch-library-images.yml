@@ -1,0 +1,82 @@
+name: Fetch library images
+
+# Downloads the marketing-site library photographs from Wikimedia / Unsplash /
+# Pexels (URLs declared in src/collegium/lib/libraryImages.ts), downsizes
+# them to 1920px-wide JPEGs at quality 82, and commits them to
+# public/assets/library/.
+#
+# Trigger:
+#   - Manually from the Actions tab ("Run workflow")
+#   - Auto when the manifest changes
+#
+# Required: no secrets. Uses public image hosts.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/collegium/lib/libraryImages.ts"
+      - "scripts/fetch-library-images.mjs"
+      - ".github/workflows/fetch-library-images.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-library-images
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install sharp (for downscaling)
+        run: npm install --no-save sharp@^0.34.0
+
+      - name: Run fetch script
+        # Don't fail the whole workflow on a single missing image — surface
+        # in the log but keep going.
+        run: node scripts/fetch-library-images.mjs || true
+
+      - name: Show downloaded images
+        run: |
+          if [ -d public/assets/library ]; then
+            ls -lh public/assets/library/
+          else
+            echo "No images directory created."
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "collegium-images-bot"
+          git config user.email "collegium-images-bot@users.noreply.github.com"
+          git add public/assets/library/
+          if git diff --cached --quiet; then
+            echo "No changes to commit — images are already current."
+            exit 0
+          fi
+          git commit -m "Refresh library images
+
+          Fetched + downsized per src/collegium/lib/libraryImages.ts.
+          Marketing-site backdrops for hero and the six modules."
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload images as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: library-images
+          path: public/assets/library/
+          retention-days: 30
+          if-no-files-found: ignore

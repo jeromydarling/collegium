@@ -15,7 +15,8 @@
     "video:lint": "cd collegium-walkthrough && npx hyperframes lint",
     "video:render": "cd collegium-walkthrough && npx hyperframes render --output ../public/intro.mp4",
     "music:generate": "node scripts/generate-music.mjs",
-    "forms:fetch": "node scripts/fetch-bar-forms.mjs"
+    "forms:fetch": "node scripts/fetch-bar-forms.mjs",
+    "library:fetch": "node scripts/fetch-library-images.mjs"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
