@@ -1,9 +1,11 @@
 import { christianYear, observances, seasonForMonth } from "../content/calendar";
-import { events, chapters } from "../data/demo";
+import { chapters } from "../data/demo";
+import { useAllEvents } from "../lib/demoStore";
 
 export function CalendarPage() {
   const today = new Date();
   const currentSeason = seasonForMonth(today.getMonth() + 1);
+  const events = useAllEvents();
   const upcoming = [...events]
     .filter((e) => new Date(e.date) >= today)
     .sort((a, b) => a.date.localeCompare(b.date));

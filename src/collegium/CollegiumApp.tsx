@@ -30,6 +30,7 @@ import { TrackRunner } from "./app/formation/TrackRunner";
 import { Advancement } from "./app/Advancement";
 import { LeadershipPipeline } from "./app/advancement/LeadershipPipeline";
 import { EventDetail } from "./app/advancement/EventDetail";
+import { EventEdit } from "./app/advancement/EventEdit";
 import { NRIPulse } from "./app/NRIPulse";
 import { DailyOffice } from "./app/DailyOffice";
 import { CalendarPage } from "./app/Calendar";
@@ -150,6 +151,8 @@ export default function CollegiumApp() {
           <Route path="formation/track/:id" element={<TrackRunner />} />
           <Route path="advancement" element={<Advancement />} />
           <Route path="advancement/pipeline" element={<LeadershipPipeline />} />
+          <Route path="advancement/event/new" element={<EventEdit />} />
+          <Route path="advancement/event/:id/edit" element={<EventEdit />} />
           <Route path="advancement/event/:id" element={<EventDetail />} />
           <Route path="pulse" element={<NRIPulse />} />
           <Route path="insights" element={<JusticeGapInsights />} />

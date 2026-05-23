@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import { chapters, people, events, serviceMatters } from "../data/demo";
+import { chapters, people, serviceMatters } from "../data/demo";
+import { useAllEvents } from "../lib/demoStore";
 import {
   MapPin,
   Users,
@@ -50,6 +51,7 @@ export function ChaptersList() {
 
 export function ChapterDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const events = useAllEvents();
   const c = chapters.find((x) => x.slug === slug);
   if (!c) return <div className="p-8">Chapter not found.</div>;
 
@@ -135,25 +137,45 @@ export function ChapterDetail() {
         <div className="collegium-card p-5 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="collegium-display text-xl">Upcoming events</h3>
-            <Link to="/app/advancement" className="text-xs collegium-link">All</Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to={`/app/advancement/event/new?chapter=${c.id}`}
+                className="text-xs collegium-link"
+              >
+                + New
+              </Link>
+              <Link to="/app/advancement" className="text-xs collegium-link">All</Link>
+            </div>
           </div>
           <ul className="space-y-4">
             {chapterEvents.slice(0, 4).map((e) => (
               <li key={e.id} className="border-l-2 border-[hsl(var(--c-gold))] pl-3">
-                <div className="flex items-baseline justify-between gap-3 mb-0.5">
-                  <span className="font-medium text-sm">{e.title}</span>
-                  <span className="text-xs text-[hsl(var(--c-slate-soft))] shrink-0">
-                    {new Date(e.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                  </span>
-                </div>
-                <div className="text-xs text-[hsl(var(--c-slate-soft))]">
-                  {e.location} · {e.rsvpCount}/{e.capacity} RSVPs
-                </div>
+                <Link
+                  to={`/app/advancement/event/${e.id}`}
+                  className="block hover:bg-[hsl(var(--c-cream-warm))/0.4] -ml-3 pl-3 py-0.5 rounded"
+                >
+                  <div className="flex items-baseline justify-between gap-3 mb-0.5">
+                    <span className="font-medium text-sm">{e.title}</span>
+                    <span className="text-xs text-[hsl(var(--c-slate-soft))] shrink-0">
+                      {new Date(e.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                  </div>
+                  <div className="text-xs text-[hsl(var(--c-slate-soft))]">
+                    {e.location} · {e.rsvpCount}/{e.capacity} RSVPs
+                  </div>
+                </Link>
               </li>
             ))}
             {chapterEvents.length === 0 && (
               <li className="text-sm text-[hsl(var(--c-slate-soft))] italic">
-                No upcoming events on the calendar.
+                No upcoming events on the calendar.{" "}
+                <Link
+                  to={`/app/advancement/event/new?chapter=${c.id}`}
+                  className="collegium-link"
+                >
+                  Create one
+                </Link>
+                .
               </li>
             )}
           </ul>

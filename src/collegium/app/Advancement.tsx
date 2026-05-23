@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { events, chapters } from "../data/demo";
-import { demoStore, useDemoState } from "../lib/demoStore";
-import { MapPin, TrendingUp, ArrowRight } from "lucide-react";
+import { chapters } from "../data/demo";
+import { demoStore, useDemoState, useAllEvents } from "../lib/demoStore";
+import { MapPin, TrendingUp, ArrowRight, Plus, Pencil } from "lucide-react";
 
 export function Advancement() {
   const state = useDemoState();
+  const events = useAllEvents();
   const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
   const future = sorted.filter((e) => new Date(e.date) >= new Date());
 
@@ -19,26 +20,34 @@ export function Advancement() {
             the slow shaping of the next generation of officers.
           </p>
         </div>
-        <Link
-          to="/app/advancement/pipeline"
-          className="collegium-card p-4 hover:shadow-md transition-shadow flex items-center gap-3 group shrink-0"
-        >
-          <div className="w-10 h-10 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
-            <TrendingUp size={18} />
-          </div>
-          <div className="min-w-0">
-            <div className="text-xs uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
-              Synthesis
+        <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+          <Link
+            to="/app/advancement/event/new"
+            className="collegium-btn-primary text-sm inline-flex items-center justify-center gap-1.5 shrink-0"
+          >
+            <Plus size={14} /> New event
+          </Link>
+          <Link
+            to="/app/advancement/pipeline"
+            className="collegium-card p-3 hover:shadow-md transition-shadow flex items-center gap-2.5 group"
+          >
+            <div className="w-9 h-9 rounded-full bg-[hsl(var(--c-wine)/0.08)] flex items-center justify-center text-[hsl(var(--c-wine))] shrink-0">
+              <TrendingUp size={16} />
             </div>
-            <div className="collegium-display text-lg leading-tight">
-              Leadership pipeline
+            <div className="min-w-0">
+              <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))]">
+                Synthesis
+              </div>
+              <div className="collegium-display text-sm leading-tight">
+                Leadership pipeline
+              </div>
             </div>
-          </div>
-          <ArrowRight
-            size={16}
-            className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
-          />
-        </Link>
+            <ArrowRight
+              size={14}
+              className="text-[hsl(var(--c-wine))] group-hover:translate-x-0.5 transition-transform shrink-0"
+            />
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 sm:mb-8">
@@ -106,6 +115,12 @@ export function Advancement() {
                     className="collegium-btn-ghost text-xs flex-1 justify-center inline-flex items-center gap-1"
                   >
                     Detail <ArrowRight size={11} />
+                  </Link>
+                  <Link
+                    to={`/app/advancement/event/${e.id}/edit`}
+                    className="collegium-btn-ghost text-xs flex-1 justify-center inline-flex items-center gap-1"
+                  >
+                    <Pencil size={11} /> Edit
                   </Link>
                 </div>
               </div>

@@ -8,9 +8,10 @@ import {
   Users,
   Check,
   Circle,
+  Pencil,
 } from "lucide-react";
-import { events, chapters, people, type Person } from "../../data/demo";
-import { useDemoState, demoStore } from "../../lib/demoStore";
+import { chapters, people, type Person } from "../../data/demo";
+import { useDemoState, demoStore, useEvent } from "../../lib/demoStore";
 
 /**
  * Event detail — closes the gap between "speaker records" + "attendance
@@ -27,7 +28,7 @@ import { useDemoState, demoStore } from "../../lib/demoStore";
 
 export function EventDetail() {
   const { id } = useParams<{ id: string }>();
-  const event = events.find((e) => e.id === id);
+  const event = useEvent(id);
   const state = useDemoState();
 
   // Compute the attended set unconditionally (hooks must run in stable order).
@@ -85,8 +86,16 @@ export function EventDetail() {
       </Link>
 
       <div className="mb-6 sm:mb-8">
-        <KindTag kind={event.kind} />
-        <h1 className="collegium-display text-3xl sm:text-4xl leading-tight mt-2 mb-2">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <KindTag kind={event.kind} />
+          <Link
+            to={`/app/advancement/event/${event.id}/edit`}
+            className="collegium-btn-ghost text-xs inline-flex items-center gap-1 shrink-0"
+          >
+            <Pencil size={11} /> Edit
+          </Link>
+        </div>
+        <h1 className="collegium-display text-3xl sm:text-4xl leading-tight mb-2">
           {event.title}
         </h1>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[hsl(var(--c-slate-soft))]">

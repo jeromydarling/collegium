@@ -23,6 +23,10 @@
  *     already better than 90% of in-app transit planners.
  */
 
+// Mapbox public tokens (pk.*) live in the client bundle by design — they're
+// referrer-restricted server-side. Set VITE_MAPBOX_TOKEN as a GitHub repo
+// secret so the deploy workflow can inject it at build time. The map
+// component renders a friendly "token not set" placeholder when missing.
 export const MAPBOX_TOKEN =
   import.meta.env.VITE_MAPBOX_TOKEN || "";
 

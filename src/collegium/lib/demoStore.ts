@@ -6,7 +6,8 @@
  * sees continuity across reloads (their role, completed actions, etc.).
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { events as seedEvents, type EventItem } from "../data/demo";
 
 const STORAGE_KEY = "collegium_demo_state_v1";
 
@@ -144,6 +145,12 @@ export type DemoState = {
   trackProgress: Record<string, number[]>; // trackId → completed week numbers
   /** Per-matter follow-up state (snoozed-until + last-nudge). */
   followUpState: Record<string, { snoozeUntil?: string; lastNudge?: string }>;
+  /** Fully user-created events (not in the seed). */
+  customEvents: EventItem[];
+  /** Patches applied to seed events — partial overlay merged at read time. */
+  eventOverrides: Record<string, Partial<EventItem>>;
+  /** Seed event ids the steward has deleted — filtered out at read time. */
+  deletedEventIds: string[];
 };
 
 export type MentorJournalEntry = {
@@ -176,6 +183,9 @@ const defaultState: DemoState = {
   mentorJournal: [],
   trackProgress: {},
   followUpState: {},
+  customEvents: [],
+  eventOverrides: {},
+  deletedEventIds: [],
 };
 
 function load(): DemoState {
@@ -406,6 +416,59 @@ export const demoStore = {
         },
       },
     })),
+  addEvent: (event: Omit<EventItem, "id">): string => {
+    const id = `ev-custom-${Date.now()}`;
+    setState((s) => ({
+      ...s,
+      customEvents: [...s.customEvents, { ...event, id }],
+    }));
+    return id;
+  },
+  updateEvent: (id: string, patch: Partial<EventItem>) =>
+    setState((s) => {
+      // Custom event: patch in place.
+      const isCustom = s.customEvents.some((e) => e.id === id);
+      if (isCustom) {
+        return {
+          ...s,
+          customEvents: s.customEvents.map((e) =>
+            e.id === id ? { ...e, ...patch, id: e.id } : e
+          ),
+        };
+      }
+      // Seed event: write to overrides.
+      return {
+        ...s,
+        eventOverrides: {
+          ...s.eventOverrides,
+          [id]: { ...(s.eventOverrides[id] ?? {}), ...patch },
+        },
+      };
+    }),
+  deleteEvent: (id: string) =>
+    setState((s) => {
+      const isCustom = s.customEvents.some((e) => e.id === id);
+      if (isCustom) {
+        return {
+          ...s,
+          customEvents: s.customEvents.filter((e) => e.id !== id),
+          // Clean up any attendance state for the dropped custom event.
+          eventAttendance: omitKey(s.eventAttendance, id),
+        };
+      }
+      // Seed event: tombstone it, drop its override + attendance.
+      const overrides = omitKey(s.eventOverrides, id);
+      const attendance = omitKey(s.eventAttendance, id);
+      return {
+        ...s,
+        deletedEventIds: s.deletedEventIds.includes(id)
+          ? s.deletedEventIds
+          : [...s.deletedEventIds, id],
+        eventOverrides: overrides,
+        eventAttendance: attendance,
+        rsvps: s.rsvps.filter((r) => r !== id),
+      };
+    }),
   declineCase: (id: string) =>
     setState((s) => ({
       ...s,
@@ -433,6 +496,39 @@ export function useDemoState(): DemoState {
     };
   }, []);
   return state;
+}
+
+function omitKey<T>(obj: Record<string, T>, key: string): Record<string, T> {
+  if (!(key in obj)) return obj;
+  const { [key]: _drop, ...rest } = obj;
+  void _drop;
+  return rest;
+}
+
+/**
+ * The events the rest of the app should read.
+ *
+ *   merged = (seed - deleted, each patched with overrides) ∪ customEvents
+ *
+ * Hook subscribes so create/edit/delete trigger re-renders.
+ */
+export function useAllEvents(): EventItem[] {
+  const state = useDemoState();
+  return useMemo(() => {
+    const fromSeed = seedEvents
+      .filter((e) => !state.deletedEventIds.includes(e.id))
+      .map((e) => {
+        const patch = state.eventOverrides[e.id];
+        return patch ? ({ ...e, ...patch, id: e.id } as EventItem) : e;
+      });
+    return [...fromSeed, ...state.customEvents];
+  }, [state.deletedEventIds, state.eventOverrides, state.customEvents]);
+}
+
+/** Single-event lookup over the merged view. */
+export function useEvent(id: string | undefined): EventItem | undefined {
+  const all = useAllEvents();
+  return id ? all.find((e) => e.id === id) : undefined;
 }
 
 export const roleLabel: Record<DemoRole, { label: string; latin: string; description: string }> = {

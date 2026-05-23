@@ -29,8 +29,8 @@ export function AuxiliumLanding() {
       {/* Hero */}
       <section className="bg-gradient-to-b from-[hsl(var(--c-cream))] to-[hsl(var(--c-cream-warm))] border-b border-[hsl(var(--c-border))]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-12 sm:pb-16 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[hsl(var(--c-wine))]">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-4">
+            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[hsl(var(--c-wine))] whitespace-nowrap">
               <span className="collegium-latin not-italic">Auxilium</span>
               <span className="text-[hsl(var(--c-slate-soft))]">·</span>
               <span>By Collegium</span>

@@ -12,12 +12,12 @@ import {
   chapters,
   people,
   mentorPairs,
-  events,
   serviceMatters,
   type ChapterOfficer,
   type Person,
 } from "../../data/demo";
 import { generateBriefings } from "../../lib/nri/engine";
+import { useAllEvents } from "../../lib/demoStore";
 
 /**
  * Leadership pipeline — closes the gap between "rising leaders" copy
@@ -51,6 +51,7 @@ type RisingLeader = {
 };
 
 export function LeadershipPipeline() {
+  const events = useAllEvents();
   const briefings = useMemo(
     () =>
       generateBriefings({
@@ -60,7 +61,7 @@ export function LeadershipPipeline() {
         events,
         serviceMatters,
       }),
-    []
+    [events]
   );
 
   const successionConcerns = briefings.filter(
@@ -160,7 +161,7 @@ export function LeadershipPipeline() {
       if (score > 0) out.push({ person: p, reasons, score });
     }
     return out.sort((a, b) => b.score - a.score);
-  }, []);
+  }, [events]);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-5xl mx-auto">

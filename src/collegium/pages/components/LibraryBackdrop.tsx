@@ -6,16 +6,15 @@ import type { LibraryImage } from "../../lib/libraryImages";
  * applied as a stack of overlays so the source image still reads but
  * doesn't compete with the foreground typography:
  *
- *   1. SVG duotone — re-colors the image into the wine + cream palette
- *   2. CSS filter — slight blur + saturation boost so it reads as
- *      texture, not photograph
- *   3. Cream-wine gradient overlay — pulls the eye to the center
- *      where the headline lives
+ *   1. Greyscale + sepia + hue-rotate filter chain — pushes the image
+ *      into the wine palette using CSS filters only (no SVG <filter>,
+ *      since mobile Chrome / WebKit render `filter: url(#id)` on
+ *      non-SVG elements inconsistently — often as fully transparent).
+ *   2. Wine multiply overlay — deepens shadows toward wine
+ *   3. Cream-wash gradient — lighter at top, denser at bottom where
+ *      typography sits
  *   4. Subtle film-grain noise — adds tactility, never distracts
  *   5. Inner shadow / vignette — keeps the edges quiet
- *
- * The composite reads as an illuminated-manuscript-feel backdrop:
- * recognizable as a library, but unmistakably treated.
  */
 
 export function LibraryBackdrop({
@@ -65,55 +64,35 @@ function HeroBackdrop({
       className={`relative isolate overflow-hidden ${className}`}
       aria-label={image ? `Background: ${image.name}` : undefined}
     >
-      {/* SVG duotone filter — applied via CSS filter:url(#duotone-wine). */}
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        width="0"
-        height="0"
-        className="absolute"
-      >
-        <defs>
-          <filter id="duotone-wine" colorInterpolationFilters="sRGB">
-            {/* Step 1: desaturate to luminance */}
-            <feColorMatrix
-              type="matrix"
-              values="
-                0.299 0.587 0.114 0 0
-                0.299 0.587 0.114 0 0
-                0.299 0.587 0.114 0 0
-                0     0     0     1 0"
-            />
-            {/* Step 2: map luminance into wine ↔ cream */}
-            <feComponentTransfer>
-              {/* Shadows toward deep wine #4a1020 (R 74 G 16 B 32) */}
-              {/* Highlights toward cream #f6e8c8 (R 246 G 232 B 200) */}
-              <feFuncR
-                type="table"
-                tableValues="0.290 0.345 0.40 0.46 0.52 0.59 0.66 0.74 0.82 0.90 0.965"
-              />
-              <feFuncG
-                type="table"
-                tableValues="0.063 0.130 0.20 0.28 0.36 0.45 0.54 0.64 0.74 0.84 0.910"
-              />
-              <feFuncB
-                type="table"
-                tableValues="0.125 0.180 0.23 0.29 0.36 0.43 0.51 0.60 0.69 0.77 0.785"
-              />
-            </feComponentTransfer>
-          </filter>
-        </defs>
-      </svg>
-
       {bgUrl && (
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${bgUrl})`,
-            filter: "url(#duotone-wine) saturate(120%)",
-          }}
-        />
+        <>
+          {/* Layer A: the library photo, desaturated + warmed toward sepia.
+              Pure CSS filters — supported uniformly across desktop + mobile. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${bgUrl})`,
+              filter:
+                "grayscale(1) sepia(0.55) hue-rotate(310deg) saturate(2) brightness(0.92) contrast(1.05)",
+            }}
+          />
+          {/* Layer B: wine multiply tint — pushes the shadows toward wine
+              and unifies the palette with the rest of the site. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-0 mix-blend-multiply"
+            style={{ background: "hsl(350 55% 28%)" }}
+          />
+          {/* Layer C: cream highlight screen — lifts the lights toward
+              the cream palette so the result reads as a wine-and-cream
+              duotone rather than a uniform wine wash. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-0 mix-blend-screen opacity-25"
+            style={{ background: "hsl(40 35% 88%)" }}
+          />
+        </>
       )}
 
       {/* Cream wash — light enough to keep the library visible behind the
