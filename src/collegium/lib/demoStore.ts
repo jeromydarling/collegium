@@ -52,6 +52,32 @@ export type ClosureSummary = {
   signedAt: string;
 };
 
+/** Conflict-check snapshot — recorded against a draft before publication. */
+export type ConflictCheckSnapshot = {
+  /** ISO timestamp of when the check ran. */
+  checkedAt: string;
+  /** Steward who ran the check. */
+  checkedBy: string;
+  /** True when the check returned no hits OR when a steward justified-override. */
+  cleared: boolean;
+  /** Number of party-name hashes checked. */
+  hashesChecked: number;
+  /** Hash-only summary of any hits found (never plaintext). */
+  hits: {
+    hash: string;
+    priorMatterId: string;
+    priorRole: string;
+    newRole: string;
+    severity: "direct-adverse" | "name-collision-likely" | "review";
+  }[];
+  /** If the steward overrode hits, the justification. */
+  override?: {
+    justification: string;
+    by: string;
+    at: string;
+  };
+};
+
 /** Drafts of matters submitted from Auxilium awaiting steward review. */
 export type MatterDraft = {
   id: string;
@@ -70,6 +96,8 @@ export type MatterDraft = {
     shareCommunio: boolean;
     publicAdvocacy: boolean;
   };
+  /** Opposing party named during steward triage (optional). */
+  opposingParty?: string;
   /** Where this came from. */
   source: "auxilium" | "voice-intake" | "intake-assist" | "manual";
   /** ISO timestamp of submission. */
@@ -78,6 +106,8 @@ export type MatterDraft = {
   status: "new" | "in-review" | "published" | "declined";
   /** When published, the resulting ServiceMatter id. */
   publishedMatterId?: string;
+  /** Conflict-check state. Publication blocked until cleared=true. */
+  conflictCheck?: ConflictCheckSnapshot;
 };
 
 export type DemoState = {
@@ -100,6 +130,12 @@ export type DemoState = {
   closureSummaries: Record<string, ClosureSummary>;
   /** Drafts submitted from Auxilium awaiting steward triage. */
   matterDrafts: MatterDraft[];
+  /**
+   * Append-only audit log of every conflict check ever run on this device.
+   * In production this lives on the server with RLS by tenant; the
+   * platform NEVER deletes from this log.
+   */
+  conflictAuditLog: ConflictCheckSnapshot[];
 };
 
 const defaultState: DemoState = {
@@ -117,6 +153,7 @@ const defaultState: DemoState = {
   matterDocuments: [],
   closureSummaries: {},
   matterDrafts: [],
+  conflictAuditLog: [],
 };
 
 function load(): DemoState {
@@ -281,6 +318,15 @@ export const demoStore = {
       matterDrafts: s.matterDrafts.map((d) =>
         d.id === id ? { ...d, ...patch } : d
       ),
+    })),
+  recordConflictCheck: (draftId: string, snapshot: ConflictCheckSnapshot) =>
+    setState((s) => ({
+      ...s,
+      matterDrafts: s.matterDrafts.map((d) =>
+        d.id === draftId ? { ...d, conflictCheck: snapshot } : d
+      ),
+      // Audit log is append-only — every check, cleared or not, is kept.
+      conflictAuditLog: [...s.conflictAuditLog, snapshot],
     })),
   declineCase: (id: string) =>
     setState((s) => ({

@@ -9,8 +9,21 @@ import {
   MapPin,
   Clock,
   Languages,
+  ShieldCheck,
+  ShieldAlert,
+  Search,
+  Lock,
+  AlertTriangle,
 } from "lucide-react";
 import { useDemoState, demoStore, type MatterDraft } from "../lib/demoStore";
+import {
+  checkMatterConflicts,
+  commitMatterToLedger,
+  partiesFromMatter,
+  type ConflictCheckResult,
+  type ConflictHit,
+} from "../lib/conflicts/ledger";
+import { defaultTenant } from "../data/tenants";
 
 /**
  * Steward intake-triage inbox — the surface where Auxilium submissions and
@@ -147,24 +160,121 @@ function Section({
 }
 
 function DraftCard({ draft, compact }: { draft: MatterDraft; compact?: boolean }) {
+  const state = useDemoState();
   const [expanded, setExpanded] = useState(draft.status === "new" && !compact);
   const [editedSummary, setEditedSummary] = useState(draft.summary);
   const [editedCategory, setEditedCategory] = useState(draft.category);
   const [editedRegion, setEditedRegion] = useState(draft.region);
+  const [editedOpposing, setEditedOpposing] = useState(draft.opposingParty ?? "");
+  const [checking, setChecking] = useState(false);
+  const [showOverride, setShowOverride] = useState(false);
+  const [overrideJustification, setOverrideJustification] = useState("");
+
+  const tenant = useMemo(() => defaultTenant(), []);
+  const conflictCheck = draft.conflictCheck;
+  const checkIsCleared = conflictCheck?.cleared === true;
+  const checkRanRecently =
+    !!conflictCheck &&
+    Date.now() - new Date(conflictCheck.checkedAt).getTime() < 1000 * 60 * 60 * 24;
+  // Re-checking is required if the parties were edited after the last check.
+  const lastEditedAt = Math.max(
+    new Date(draft.submittedAt).getTime(),
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    (draft as any)._lastEditedAt ?? 0
+  );
+  const checkIsStale =
+    !!conflictCheck && new Date(conflictCheck.checkedAt).getTime() < lastEditedAt;
+  const publishGateOpen =
+    draft.status === "in-review" &&
+    !!conflictCheck &&
+    checkIsCleared &&
+    !checkIsStale &&
+    checkRanRecently;
 
   function startReview() {
     demoStore.updateMatterDraft(draft.id, { status: "in-review" });
   }
 
-  function publish() {
+  async function runConflictCheck(): Promise<void> {
+    setChecking(true);
+    const parties = partiesFromMatter({
+      requester: draft.requesterFirstName,
+      summary: editedSummary,
+      opposingParty: editedOpposing || undefined,
+    });
+    // Tenant salt is derived from the tenant id — in production it'd be a
+    // cryptographically random server-issued secret never exposed to the
+    // client. For the demo we use a deterministic derivation so checks
+    // remain reproducible across page loads.
+    const tenantSalt = `tenant-salt-v1::${tenant.id}`;
+    const result: ConflictCheckResult = await checkMatterConflicts(
+      tenant.id,
+      parties,
+      tenantSalt
+    );
+
+    const snapshot = {
+      checkedAt: result.checkedAt,
+      checkedBy: state.identityName,
+      cleared: result.cleared,
+      hashesChecked: result.checked.length,
+      hits: result.hits.map((h: ConflictHit) => ({
+        hash: h.hash,
+        priorMatterId: h.priorMatterId,
+        priorRole: h.priorRole,
+        newRole: h.newRole,
+        severity: h.severity,
+      })),
+    };
+    demoStore.recordConflictCheck(draft.id, snapshot);
+    setChecking(false);
+  }
+
+  async function publish() {
+    if (!publishGateOpen) {
+      alert(
+        "Conflict check must be cleared (or overridden with justification) before publishing."
+      );
+      return;
+    }
     const newMatterId = `sm-aux-${Date.now().toString(36)}`;
+    const tenantSalt = `tenant-salt-v1::${tenant.id}`;
+    // Write the matter's parties to the conflict ledger so future checks
+    // catch returning clients / adverse parties.
+    await commitMatterToLedger(
+      tenant.id,
+      newMatterId,
+      partiesFromMatter({
+        requester: draft.requesterFirstName,
+        summary: editedSummary,
+        opposingParty: editedOpposing || undefined,
+      }),
+      tenantSalt
+    );
     demoStore.updateMatterDraft(draft.id, {
       status: "published",
       publishedMatterId: newMatterId,
       summary: editedSummary,
       category: editedCategory,
       region: editedRegion,
+      opposingParty: editedOpposing || undefined,
     });
+  }
+
+  function submitOverride(): void {
+    if (!overrideJustification.trim() || !conflictCheck) return;
+    const snapshot = {
+      ...conflictCheck,
+      cleared: true,
+      override: {
+        justification: overrideJustification.trim(),
+        by: state.identityName,
+        at: new Date().toISOString(),
+      },
+    };
+    demoStore.recordConflictCheck(draft.id, snapshot);
+    setShowOverride(false);
+    setOverrideJustification("");
   }
 
   function decline() {
@@ -274,6 +384,19 @@ function DraftCard({ draft, compact }: { draft: MatterDraft; compact?: boolean }
                   className="w-full text-sm p-2 rounded border border-[hsl(var(--c-border))] bg-white leading-relaxed resize-y"
                 />
               </Field>
+              <Field label="Opposing party (if any — leave blank for advisory / non-adversarial matters)">
+                <input
+                  type="text"
+                  value={editedOpposing}
+                  onChange={(e) => setEditedOpposing(e.target.value)}
+                  placeholder="e.g. Allston Realty Trust LLC"
+                  className="w-full text-sm py-1.5 px-2 rounded border border-[hsl(var(--c-border))] bg-white"
+                />
+                <p className="text-[11px] text-[hsl(var(--c-slate-soft))] mt-1 leading-relaxed">
+                  Hashed with the requester's name and the tenant salt during
+                  conflict check — never stored in plaintext on the platform.
+                </p>
+              </Field>
               {draft.appealText && (
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-1 font-semibold">
@@ -292,6 +415,20 @@ function DraftCard({ draft, compact }: { draft: MatterDraft; compact?: boolean }
                   )}
                 </div>
               )}
+              <ConflictCheckPanel
+                draft={draft}
+                conflictCheck={conflictCheck}
+                checking={checking}
+                checkIsCleared={checkIsCleared}
+                checkIsStale={checkIsStale}
+                publishGateOpen={publishGateOpen}
+                showOverride={showOverride}
+                overrideJustification={overrideJustification}
+                onRun={runConflictCheck}
+                onShowOverride={() => setShowOverride((s) => !s)}
+                onOverrideChange={setOverrideJustification}
+                onOverrideSubmit={submitOverride}
+              />
               <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-[hsl(var(--c-border))]">
                 {draft.status === "new" && (
                   <button
@@ -312,9 +449,20 @@ function DraftCard({ draft, compact }: { draft: MatterDraft; compact?: boolean }
                 <button
                   type="button"
                   onClick={publish}
-                  className="collegium-btn-primary text-xs inline-flex items-center gap-1.5"
+                  disabled={!publishGateOpen}
+                  title={
+                    publishGateOpen
+                      ? "Publish to Patrocinium"
+                      : "Run a conflict check (and clear it or justify override) first"
+                  }
+                  className="collegium-btn-primary text-xs inline-flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Check size={11} /> Publish to Patrocinium <ArrowRight size={11} />
+                  {publishGateOpen ? (
+                    <Check size={11} />
+                  ) : (
+                    <Lock size={11} />
+                  )}{" "}
+                  Publish to Patrocinium <ArrowRight size={11} />
                 </button>
               </div>
             </div>
@@ -416,4 +564,232 @@ function formatRelative(iso: string): string {
   if (hrs < 24) return `${hrs}h ago`;
   const days = Math.round(hrs / 24);
   return `${days}d ago`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Conflict check panel                                                 */
+/* ------------------------------------------------------------------ */
+
+function ConflictCheckPanel({
+  draft,
+  conflictCheck,
+  checking,
+  checkIsCleared,
+  checkIsStale,
+  publishGateOpen,
+  showOverride,
+  overrideJustification,
+  onRun,
+  onShowOverride,
+  onOverrideChange,
+  onOverrideSubmit,
+}: {
+  draft: MatterDraft;
+  conflictCheck: MatterDraft["conflictCheck"];
+  checking: boolean;
+  checkIsCleared: boolean;
+  checkIsStale: boolean;
+  publishGateOpen: boolean;
+  showOverride: boolean;
+  overrideJustification: string;
+  onRun: () => void;
+  onShowOverride: () => void;
+  onOverrideChange: (v: string) => void;
+  onOverrideSubmit: () => void;
+}) {
+  const hasHits = !!conflictCheck && conflictCheck.hits.length > 0;
+  const overridden = !!conflictCheck?.override;
+
+  return (
+    <div
+      className={`rounded p-4 mb-3 border-l-4 ${
+        publishGateOpen
+          ? "bg-[hsl(145_30%_45%/0.08)] border-l-[hsl(145_30%_45%)]"
+          : hasHits && !overridden
+          ? "bg-[hsl(8_55%_52%/0.06)] border-l-[hsl(8_55%_42%)]"
+          : "bg-[hsl(38_55%_50%/0.08)] border-l-[hsl(38_55%_50%)]"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="flex items-start gap-2">
+          {publishGateOpen ? (
+            <ShieldCheck size={14} className="text-[hsl(145_40%_28%)] mt-0.5 shrink-0" />
+          ) : hasHits ? (
+            <ShieldAlert size={14} className="text-[hsl(8_55%_42%)] mt-0.5 shrink-0" />
+          ) : (
+            <Lock size={14} className="text-[hsl(38_55%_28%)] mt-0.5 shrink-0" />
+          )}
+          <div>
+            <div className="text-[11px] uppercase tracking-widest font-semibold">
+              Conflict check
+              {conflictCheck && (
+                <span
+                  className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${
+                    publishGateOpen
+                      ? "bg-[hsl(145_30%_45%/0.18)] text-[hsl(145_40%_25%)]"
+                      : hasHits
+                      ? "bg-[hsl(8_55%_52%/0.18)] text-[hsl(8_55%_38%)]"
+                      : "bg-[hsl(38_55%_50%/0.18)] text-[hsl(38_55%_28%)]"
+                  }`}
+                >
+                  {overridden
+                    ? "Overridden"
+                    : checkIsCleared
+                    ? "Cleared"
+                    : hasHits
+                    ? `${conflictCheck!.hits.length} hit${conflictCheck!.hits.length === 1 ? "" : "s"}`
+                    : "Pending"}
+                </span>
+              )}
+              {checkIsStale && (
+                <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-[hsl(38_55%_50%/0.18)] text-[hsl(38_55%_28%)]">
+                  Stale — re-run
+                </span>
+              )}
+            </div>
+            {conflictCheck ? (
+              <div className="text-xs text-[hsl(var(--c-slate))] mt-1 leading-snug">
+                Ran by <strong>{conflictCheck.checkedBy}</strong> on{" "}
+                {formatStamp(conflictCheck.checkedAt)} — checked{" "}
+                {conflictCheck.hashesChecked} party hash
+                {conflictCheck.hashesChecked === 1 ? "" : "es"} against the
+                tenant ledger.
+              </div>
+            ) : (
+              <div className="text-xs text-[hsl(var(--c-slate))] mt-1 leading-snug">
+                Publication is blocked until a conflict check runs. Hashes the
+                requester and opposing party against the tenant's ledger —
+                names never leave the system in plaintext.
+              </div>
+            )}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onRun}
+          disabled={checking || draft.status === "published" || draft.status === "declined"}
+          className="collegium-btn-ghost text-xs inline-flex items-center gap-1.5 shrink-0 disabled:opacity-50"
+        >
+          <Search size={11} />
+          {checking ? "Checking…" : conflictCheck ? "Re-run check" : "Run check"}
+        </button>
+      </div>
+
+      {hasHits && !overridden && (
+        <div className="mt-3 pt-3 border-t border-[hsl(var(--c-border))]">
+          <div className="flex items-start gap-2 text-xs text-[hsl(8_55%_38%)] mb-2">
+            <AlertTriangle size={12} className="mt-0.5 shrink-0" />
+            <span className="font-medium">
+              {conflictCheck!.hits.length} prior matter
+              {conflictCheck!.hits.length === 1 ? "" : "s"} shared a party
+              with this draft. Investigate before publishing.
+            </span>
+          </div>
+          <div className="space-y-1.5">
+            {conflictCheck!.hits.map((h, i) => (
+              <HitRow key={i} hit={h} />
+            ))}
+          </div>
+          <div className="mt-3 flex items-center justify-end">
+            <button
+              type="button"
+              onClick={onShowOverride}
+              className="text-xs collegium-link"
+            >
+              {showOverride ? "Cancel override" : "Override with justification"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showOverride && (
+        <div className="mt-3 pt-3 border-t border-[hsl(var(--c-border))]">
+          <label className="block">
+            <span className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-slate-soft))] block mb-1">
+              Justification (logged on the audit trail)
+            </span>
+            <textarea
+              value={overrideJustification}
+              onChange={(e) => onOverrideChange(e.target.value)}
+              rows={3}
+              placeholder="e.g. Hashes hit because John Smith is a common name; the prior matter was in Phoenix housing court, this is a different John Smith in Boston immigration. Confirmed by phone with referring parish."
+              className="w-full text-sm p-2 rounded border border-[hsl(var(--c-border))] bg-white leading-relaxed resize-y"
+            />
+          </label>
+          <div className="flex items-center justify-end gap-2 mt-2">
+            <button
+              type="button"
+              onClick={onOverrideSubmit}
+              disabled={!overrideJustification.trim()}
+              className="collegium-btn-primary text-xs inline-flex items-center gap-1.5 disabled:opacity-50"
+            >
+              <ShieldCheck size={11} /> Record override + clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {overridden && (
+        <div className="mt-3 pt-3 border-t border-[hsl(var(--c-border))]">
+          <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-1 font-semibold">
+            Steward override on file
+          </div>
+          <p className="text-xs text-[hsl(var(--c-slate))] leading-relaxed italic">
+            "{conflictCheck!.override!.justification}"
+          </p>
+          <p className="text-[11px] text-[hsl(var(--c-slate-soft))] mt-1">
+            — {conflictCheck!.override!.by},{" "}
+            {formatStamp(conflictCheck!.override!.at)}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HitRow({
+  hit,
+}: {
+  hit: NonNullable<MatterDraft["conflictCheck"]>["hits"][number];
+}) {
+  const severityClass = {
+    "direct-adverse": "text-[hsl(8_55%_38%)] bg-[hsl(8_55%_52%/0.10)] border-[hsl(8_55%_52%/0.30)]",
+    "name-collision-likely":
+      "text-[hsl(38_55%_28%)] bg-[hsl(38_55%_50%/0.10)] border-[hsl(38_55%_50%/0.30)]",
+    review: "text-[hsl(var(--c-slate))] bg-[hsl(var(--c-cream-warm))] border-[hsl(var(--c-border))]",
+  }[hit.severity];
+  return (
+    <div
+      className={`text-xs p-2 rounded border ${severityClass} flex items-start gap-2`}
+    >
+      <code className="font-mono text-[10px] shrink-0 mt-0.5 break-all">
+        {hit.hash.slice(0, 12)}…
+      </code>
+      <div className="flex-1 min-w-0">
+        <div className="font-medium">
+          {hit.severity === "direct-adverse"
+            ? "Direct adverse"
+            : hit.severity === "name-collision-likely"
+            ? "Likely returning party"
+            : "Review"}
+          {" — "}
+          this party was{" "}
+          <strong className="capitalize">{hit.priorRole.replace(/-/g, " ")}</strong>{" "}
+          in matter{" "}
+          <code className="font-mono">{hit.priorMatterId}</code>; now proposed
+          as <strong className="capitalize">{hit.newRole.replace(/-/g, " ")}</strong>.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function formatStamp(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }

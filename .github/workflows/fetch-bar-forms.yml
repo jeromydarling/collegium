@@ -1,0 +1,79 @@
+name: Fetch bar-form PDFs
+
+# Downloads the canonical pro-bono reporting PDFs from each state's
+# courts or bar association and commits them to public/assets/bar-forms/.
+# These PDFs are the artifacts pdf-lib fills with each lawyer's data
+# at runtime.
+#
+# Trigger:
+#   - Manually from the Actions tab ("Run workflow")
+#   - Quarterly on the 1st of Jan / Apr / Jul / Oct (forms rotate annually
+#     in some states; the Florida one rotates by Bar year)
+#
+# This workflow needs no secrets — all URLs are public.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 03:14 UTC on the 1st of Jan, Apr, Jul, Oct
+    - cron: "14 3 1 1,4,7,10 *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-bar-forms
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run fetch script
+        # Continue past per-URL failures (forms occasionally move);
+        # whatever was fetched still commits.
+        run: node scripts/fetch-bar-forms.mjs || true
+
+      - name: List downloaded files
+        run: |
+          if [ -d public/assets/bar-forms ]; then
+            ls -lh public/assets/bar-forms/ || true
+          else
+            echo "No PDFs were fetched."
+            exit 0
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "collegium-forms-bot"
+          git config user.email "collegium-forms-bot@users.noreply.github.com"
+          git add public/assets/bar-forms/
+          if git diff --cached --quiet; then
+            echo "No changes to commit — PDFs are already current."
+            exit 0
+          fi
+          git commit -m "Refresh bar-form PDFs
+
+          Pulled from each state's canonical source. The dispatcher in
+          src/collegium/lib/hours/barForms/ uses these to fill AcroForm
+          fields per lawyer at runtime."
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload PDFs as workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bar-form-pdfs
+          path: public/assets/bar-forms/
+          retention-days: 90
+          if-no-files-found: ignore

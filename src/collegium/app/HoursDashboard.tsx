@@ -119,6 +119,33 @@ export function HoursDashboard() {
     }
   }
 
+  /**
+   * "Official form" download — picks between filling the state's
+   * AcroForm PDF (NY/MA/NJ/FL) or rendering a portal-handoff worksheet
+   * (CA/MD/IL/DC/TX) based on the jurisdiction catalog. Falls back to
+   * a friendly alert if the fillable PDF hasn't been fetched yet.
+   */
+  async function handleDownloadOfficial() {
+    if (mode !== "personal" || !personalReport || !attorney) return;
+    const { downloadOfficialOutput } = await import(
+      "../lib/hours/barForms"
+    );
+    const result = await downloadOfficialOutput(
+      jurisdiction,
+      personalReport.summary,
+      {
+        name: attorney.name,
+        barNumber: `BBO-${attorneyId.slice(-4).toUpperCase()}-2024`,
+        firmOrClinic: tenant.branding.displayName,
+      }
+    );
+    if (!result.ok) {
+      alert(
+        `Couldn't generate the official form: ${result.reason ?? "unknown reason"}.\n\nIf this is the first time, run \`npm run forms:fetch\` (or trigger the Fetch bar-form PDFs CI workflow) to download the canonical PDF.`
+      );
+    }
+  }
+
   const recentEntries = [...hoursEntries]
     .filter((e) => mode === "personal" ? e.attorneyId === attorneyId : true)
     .sort((a, b) => b.date.localeCompare(a.date))
@@ -379,10 +406,21 @@ export function HoursDashboard() {
                 type="button"
                 onClick={handleDownloadPdf}
                 disabled={!reportText}
-                className="collegium-btn-primary text-xs inline-flex items-center gap-1.5"
+                className="collegium-btn-ghost text-xs inline-flex items-center gap-1.5"
               >
-                <Download size={12} /> PDF
+                <Download size={12} /> PDF summary
               </button>
+              {mode === "personal" && (
+                <button
+                  type="button"
+                  onClick={handleDownloadOfficial}
+                  disabled={!reportText}
+                  className="collegium-btn-primary text-xs inline-flex items-center gap-1.5"
+                  title="Fill the state's official PDF (or generate a portal-handoff worksheet for portal-only states)"
+                >
+                  <Download size={12} /> Official form
+                </button>
+              )}
             </div>
           </div>
           <pre className="text-[11px] sm:text-xs text-[hsl(var(--c-slate))] leading-relaxed whitespace-pre-wrap font-mono bg-white border border-[hsl(var(--c-border))] rounded p-4 overflow-x-auto max-h-[70vh] overflow-y-auto">
