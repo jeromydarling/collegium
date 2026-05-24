@@ -41,7 +41,7 @@ export const week06: DevotionalDay[] = [
     excerpt: {
       workId: "aquinas-summa",
       author: "Thomas Aquinas",
-      citation: "De Regimine Principum (De Regno) I.6 (trans. G. B. Phelan, 1938; in public domain editions reprinted from earlier translations)",
+      citation: "Summa Theologiae, II-II, q. 42, a. 2 ad 3 (English Dominican tr., 1920)",
       text: `A tyrannical government is not just, because it is directed, not to the common good, but to the private good of the ruler, as the Philosopher states. Consequently there is no sedition in disturbing a government of this kind, unless indeed the tyrant's rule be disturbed so inordinately that his subjects suffer greater harm from the consequent disturbance than from the tyrant's government.`,
     },
   },
