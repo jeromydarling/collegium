@@ -17,6 +17,7 @@
 import { jsPDF } from "jspdf";
 import type { DevotionalDay } from "../content/devotional/types";
 import { prayerForDay } from "../content/devotional/traditionalPrayers";
+import { loadLibraryImage, LIBRARY_IMAGE_ASPECT } from "./pdfImage";
 
 const PAGE_W = 6;
 const PAGE_H = 9;
@@ -34,8 +35,14 @@ const C_SLATE = [110, 100, 105] as const;
 const C_GOLD = [165, 130, 70] as const;
 
 /** Build a heirloom-grade jsPDF for a single devotional day. */
-export function buildDevotionalDayPdf(entry: DevotionalDay): jsPDF {
+export async function buildDevotionalDayPdf(entry: DevotionalDay): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "in", format: [PAGE_W, PAGE_H] });
+  const bgImage = await loadLibraryImage();
+
+  // Faded library photo as the page-1 backdrop (very subtle —
+  // the per-day page is not a full title page, just hints at the book's
+  // larger architecture)
+  drawFadedBackground(doc, bgImage, 0.07);
 
   // ── Running head (page 1 only — body pages get the cleaner head)
   drawTitlePageHeader(doc, entry);
@@ -333,7 +340,45 @@ function setColor(doc: jsPDF, rgb: readonly [number, number, number]) {
 }
 
 /** Convenience: save the single-day PDF with a sensible filename. */
-export function exportDevotionalDayPdf(entry: DevotionalDay): void {
-  const doc = buildDevotionalDayPdf(entry);
+export async function exportDevotionalDayPdf(entry: DevotionalDay): Promise<void> {
+  const doc = await buildDevotionalDayPdf(entry);
   doc.save(`lawyers-year-day-${String(entry.day).padStart(3, "0")}.pdf`);
+}
+
+/**
+ * Faded library-photo backdrop. No-op if jsPDF's GState is unavailable.
+ */
+function drawFadedBackground(
+  doc: jsPDF,
+  bgImage: string | null,
+  opacity: number
+): void {
+  if (!bgImage) return;
+  try {
+    const docAny = doc as unknown as {
+      GState: new (opts: { opacity: number }) => unknown;
+      setGState: (gs: unknown) => void;
+    };
+    const fadedState = new docAny.GState({ opacity });
+    const fullState = new docAny.GState({ opacity: 1 });
+    docAny.setGState(fadedState);
+
+    const pageAspect = PAGE_W / PAGE_H;
+    let drawW: number, drawH: number, dx: number, dy: number;
+    if (LIBRARY_IMAGE_ASPECT > pageAspect) {
+      drawH = PAGE_H;
+      drawW = PAGE_H * LIBRARY_IMAGE_ASPECT;
+      dx = (PAGE_W - drawW) / 2;
+      dy = 0;
+    } else {
+      drawW = PAGE_W;
+      drawH = PAGE_W / LIBRARY_IMAGE_ASPECT;
+      dx = 0;
+      dy = (PAGE_H - drawH) / 2;
+    }
+    doc.addImage(bgImage, "JPEG", dx, dy, drawW, drawH);
+    docAny.setGState(fullState);
+  } catch {
+    /* GState unsupported — skip */
+  }
 }

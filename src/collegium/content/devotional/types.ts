@@ -265,4 +265,186 @@ export const weekArcs: WeekArc[] = [
     blurb:
       "Halfway through the year. A week of review, examination, and renewal of the year's first vow.",
   },
+  {
+    weekNumber: 27,
+    arc: "Sabbath",
+    arcLatin: "Sabbatum",
+    blurb:
+      "Rest as a discipline of vocation. The seventh day, the lawyer's hardest week to take off, and the order of creation it depends on.",
+  },
+  {
+    weekNumber: 28,
+    arc: "The Adversary",
+    arcLatin: "Adversarius",
+    blurb:
+      "Opposing counsel as person, not antagonist. What is owed across the bar to those whose case is the reverse of yours.",
+  },
+  {
+    weekNumber: 29,
+    arc: "The Library",
+    arcLatin: "Bibliotheca",
+    blurb:
+      "The books that have formed an advocate. Newman, Aquinas, the long shelf the practice rests on.",
+  },
+  {
+    weekNumber: 30,
+    arc: "Place",
+    arcLatin: "Statio",
+    blurb:
+      "The physical office, the desk, the chair, the windowsill — the place where the work is done.",
+  },
+  {
+    weekNumber: 31,
+    arc: "The Tongue",
+    arcLatin: "Lingua",
+    blurb:
+      "James on the tongue that sets a forest on fire. Speech as the lawyer's instrument and the lawyer's danger.",
+  },
+  {
+    weekNumber: 32,
+    arc: "The Eye",
+    arcLatin: "Oculus",
+    blurb:
+      "What we look at, and what we look away from. Attention as a moral act.",
+  },
+  {
+    weekNumber: 33,
+    arc: "Trial",
+    arcLatin: "Iudicium",
+    blurb:
+      "The week of trial itself — the days before, the morning of, the cross, the close, the verdict.",
+  },
+  {
+    weekNumber: 34,
+    arc: "Cross-Examination",
+    arcLatin: "Interrogatio",
+    blurb:
+      "The duty in questioning. Wigmore's engine, the witness in fear, the truth that arrives only in the silence after.",
+  },
+  {
+    weekNumber: 35,
+    arc: "The Brief",
+    arcLatin: "Memoriale",
+    blurb:
+      "Written advocacy as a moral artifact. The brief that lasts beyond the case.",
+  },
+  {
+    weekNumber: 36,
+    arc: "The Settlement",
+    arcLatin: "Compositio",
+    blurb:
+      "Resolution outside the courtroom. Composition as the older, slower word for peace between parties.",
+  },
+  {
+    weekNumber: 37,
+    arc: "The Appeal",
+    arcLatin: "Appellatio",
+    blurb:
+      "The higher court, the deeper question. The appeal as the lawyer's return to first principles.",
+  },
+  {
+    weekNumber: 38,
+    arc: "Wonder",
+    arcLatin: "Admiratio",
+    blurb:
+      "The lawyer's lost capacity for awe. Aquinas on wonder as the beginning of wisdom.",
+  },
+  {
+    weekNumber: 39,
+    arc: "Gratitude",
+    arcLatin: "Gratitudo",
+    blurb:
+      "The discipline of the grateful advocate. Three-quarters of a year now traveled.",
+  },
+  {
+    weekNumber: 40,
+    arc: "The Stranger",
+    arcLatin: "Peregrinus",
+    blurb:
+      "Hospitality to the foreigner — the immigration consultation, the asylum client, the stranger Levitical law was written to protect.",
+  },
+  {
+    weekNumber: 41,
+    arc: "Widow and Orphan",
+    arcLatin: "Vidua et Orphanus",
+    blurb:
+      "The biblical category the Ivo Collect names. The constituency the law was supposed to be for.",
+  },
+  {
+    weekNumber: 42,
+    arc: "The Old Lawyer",
+    arcLatin: "Senex",
+    blurb:
+      "The late-career advocate. What the years have taught. What they have failed to teach.",
+  },
+  {
+    weekNumber: 43,
+    arc: "The Young Lawyer",
+    arcLatin: "Iuvenis",
+    blurb:
+      "The new admittee — fear, hubris, the first appearance. The shape the practice takes before it has been tested.",
+  },
+  {
+    weekNumber: 44,
+    arc: "Mentorship",
+    arcLatin: "Tirocinium",
+    blurb:
+      "Forming the next generation. The mentor's care, the protege's slow becoming.",
+  },
+  {
+    weekNumber: 45,
+    arc: "The Bench",
+    arcLatin: "Sedes",
+    blurb:
+      "The move from bar to bench. Sitting in judgment as a vocation, not a promotion.",
+  },
+  {
+    weekNumber: 46,
+    arc: "Money",
+    arcLatin: "Pecunia",
+    blurb:
+      "The fee, the retainer, the bill. The lawyer's compensation as moral object — neither shame nor sanctity.",
+  },
+  {
+    weekNumber: 47,
+    arc: "Stewardship",
+    arcLatin: "Dispensatio",
+    blurb:
+      "The lawyer as steward — of the client's matter, of the law's order, of the soul's own time.",
+  },
+  {
+    weekNumber: 48,
+    arc: "Death",
+    arcLatin: "Mors",
+    blurb:
+      "The estate plan, the deathbed, the will, the lawyer at end-of-life. The week All Souls falls in.",
+  },
+  {
+    weekNumber: 49,
+    arc: "Hope",
+    arcLatin: "Spes",
+    blurb:
+      "The theological virtue. The Advent of the year of practice that has nearly ended.",
+  },
+  {
+    weekNumber: 50,
+    arc: "Faith",
+    arcLatin: "Fides",
+    blurb:
+      "What holds the practice up when the brief is weak and the bench is silent. The first of the theological virtues.",
+  },
+  {
+    weekNumber: 51,
+    arc: "Charity",
+    arcLatin: "Caritas",
+    blurb:
+      "The crown of the virtues. Paul to the Corinthians. The week of Christmas.",
+  },
+  {
+    weekNumber: 52,
+    arc: "The Last Things",
+    arcLatin: "Novissima",
+    blurb:
+      "Year's end. Death, judgment, heaven, hell — the four last things the lawyer has been moving toward all along. The vow renewed for the year to come.",
+  },
 ];

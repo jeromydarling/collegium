@@ -23,6 +23,7 @@
 
 import { jsPDF } from "jspdf";
 import type { DevotionalDay } from "../content/devotional/types";
+import { loadLibraryImage, LIBRARY_IMAGE_ASPECT } from "./pdfImage";
 import { devotionalDays } from "../content/devotional";
 import {
   pocketbookDays,
@@ -65,9 +66,9 @@ function tagsForDay(entry: DevotionalDay): SituationalTag[] {
 }
 
 /** Build and return the Field Guide PDF. */
-export function buildFieldGuidePdf(): jsPDF {
+export async function buildFieldGuidePdf(): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "in", format: [W, H] });
-  // 1pt of color line under headers, etc. — jsPDF default line width is fine.
+  const bgImage = await loadLibraryImage();
 
   // The selected days, in pocketbook order, with entries resolved.
   const entries: DevotionalDay[] = pocketbookDays
@@ -75,11 +76,11 @@ export function buildFieldGuidePdf(): jsPDF {
     .filter((e): e is DevotionalDay => Boolean(e));
 
   // ── FRONT MATTER ──────────────────────────────────────────────────
-  drawTitlePage(doc);
+  drawTitlePage(doc, bgImage);
   doc.addPage();
   drawCopyrightPage(doc);
   doc.addPage();
-  drawDedicationPage(doc);
+  drawDedicationPage(doc, bgImage);
   doc.addPage();
   drawForewordPage(doc);
   doc.addPage();
@@ -102,7 +103,7 @@ export function buildFieldGuidePdf(): jsPDF {
   for (const section of pocketbookSections) {
     const sectionEntries = entriesBySection.get(section.title);
     if (!sectionEntries || sectionEntries.length === 0) continue;
-    drawSectionOpener(doc, section.title, section.latin);
+    drawSectionOpener(doc, section.title, section.latin, bgImage);
     for (const entry of sectionEntries) {
       doc.addPage();
       drawEntry(doc, entry);
@@ -125,21 +126,35 @@ export function buildFieldGuidePdf(): jsPDF {
   return doc;
 }
 
-function drawTitlePage(doc: jsPDF) {
-  const cx = W / 2;
-  let y = H * 0.32;
+function drawTitlePage(doc: jsPDF, bgImage: string | null) {
+  // Faded library photo as full-bleed backdrop
+  drawFadedBackground(doc, bgImage, 0.12);
 
+  const cx = W / 2;
+
+  // Top decorative band
+  setColor(doc, COLOR_GOLD);
+  doc.setLineWidth(0.012);
+  doc.line(cx - 0.7, H * 0.22, cx + 0.7, H * 0.22);
+
+  let y = H * 0.30;
   setFont(doc, "italic", 10);
   setColor(doc, COLOR_WINE);
   doc.text("ANNUS ADVOCATI", cx, y, { align: "center" });
   y += 0.35;
 
-  setFont(doc, "bold", 22);
+  setFont(doc, "bold", 24);
   setColor(doc, COLOR_INK);
   doc.text("The Lawyer's", cx, y, { align: "center" });
-  y += 0.32;
+  y += 0.36;
   doc.text("Field Guide", cx, y, { align: "center" });
-  y += 0.5;
+  y += 0.45;
+
+  // Small ornament between title and subtitle
+  setFont(doc, "normal", 12);
+  setColor(doc, COLOR_GOLD);
+  doc.text("❧", cx, y, { align: "center" }); // floral heart
+  y += 0.3;
 
   setFont(doc, "italic", 11);
   setColor(doc, COLOR_SLATE);
@@ -147,10 +162,14 @@ function drawTitlePage(doc: jsPDF) {
   y += 0.18;
   doc.text("for the Working Advocate", cx, y, { align: "center" });
 
-  // Bottom mark
+  // Bottom decorative band + mark
+  setColor(doc, COLOR_GOLD);
+  doc.setLineWidth(0.012);
+  doc.line(cx - 0.6, H - 1.15, cx + 0.6, H - 1.15);
+
   setFont(doc, "italic", 9);
   setColor(doc, COLOR_WINE);
-  doc.text("Collegium Editions", cx, H - 1.0, { align: "center" });
+  doc.text("COLLEGIUM EDITIONS", cx, H - 0.95, { align: "center" });
 }
 
 function drawCopyrightPage(doc: jsPDF) {
@@ -183,7 +202,8 @@ function drawCopyrightPage(doc: jsPDF) {
   }
 }
 
-function drawDedicationPage(doc: jsPDF) {
+function drawDedicationPage(doc: jsPDF, bgImage: string | null) {
+  drawFadedBackground(doc, bgImage, 0.08);
   const cx = W / 2;
   setFont(doc, "italic", 11);
   setColor(doc, COLOR_INK);
@@ -264,23 +284,89 @@ function drawTableOfContents(doc: jsPDF, entries: DevotionalDay[]) {
   doc.text("By situation · By Scripture · By author · Colophon", M_IN, y);
 }
 
-function drawSectionOpener(doc: jsPDF, title: string, latin: string) {
+function drawSectionOpener(
+  doc: jsPDF,
+  title: string,
+  latin: string,
+  bgImage: string | null
+) {
+  drawFadedBackground(doc, bgImage, 0.10);
+
   const cx = W / 2;
+
+  // Top hairline
+  setColor(doc, COLOR_GOLD);
+  doc.setLineWidth(0.008);
+  doc.line(cx - 0.6, H * 0.30, cx + 0.6, H * 0.30);
+
   let y = H * 0.40;
   setFont(doc, "italic", 10);
   setColor(doc, COLOR_WINE);
   doc.text(latin.toUpperCase(), cx, y, { align: "center" });
   y += 0.4;
 
-  // Decorative band
+  // Centre band
   setColor(doc, COLOR_GOLD);
-  doc.setLineWidth(0.01);
-  doc.line(cx - 0.6, y, cx + 0.6, y);
-  y += 0.3;
+  doc.setLineWidth(0.012);
+  doc.line(cx - 0.7, y, cx + 0.7, y);
+  y += 0.34;
 
-  setFont(doc, "bold", 18);
+  setFont(doc, "bold", 22);
   setColor(doc, COLOR_INK);
   doc.text(title, cx, y, { align: "center" });
+  y += 0.4;
+
+  // Small ornament beneath the title
+  setFont(doc, "normal", 14);
+  setColor(doc, COLOR_GOLD);
+  doc.text("⁂", cx, y, { align: "center" });
+
+  // Bottom hairline
+  setColor(doc, COLOR_GOLD);
+  doc.setLineWidth(0.008);
+  doc.line(cx - 0.6, H * 0.74, cx + 0.6, H * 0.74);
+}
+
+/**
+ * Draw the library photo as a faded full-bleed background. Uses jsPDF's
+ * GState for opacity. If bgImage is null (load failed), this is a no-op.
+ */
+function drawFadedBackground(
+  doc: jsPDF,
+  bgImage: string | null,
+  opacity: number
+): void {
+  if (!bgImage) return;
+  try {
+    const docAny = doc as unknown as {
+      GState: new (opts: { opacity: number }) => unknown;
+      setGState: (gs: unknown) => void;
+    };
+    const fadedState = new docAny.GState({ opacity });
+    const fullState = new docAny.GState({ opacity: 1 });
+    docAny.setGState(fadedState);
+
+    // Cover-fit the image: photo is landscape (1.5 ratio), page is portrait
+    // (4.25/6.875 ≈ 0.618). Scale image to fully cover the page, centered.
+    const pageAspect = W / H;
+    let drawW: number, drawH: number, dx: number, dy: number;
+    if (LIBRARY_IMAGE_ASPECT > pageAspect) {
+      // Image wider than page — scale to page height, crop horizontally
+      drawH = H;
+      drawW = H * LIBRARY_IMAGE_ASPECT;
+      dx = (W - drawW) / 2;
+      dy = 0;
+    } else {
+      drawW = W;
+      drawH = W / LIBRARY_IMAGE_ASPECT;
+      dx = 0;
+      dy = (H - drawH) / 2;
+    }
+    doc.addImage(bgImage, "JPEG", dx, dy, drawW, drawH);
+    docAny.setGState(fullState);
+  } catch {
+    // GState not supported in this jsPDF build — silently skip the background
+  }
 }
 
 function drawEntry(doc: jsPDF, entry: DevotionalDay) {
@@ -572,7 +658,7 @@ function ensurePage(doc: jsPDF, y: number, need: number, _xRef: number): number 
 }
 
 /** Convenience: save the Field Guide PDF with a sensible filename. */
-export function exportFieldGuidePdf(): void {
-  const doc = buildFieldGuidePdf();
+export async function exportFieldGuidePdf(): Promise<void> {
+  const doc = await buildFieldGuidePdf();
   doc.save("the-lawyers-field-guide.pdf");
 }
