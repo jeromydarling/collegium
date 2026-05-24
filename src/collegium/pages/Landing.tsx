@@ -156,6 +156,49 @@ export function Landing() {
             </p>
           </div>
 
+          {/* The Justice Gap — 60s data-driven short. Played BEFORE the
+              walkthrough because it answers "why" before the walkthrough
+              answers "how". Built with Remotion; gracefully degrades if
+              /justice-gap.mp4 isn't rendered yet. */}
+          <div className="mt-12 sm:mt-16 max-w-4xl mx-auto px-2">
+            <div className="text-center mb-4">
+              <div className="collegium-latin text-xs text-[hsl(var(--c-wine))] mb-1">
+                Iniustitia · the work that isn't being done
+              </div>
+              <div className="collegium-display text-2xl sm:text-3xl text-[hsl(var(--c-ink))] mb-1">
+                The Justice Gap, in sixty seconds.
+              </div>
+              <div className="text-sm text-[hsl(var(--c-slate-soft))]">
+                What the numbers say. Source-cited; data from LSC, Eviction Lab,
+                ABA, BJS.
+              </div>
+            </div>
+            <div className="relative rounded-xl overflow-hidden border border-[hsl(var(--c-border))] shadow-sm bg-[hsl(var(--c-wine-deep))] aspect-video">
+              <video
+                src={`${import.meta.env.BASE_URL}justice-gap.mp4`}
+                poster={`${import.meta.env.BASE_URL}justice-gap-poster.jpg`}
+                controls
+                preload="metadata"
+                playsInline
+                className="absolute inset-0 w-full h-full object-contain"
+              >
+                <p className="absolute inset-0 flex items-center justify-center text-sm text-[hsl(var(--c-cream))] p-6 text-center">
+                  Your browser doesn't support the video tag. The short walks
+                  the major Justice Gap statistics — 92% unmet civil legal
+                  need, the 40-to-1 lawyer density disparity, the 90/10
+                  eviction-court split, and the 15-to-1 civil-versus-criminal
+                  volume — with sources cited inline.
+                </p>
+              </video>
+            </div>
+            <p className="text-xs text-[hsl(var(--c-slate-soft))] mt-3 text-center">
+              For the state-by-state breakdown:{" "}
+              <Link to="/justicegap" className="collegium-link">
+                open the Justice Gap analytics →
+              </Link>
+            </p>
+          </div>
+
           {/* Walkthrough video — 90s end-to-end demo. Built with hyperframes;
               gracefully degrades when /intro.mp4 isn't rendered yet. */}
           <div className="mt-10 sm:mt-14 max-w-4xl mx-auto px-2">
