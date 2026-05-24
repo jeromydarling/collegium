@@ -14,8 +14,18 @@ import {
   Award,
   FileDown,
   Plus,
+  Plug,
+  ShieldCheck,
+  ExternalLink,
+  Mic,
 } from "lucide-react";
-import { mentorPairs, people, chapters, type PairOutcome } from "../../data/demo";
+import {
+  mentorPairs,
+  people,
+  chapters,
+  type PairOutcome,
+  type IntegrationConnection,
+} from "../../data/demo";
 import { libraryExcerpts, libraryWorks } from "../../content/library";
 import {
   useDemoState,
@@ -23,8 +33,11 @@ import {
   usePairMeetings,
   usePairOutcomes,
   usePairVideoLink,
+  usePairIntegrations,
 } from "../../lib/demoStore";
 import { downloadIcsForPair } from "../../lib/icsExport";
+import { IntegrationsPanel } from "./IntegrationsPanel";
+import { VerificationBadge } from "./VerificationBadge";
 
 /**
  * Per-pair reflection journal — closes the gap between "reflection
@@ -59,6 +72,7 @@ export function PairJournal() {
   const meetings = usePairMeetings(id);
   const outcomes = usePairOutcomes(id);
   const videoLink = usePairVideoLink(id);
+  const integrations = usePairIntegrations(id);
   const [draft, setDraft] = useState("");
   const [draftSource, setDraftSource] = useState<{
     kind: "excerpt" | "prompt" | "note";
@@ -206,6 +220,9 @@ export function PairJournal() {
             </button>
           )}
         </div>
+        {id && (
+          <IntegrationsPanel pairId={id} integrations={integrations} />
+        )}
       </div>
 
       <div className="flex border-b border-[hsl(var(--c-border))] mb-5 overflow-x-auto">
@@ -652,8 +669,113 @@ function MeetingRow({
             <PenLine size={11} /> Add notes
           </button>
         )}
+        {m.recordingUrl && (
+          <a
+            href={m.recordingUrl}
+            target="_blank"
+            rel="noopener"
+            className="text-xs collegium-link inline-flex items-center gap-1"
+          >
+            <Mic size={11} /> Recording <ExternalLink size={9} />
+          </a>
+        )}
       </div>
+      {m.summary && <MeetingSummaryCard summary={m.summary} />}
     </article>
+  );
+}
+
+function MeetingSummaryCard({
+  summary,
+}: {
+  summary: import("../../data/demo").MeetingSummary;
+}) {
+  const sourceLabel: Record<
+    import("../../data/demo").MeetingSummary["source"],
+    string
+  > = {
+    "read-ai": "Read.ai",
+    "zoom-ai": "Zoom AI Companion",
+    otter: "Otter.ai",
+    manual: "Manual notes",
+  };
+
+  return (
+    <div className="mt-3 rounded-md bg-[hsl(var(--c-cream-warm))] border border-[hsl(var(--c-border))] p-3">
+      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-2">
+        <Sparkles size={10} /> {sourceLabel[summary.source]} summary
+        <span className="text-[hsl(var(--c-slate-soft))] normal-case font-normal tracking-normal">
+          · generated {new Date(summary.generatedAt).toLocaleDateString()}
+        </span>
+      </div>
+      <p className="text-sm text-[hsl(var(--c-ink))] leading-snug mb-2">
+        {summary.summary}
+      </p>
+      {summary.topics.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {summary.topics.map((t, i) => (
+            <span key={i} className="collegium-tag-soft text-[10px]">
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
+      {summary.engagement?.note && (
+        <p className="text-[11px] italic text-[hsl(var(--c-slate-soft))] mb-2 leading-snug">
+          {summary.engagement.note}
+          {summary.engagement.mentorSpeakingPercent !== undefined &&
+            summary.engagement.menteeSpeakingPercent !== undefined && (
+              <span className="ml-1 not-italic">
+                — Mentor {summary.engagement.mentorSpeakingPercent}% / Mentee{" "}
+                {summary.engagement.menteeSpeakingPercent}%
+              </span>
+            )}
+        </p>
+      )}
+      {summary.actionItems.length > 0 && (
+        <div>
+          <div className="text-[10px] uppercase tracking-widest text-[hsl(var(--c-wine))] mb-1">
+            Action items
+          </div>
+          <ul className="space-y-1">
+            {summary.actionItems.map((ai) => (
+              <li key={ai.id} className="flex items-start gap-2 text-xs">
+                <input
+                  type="checkbox"
+                  checked={ai.status === "done"}
+                  onChange={() => demoStore.toggleActionItem(ai.id)}
+                  className="mt-0.5 cursor-pointer shrink-0"
+                />
+                <span
+                  className={`flex-1 leading-snug ${
+                    ai.status === "done"
+                      ? "line-through text-[hsl(var(--c-slate-soft))]"
+                      : "text-[hsl(var(--c-slate))]"
+                  }`}
+                >
+                  {ai.text}
+                  {ai.dueOn && (
+                    <span className="text-[10px] text-[hsl(var(--c-wine))] ml-1.5">
+                      · due {new Date(ai.dueOn).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {summary.transcriptUrl && (
+        <a
+          href={summary.transcriptUrl}
+          target="_blank"
+          rel="noopener"
+          className="text-[11px] collegium-link inline-flex items-center gap-1 mt-2"
+        >
+          Full transcript <ExternalLink size={9} />
+        </a>
+      )}
+    </div>
   );
 }
 
@@ -849,6 +971,7 @@ function OutcomesTab({
                 <p className="text-sm text-[hsl(var(--c-slate))] leading-snug">
                   {o.detail}
                 </p>
+                <VerificationBadge outcome={o} />
               </article>
             </li>
           ))}

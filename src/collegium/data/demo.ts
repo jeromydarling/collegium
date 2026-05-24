@@ -131,6 +131,62 @@ export type PairMeeting = {
   notes?: string;
   /** Override the pair's standing video room, if used. */
   videoLink?: string;
+  /**
+   * AI-generated summary, typically produced by Read.ai when the bot joined
+   * the call. Populated by webhook after the meeting; see
+   * lib/integrations/readAi.ts for the mapper from incoming Read.ai
+   * payloads to this shape.
+   */
+  summary?: MeetingSummary;
+  /** Recording URL (Zoom cloud / Read.ai library / manually uploaded). */
+  recordingUrl?: string;
+};
+
+/**
+ * AI meeting-intelligence summary, source-agnostic. Read.ai is the
+ * canonical source today; the shape is intentionally portable so Zoom AI
+ * Companion or Otter.ai output can also map into it.
+ */
+export type MeetingSummary = {
+  /** Where the summary came from. */
+  source: "read-ai" | "zoom-ai" | "otter" | "manual";
+  /** 1-2 sentence summary the bot generated. */
+  summary: string;
+  /** Key topics or themes the meeting touched (3-6 short phrases). */
+  topics: string[];
+  /**
+   * Action items extracted from the conversation. Assignees are matched
+   * to mentor / mentee where possible.
+   */
+  actionItems: ActionItem[];
+  /** Engagement / sentiment, when the source provided it. */
+  engagement?: {
+    /** 0-100. */
+    mentorSpeakingPercent?: number;
+    /** 0-100. */
+    menteeSpeakingPercent?: number;
+    /** "balanced" | "mentor-heavy" | "mentee-heavy" | etc. */
+    balance?: "balanced" | "mentor-heavy" | "mentee-heavy";
+    /** -1 to +1. Read.ai uses this; Otter doesn't. */
+    sentiment?: number;
+    /** Free-text note synthesized from the engagement data. */
+    note?: string;
+  };
+  /** Public-shareable transcript link. */
+  transcriptUrl?: string;
+  /** When the summary was generated (webhook receipt time). */
+  generatedAt: string;
+};
+
+export type ActionItem = {
+  id: string;
+  /** The extracted text. */
+  text: string;
+  /** Whose action — matched to a person.id, else free-text. */
+  assigneeId?: string;
+  status: "open" | "done";
+  /** Optional due date. */
+  dueOn?: string;
 };
 
 /**
@@ -167,6 +223,83 @@ export type PairOutcome = {
   recordedBy?: string;
   /** ISO timestamp when recorded (separate from when it occurred). */
   recordedAt: string;
+  /**
+   * Verification chain — when the outcome is confirmed against an
+   * authoritative source (state bar lookup, court appointment list,
+   * employer confirmation), the chain links it.
+   */
+  verification?: OutcomeVerification;
+};
+
+/**
+ * A verification record attached to a PairOutcome. The "source" tells you
+ * what was checked; "reference" is the URL or identifier of the proof
+ * (a state bar lookup row, a court docket entry, a LinkedIn profile, etc.).
+ */
+export type OutcomeVerification = {
+  /** What was checked. */
+  source:
+    | "state-bar-lookup"
+    | "court-appointment-list"
+    | "law-firm-website"
+    | "linkedin"
+    | "publication-doi"
+    | "self-reported"
+    | "steward-confirmed";
+  /** Bar number, court docket, employer URL — whatever pins the proof. */
+  reference?: string;
+  /** Free-text note about the verification. */
+  note?: string;
+  /** Who did the verification (steward name). */
+  verifiedBy: string;
+  /** ISO timestamp. */
+  verifiedAt: string;
+};
+
+/**
+ * A pending or settled mentorship request — produced by the MentorMatch
+ * "Request" / "Invite" button. Sits in the mentor's queue until accepted
+ * or declined; on accept a MentorPair is created.
+ */
+export type MentorshipRequest = {
+  id: string;
+  /** Who initiated the request. */
+  fromPersonId: string;
+  /** Who is being asked. */
+  toPersonId: string;
+  /** Which side initiated — mentee asking, or mentor inviting. */
+  direction: "mentee-to-mentor" | "mentor-to-mentee";
+  /** Optional note the requester left. */
+  message?: string;
+  status: "pending" | "accepted" | "declined" | "withdrawn";
+  /** ISO timestamp of submission. */
+  submittedAt: string;
+  /** ISO timestamp of resolution (accepted/declined/withdrawn). */
+  resolvedAt?: string;
+  /** Suggested cadence. */
+  proposedCadence?: "weekly" | "biweekly" | "monthly";
+  /** Proposed practice area focus (from MentorMatch filters). */
+  proposedFocus?: string;
+  /** When accepted, the resulting MentorPair id. */
+  resultingPairId?: string;
+};
+
+/**
+ * Per-pair integration connection state. Reflects whether OAuth has been
+ * completed against each external provider. In production a backend
+ * stores tokens; the demo just tracks the boolean.
+ */
+export type IntegrationConnection = {
+  pairId: string;
+  provider: "read-ai" | "zoom" | "google-calendar" | "outlook" | "apple-calendar";
+  /** True if the connection is live. */
+  connected: boolean;
+  /** ISO timestamp of when the connection was established. */
+  connectedAt?: string;
+  /** Identifier returned by the provider — Zoom user id, Read.ai workspace, etc. */
+  providerAccountId?: string;
+  /** Display name of the connected account. */
+  displayName?: string;
 };
 
 export type ServiceMatter = {
@@ -973,6 +1106,48 @@ export const pairMeetings: PairMeeting[] = [
     agenda: "Hearing prep — direct exam practice.",
     status: "completed",
     notes: "Ran the direct twice. Worked on slowing down before opening questions.",
+    recordingUrl: "https://us05web.zoom.us/rec/share/coyle-chen-2026-04-22",
+    summary: {
+      source: "read-ai",
+      summary:
+        "Daniel ran his direct examination twice with Margaret playing the client and then the judge. Conversation moved to pace, foundation, and the difference between leading on cross and leading on direct.",
+      topics: [
+        "Direct examination cadence",
+        "Foundation questions",
+        "Country-conditions exhibit",
+        "Pre-hearing client meeting",
+      ],
+      actionItems: [
+        {
+          id: "ai-pm-coyle-chen-2026-04-1",
+          text: "Daniel — re-record the direct on Friday evening; send the audio for review.",
+          assigneeId: "p-chen",
+          status: "done",
+        },
+        {
+          id: "ai-pm-coyle-chen-2026-04-2",
+          text: "Margaret — send Daniel her three-question opening checklist.",
+          assigneeId: "p-coyle",
+          status: "done",
+        },
+        {
+          id: "ai-pm-coyle-chen-2026-04-3",
+          text: "Daniel — confirm interpreter scheduling 48 hours before hearing.",
+          assigneeId: "p-chen",
+          status: "open",
+          dueOn: "2026-06-01",
+        },
+      ],
+      engagement: {
+        mentorSpeakingPercent: 38,
+        menteeSpeakingPercent: 62,
+        balance: "mentee-heavy",
+        sentiment: 0.62,
+        note: "Daniel held the floor more than usual — he was rehearsing, and Margaret deliberately stayed back.",
+      },
+      transcriptUrl: "https://app.read.ai/transcripts/coyle-chen-2026-04-22",
+      generatedAt: "2026-04-22T19:35:00",
+    },
   },
   {
     id: "pm-coyle-chen-2026-06",
@@ -1056,6 +1231,48 @@ export const pairMeetings: PairMeeting[] = [
     durationMinutes: 90,
     agenda: "Red Mass planning and chapter calendar review.",
     status: "completed",
+    recordingUrl: "https://meet.jit.si/recordings/brennan-roy-2026-05-08",
+    summary: {
+      source: "read-ai",
+      summary:
+        "Sean and Anita walked the September Red Mass plan — celebrant confirmed, homilist outreach pending, capacity at Holy Name Cathedral 400. Most of the meeting was Anita running the agenda; Sean asked questions.",
+      topics: [
+        "Red Mass — homilist outreach",
+        "Chapter fall calendar",
+        "Mentor matching for incoming 1Ls",
+        "VP-to-President handover",
+      ],
+      actionItems: [
+        {
+          id: "ai-pm-brennan-roy-2026-05-08-1",
+          text: "Anita — draft the homilist outreach letter; circulate to Sean by Friday.",
+          assigneeId: "p-roy",
+          status: "done",
+        },
+        {
+          id: "ai-pm-brennan-roy-2026-05-08-2",
+          text: "Sean — connect Anita with Bishop Cupich's office.",
+          assigneeId: "p-brennan",
+          status: "open",
+          dueOn: "2026-06-01",
+        },
+        {
+          id: "ai-pm-brennan-roy-2026-05-08-3",
+          text: "Anita — review last year's Red Mass attendance list, flag the dozen most worth a personal note.",
+          assigneeId: "p-roy",
+          status: "open",
+        },
+      ],
+      engagement: {
+        mentorSpeakingPercent: 32,
+        menteeSpeakingPercent: 68,
+        balance: "mentee-heavy",
+        sentiment: 0.74,
+        note: "Anita is increasingly running these meetings; Sean is letting her. Consistent with the September transition timeline.",
+      },
+      transcriptUrl: "https://app.read.ai/transcripts/brennan-roy-2026-05-08",
+      generatedAt: "2026-05-08T13:33:00",
+    },
   },
   {
     id: "pm-brennan-roy-2026-06-12",
@@ -1075,6 +1292,41 @@ export const pairMeetings: PairMeeting[] = [
     agenda: "Corporate practice as Christian vocation — Rerum Novarum reading.",
     status: "completed",
     notes: "Aileen brought the Rerum Novarum §§5-15 reading. David let her sit with the discomfort rather than resolving it.",
+    summary: {
+      source: "read-ai",
+      summary:
+        "Aileen brought §§5-15 of Rerum Novarum to the meeting and read passages aloud about workers, ownership, and the duties of employers. David's interventions were largely Socratic — he refused to resolve her tension about M&A work.",
+      topics: [
+        "Rerum Novarum §§5-15",
+        "M&A work and Catholic Social Teaching",
+        "The just wage in transactional practice",
+        "Discernment about staying at Sidley",
+      ],
+      actionItems: [
+        {
+          id: "ai-pm-tanner-lim-2026-04-30-1",
+          text: "Aileen — read Quadragesimo Anno §§79-80 (subsidiarity) before next meeting.",
+          assigneeId: "p-lim",
+          status: "open",
+          dueOn: "2026-06-04",
+        },
+        {
+          id: "ai-pm-tanner-lim-2026-04-30-2",
+          text: "David — share his own first-year-at-Sidley journal entries with Aileen.",
+          assigneeId: "p-tanner",
+          status: "open",
+        },
+      ],
+      engagement: {
+        mentorSpeakingPercent: 41,
+        menteeSpeakingPercent: 59,
+        balance: "balanced",
+        sentiment: 0.21,
+        note: "Lower sentiment than typical, but consistent with the difficulty of the conversation. Both speakers stayed engaged throughout.",
+      },
+      transcriptUrl: "https://app.read.ai/transcripts/tanner-lim-2026-04-30",
+      generatedAt: "2026-04-30T21:08:00",
+    },
   },
   {
     id: "pm-tanner-lim-2026-06-04",
@@ -1100,6 +1352,13 @@ export const pairOutcomes: PairOutcome[] = [
     detail: "Passed the Illinois bar on first attempt.",
     recordedBy: "Margaret Coyle",
     recordedAt: "2025-09-15T10:30:00",
+    verification: {
+      source: "state-bar-lookup",
+      reference: "https://www.iardc.org/lawyersearch.aspx?Last=Chen&First=Daniel",
+      note: "Confirmed against the IL ARDC Lawyer Search. Active status, no discipline.",
+      verifiedBy: "Margaret Coyle",
+      verifiedAt: "2025-09-15T10:35:00",
+    },
   },
   {
     id: "po-chen-first-job",
@@ -1109,6 +1368,13 @@ export const pairOutcomes: PairOutcome[] = [
     detail: "Started as associate at the National Immigrant Justice Center, Chicago.",
     recordedBy: "Margaret Coyle",
     recordedAt: "2025-09-15T10:32:00",
+    verification: {
+      source: "law-firm-website",
+      reference: "https://www.immigrantjustice.org/staff/daniel-chen",
+      note: "Staff page confirms title and start.",
+      verifiedBy: "Margaret Coyle",
+      verifiedAt: "2025-10-02T14:00:00",
+    },
   },
   {
     id: "po-chen-1yr",
@@ -1158,6 +1424,13 @@ export const pairOutcomes: PairOutcome[] = [
     detail: "Co-authored short piece in Catholic Lawyer on chapter formation models.",
     recordedBy: "Sean Brennan",
     recordedAt: "2026-01-17T08:00:00",
+    verification: {
+      source: "publication-doi",
+      reference: "https://catholiclawyerjournal.org/vol70/iss4/3",
+      note: "Volume 70, Issue 4 — co-authored with Brennan. DOI confirms.",
+      verifiedBy: "Margaret Coyle",
+      verifiedAt: "2026-01-20T11:30:00",
+    },
   },
 
   // Tanner & Lim — first year of practice.
@@ -1172,6 +1445,113 @@ export const pairOutcomes: PairOutcome[] = [
   },
 
   // Ruiz & Park — too new for outcomes yet.
+];
+
+// ────────────────────────────────────────────────────────────────────
+// Mentorship requests — pending invitations between mentors and mentees
+// ────────────────────────────────────────────────────────────────────
+
+export const mentorshipRequests: MentorshipRequest[] = [
+  {
+    id: "mr-nguyen-coyle",
+    fromPersonId: "p-nguyen",
+    toPersonId: "p-coyle",
+    direction: "mentee-to-mentor",
+    message:
+      "I'm finishing my 1L year at Loyola and the immigration clinic has me hooked. I saw your NIJC work in the chapter directory — would love to be in your orbit if you have bandwidth.",
+    status: "pending",
+    submittedAt: "2026-05-18T15:22:00",
+    proposedCadence: "monthly",
+    proposedFocus: "immigration",
+  },
+  {
+    id: "mr-coyle-yoo",
+    fromPersonId: "p-coyle",
+    toPersonId: "p-yoo",
+    direction: "mentor-to-mentee",
+    message:
+      "Saw your 1L research note in the chapter newsletter. If you'd like a sounding board on the housing-rights angle, I'd be glad to meet monthly through the summer.",
+    status: "pending",
+    submittedAt: "2026-05-20T09:10:00",
+    proposedCadence: "monthly",
+    proposedFocus: "housing",
+  },
+  {
+    id: "mr-park-tanner",
+    fromPersonId: "p-park",
+    toPersonId: "p-tanner",
+    direction: "mentee-to-mentor",
+    message:
+      "(Hannah is in a pair with Elena Ruiz already — this is a second-pair request for the transactional side.)",
+    status: "declined",
+    submittedAt: "2026-04-30T11:00:00",
+    resolvedAt: "2026-05-02T14:00:00",
+    proposedCadence: "monthly",
+    proposedFocus: "corporate",
+  },
+];
+
+// ────────────────────────────────────────────────────────────────────
+// Integration connections — per-pair OAuth state for Read.ai, Zoom, etc.
+// ────────────────────────────────────────────────────────────────────
+
+export const integrationConnections: IntegrationConnection[] = [
+  // Coyle & Chen — fully wired
+  {
+    pairId: "mp-coyle-chen",
+    provider: "read-ai",
+    connected: true,
+    connectedAt: "2026-02-14T09:00:00",
+    providerAccountId: "read-ai-ws-coyle-chen",
+    displayName: "Coyle / Chen workspace",
+  },
+  {
+    pairId: "mp-coyle-chen",
+    provider: "zoom",
+    connected: true,
+    connectedAt: "2026-02-14T09:02:00",
+    providerAccountId: "zoom-user-coyle",
+    displayName: "Margaret Coyle (Pro)",
+  },
+  {
+    pairId: "mp-coyle-chen",
+    provider: "google-calendar",
+    connected: true,
+    connectedAt: "2026-02-14T09:05:00",
+    providerAccountId: "[email protected]",
+    displayName: "[email protected]",
+  },
+
+  // Brennan & Roy — Read.ai + Jitsi (no Zoom connection needed)
+  {
+    pairId: "mp-brennan-roy",
+    provider: "read-ai",
+    connected: true,
+    connectedAt: "2026-01-10T10:00:00",
+    providerAccountId: "read-ai-ws-brennan-roy",
+    displayName: "DC chapter workspace",
+  },
+  {
+    pairId: "mp-brennan-roy",
+    provider: "google-calendar",
+    connected: true,
+    connectedAt: "2026-01-10T10:03:00",
+    providerAccountId: "[email protected]",
+    displayName: "[email protected]",
+  },
+
+  // Tanner & Lim — Read.ai only (using personal Zoom)
+  {
+    pairId: "mp-tanner-lim",
+    provider: "read-ai",
+    connected: true,
+    connectedAt: "2026-03-01T14:00:00",
+    providerAccountId: "read-ai-ws-tanner-lim",
+    displayName: "Sidley pro-bono workspace",
+  },
+
+  // Ruiz & Park — no integrations yet
+  // Hartmann & Velasquez — no integrations yet (drifting pair)
 ];
 
 // ────────────────────────────────────────────────────────────────────

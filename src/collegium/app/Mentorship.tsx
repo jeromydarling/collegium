@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
-import { Sparkles, ArrowRight, PenLine, Award } from "lucide-react";
+import { Sparkles, ArrowRight, PenLine, Award, Mail, Check, X } from "lucide-react";
 import { mentorPairs, people, chapters, pairOutcomes } from "../data/demo";
+import { demoStore, useMentorshipRequests } from "../lib/demoStore";
 
 export function Mentorship() {
+  const allRequests = useMentorshipRequests();
+  const pendingRequests = allRequests.filter((r) => r.status === "pending");
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-8 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 sm:mb-8">
@@ -43,6 +46,96 @@ export function Mentorship() {
         <Stat label="Drifting" value={mentorPairs.filter((p) => p.status === "drifting").length} accent="warn" />
         <Stat label="Outcomes recorded" value={pairOutcomes.length} accent="celebrate" />
       </div>
+
+      {pendingRequests.length > 0 && (
+        <section className="mb-6 sm:mb-8">
+          <h2 className="collegium-display text-xl mb-3 flex items-center gap-2">
+            <Mail size={16} className="text-[hsl(var(--c-wine))]" />
+            Pending requests
+            <span className="text-xs text-[hsl(var(--c-slate-soft))] font-normal">
+              · awaiting accept / decline
+            </span>
+          </h2>
+          <div className="space-y-2">
+            {pendingRequests.map((req) => {
+              const from = people.find((p) => p.id === req.fromPersonId);
+              const to = people.find((p) => p.id === req.toPersonId);
+              if (!from || !to) return null;
+              return (
+                <article
+                  key={req.id}
+                  className="collegium-card p-4 sm:p-5 border-l-4 border-[hsl(var(--c-gold))]"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+                    <div className="text-sm">
+                      <span className="font-medium text-[hsl(var(--c-ink))]">
+                        {from.name}
+                      </span>{" "}
+                      <span className="text-[hsl(var(--c-slate-soft))]">
+                        {req.direction === "mentee-to-mentor"
+                          ? "asked"
+                          : "invited"}
+                      </span>{" "}
+                      <span className="font-medium text-[hsl(var(--c-ink))]">
+                        {to.name}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-[hsl(var(--c-slate-soft))] italic">
+                      {timeAgo(req.submittedAt)}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mb-2 text-[10px]">
+                    {req.proposedCadence && (
+                      <span className="collegium-tag-soft">
+                        {req.proposedCadence}
+                      </span>
+                    )}
+                    {req.proposedFocus && (
+                      <span className="collegium-tag-soft">
+                        focus: {req.proposedFocus.replace(/-/g, " ")}
+                      </span>
+                    )}
+                  </div>
+                  {req.message && (
+                    <p className="text-sm text-[hsl(var(--c-slate))] leading-snug italic mb-3">
+                      "{req.message}"
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        demoStore.resolveMentorshipRequest(req.id, "accepted")
+                      }
+                      className="collegium-btn-primary text-xs inline-flex items-center gap-1"
+                    >
+                      <Check size={11} /> Accept
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        demoStore.resolveMentorshipRequest(req.id, "declined")
+                      }
+                      className="collegium-btn-ghost text-xs inline-flex items-center gap-1"
+                    >
+                      <X size={11} /> Decline
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        demoStore.resolveMentorshipRequest(req.id, "withdrawn")
+                      }
+                      className="text-xs collegium-link"
+                    >
+                      Withdraw
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <div className="space-y-4">
         {mentorPairs.map((pair) => {
@@ -124,6 +217,19 @@ function monthsSince(date: string) {
   const d = new Date(date);
   const now = new Date();
   return (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
+}
+
+function timeAgo(iso: string): string {
+  const ms = Date.now() - new Date(iso).getTime();
+  const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+  if (days < 1) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 7) return `${days} days ago`;
+  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function Stat({

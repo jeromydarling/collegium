@@ -8,6 +8,7 @@ import {
   Languages,
   GraduationCap,
   ArrowRight,
+  Check,
 } from "lucide-react";
 import {
   people,
@@ -16,6 +17,7 @@ import {
   type Person,
   type VocationStage,
 } from "../../data/demo";
+import { demoStore, useMentorshipRequests, useDemoState } from "../../lib/demoStore";
 
 /**
  * Mentor-match — closes the gap between "we'll find you a mentor" and a
@@ -71,11 +73,38 @@ type Match = {
   reasons: string[];
 };
 
+/**
+ * Visitor "from" person for outgoing requests. In a real deployment
+ * this is the authenticated user; in the demo we tie it to the steward
+ * identity (Margaret Coyle = p-coyle by default), which is consistent
+ * with the existing demoStore.identityName seed.
+ */
+function visitorPersonId(identityName: string): string {
+  const match = people.find((p) => p.name === identityName);
+  return match?.id ?? "p-coyle";
+}
+
 export function MentorMatch() {
   const [side, setSide] = useState<MatchSide>("seeking-mentor");
   const [chapterId, setChapterId] = useState<string>("");
   const [practice, setPractice] = useState<string>("");
   const [sameChapterOnly, setSameChapterOnly] = useState(false);
+  const [message, setMessage] = useState<string>("");
+  const allRequests = useMentorshipRequests();
+  const demoState = useDemoState();
+  const visitorId = visitorPersonId(demoState.identityName);
+
+  // Which candidate ids the visitor already has a pending request with
+  // (either direction). Drives the "Requested" pill on a match row.
+  const pendingFor = useMemo(() => {
+    const out = new Set<string>();
+    for (const r of allRequests) {
+      if (r.status !== "pending") continue;
+      if (r.fromPersonId === visitorId) out.add(r.toPersonId);
+      if (r.toPersonId === visitorId) out.add(r.fromPersonId);
+    }
+    return out;
+  }, [allRequests, visitorId]);
 
   // People already in a pair on the mentor side — when seeking-mentor we
   // de-rank (don't exclude) people already mentoring; mentors can hold
@@ -253,7 +282,29 @@ export function MentorMatch() {
 
       <div className="space-y-2.5 collegium-safe-bottom">
         {matches.map((m) => (
-          <MatchRow key={m.person.id} match={m} side={side} />
+          <MatchRow
+            key={m.person.id}
+            match={m}
+            side={side}
+            isPending={pendingFor.has(m.person.id)}
+            onRequest={() => {
+              const note = message.trim() ||
+                (side === "seeking-mentor"
+                  ? "I'd love to be in your orbit if you have bandwidth."
+                  : "I'd be glad to accompany you for a season — say monthly.");
+              demoStore.createMentorshipRequest({
+                fromPersonId: visitorId,
+                toPersonId: m.person.id,
+                direction:
+                  side === "seeking-mentor"
+                    ? "mentee-to-mentor"
+                    : "mentor-to-mentee",
+                message: note,
+                proposedCadence: "monthly",
+                proposedFocus: practice || undefined,
+              });
+            }}
+          />
         ))}
         {matches.length === 0 && (
           <div className="collegium-card p-8 text-center">
@@ -272,7 +323,17 @@ export function MentorMatch() {
   );
 }
 
-function MatchRow({ match, side }: { match: Match; side: MatchSide }) {
+function MatchRow({
+  match,
+  side,
+  isPending,
+  onRequest,
+}: {
+  match: Match;
+  side: MatchSide;
+  isPending: boolean;
+  onRequest: () => void;
+}) {
   const { person, score, reasons } = match;
   const chapter = chapters.find((c) => c.id === person.chapterId);
   return (
@@ -311,14 +372,21 @@ function MatchRow({ match, side }: { match: Match; side: MatchSide }) {
           </div>
         </div>
         <div className="shrink-0 self-center">
-          <button
-            type="button"
-            className="collegium-btn-ghost text-xs inline-flex items-center gap-1"
-          >
-            <Users size={11} />{" "}
-            {side === "seeking-mentor" ? "Request" : "Invite"}{" "}
-            <ArrowRight size={11} />
-          </button>
+          {isPending ? (
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-[hsl(145_40%_28%)] inline-flex items-center gap-1">
+              <Check size={11} /> Sent
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={onRequest}
+              className="collegium-btn-primary text-xs inline-flex items-center gap-1"
+            >
+              <Users size={11} />{" "}
+              {side === "seeking-mentor" ? "Request" : "Invite"}{" "}
+              <ArrowRight size={11} />
+            </button>
+          )}
         </div>
       </div>
     </article>

@@ -12,10 +12,16 @@ import {
   pairMeetings as seedPairMeetings,
   pairOutcomes as seedPairOutcomes,
   mentorPairs as seedMentorPairs,
+  mentorshipRequests as seedMentorshipRequests,
+  integrationConnections as seedIntegrationConnections,
   type EventItem,
   type PairMeeting,
   type PairOutcome,
   type MentorPair,
+  type MentorshipRequest,
+  type IntegrationConnection,
+  type OutcomeVerification,
+  type ActionItem,
 } from "../data/demo";
 
 const STORAGE_KEY = "collegium_demo_state_v1";
@@ -167,6 +173,17 @@ export type DemoState = {
   pairOutcomesAdded: PairOutcome[];
   /** Per-pair video link overrides (lets the visitor change a pair's standing room). */
   pairVideoLinkOverrides: Record<string, string>;
+  /** Verifications recorded against seed outcomes (overlay on the seed). */
+  outcomeVerifications: Record<string, OutcomeVerification>;
+  /** Action-item status patches — overlay on summary action items. */
+  actionItemPatches: Record<string, Partial<ActionItem>>;
+  /** Mentorship requests added by the visitor (the MentorMatch handshake). */
+  mentorshipRequestsAdded: MentorshipRequest[];
+  /** Per-request status patches (accept / decline / withdraw on seed or added). */
+  mentorshipRequestPatches: Record<string, Partial<MentorshipRequest>>;
+  /** Integration connection overrides — added or toggled connections per pair. */
+  integrationConnectionsAdded: IntegrationConnection[];
+  integrationConnectionPatches: Record<string, Partial<IntegrationConnection>>;
 };
 
 export type MentorJournalEntry = {
@@ -206,6 +223,12 @@ const defaultState: DemoState = {
   pairMeetingPatches: {},
   pairOutcomesAdded: [],
   pairVideoLinkOverrides: {},
+  outcomeVerifications: {},
+  actionItemPatches: {},
+  mentorshipRequestsAdded: [],
+  mentorshipRequestPatches: {},
+  integrationConnectionsAdded: [],
+  integrationConnectionPatches: {},
 };
 
 function load(): DemoState {
@@ -552,6 +575,135 @@ export const demoStore = {
       pairVideoLinkOverrides: { ...s.pairVideoLinkOverrides, [pairId]: url },
     })),
 
+  // ── Outcome verification ──
+  verifyOutcome: (outcomeId: string, v: OutcomeVerification) =>
+    setState((s) => ({
+      ...s,
+      outcomeVerifications: { ...s.outcomeVerifications, [outcomeId]: v },
+    })),
+  unverifyOutcome: (outcomeId: string) =>
+    setState((s) => {
+      if (!(outcomeId in s.outcomeVerifications)) return s;
+      const next = { ...s.outcomeVerifications };
+      delete next[outcomeId];
+      return { ...s, outcomeVerifications: next };
+    }),
+
+  // ── Action items ──
+  toggleActionItem: (id: string) =>
+    setState((s) => {
+      const current = s.actionItemPatches[id];
+      const nextStatus = current?.status === "done" ? "open" : "done";
+      return {
+        ...s,
+        actionItemPatches: {
+          ...s.actionItemPatches,
+          [id]: { ...current, status: nextStatus },
+        },
+      };
+    }),
+
+  // ── Mentorship requests ──
+  createMentorshipRequest: (req: Omit<MentorshipRequest, "id" | "submittedAt" | "status">): string => {
+    const id = `mr-custom-${Date.now()}`;
+    setState((s) => ({
+      ...s,
+      mentorshipRequestsAdded: [
+        ...s.mentorshipRequestsAdded,
+        {
+          ...req,
+          id,
+          status: "pending",
+          submittedAt: new Date().toISOString(),
+        },
+      ],
+    }));
+    return id;
+  },
+  resolveMentorshipRequest: (
+    id: string,
+    resolution: "accepted" | "declined" | "withdrawn",
+    resultingPairId?: string
+  ) =>
+    setState((s) => ({
+      ...s,
+      mentorshipRequestPatches: {
+        ...s.mentorshipRequestPatches,
+        [id]: {
+          ...(s.mentorshipRequestPatches[id] ?? {}),
+          status: resolution,
+          resolvedAt: new Date().toISOString(),
+          resultingPairId,
+        },
+      },
+    })),
+
+  // ── Integration connections ──
+  toggleIntegration: (
+    pairId: string,
+    provider: IntegrationConnection["provider"],
+    displayName?: string
+  ) =>
+    setState((s) => {
+      // Look up existing connection (seed or added) for this pair+provider
+      const seedKey = `${pairId}|${provider}`;
+      const inSeed = seedIntegrationConnections.find(
+        (c) => c.pairId === pairId && c.provider === provider
+      );
+      const inAdded = s.integrationConnectionsAdded.find(
+        (c) => c.pairId === pairId && c.provider === provider
+      );
+      const existing = inSeed
+        ? { ...inSeed, ...(s.integrationConnectionPatches[seedKey] ?? {}) }
+        : inAdded;
+      const nextConnected = !existing?.connected;
+
+      if (inSeed) {
+        return {
+          ...s,
+          integrationConnectionPatches: {
+            ...s.integrationConnectionPatches,
+            [seedKey]: {
+              connected: nextConnected,
+              connectedAt: nextConnected ? new Date().toISOString() : undefined,
+              displayName: displayName ?? existing?.displayName,
+            },
+          },
+        };
+      }
+      if (inAdded) {
+        return {
+          ...s,
+          integrationConnectionsAdded: s.integrationConnectionsAdded.map((c) =>
+            c.pairId === pairId && c.provider === provider
+              ? {
+                  ...c,
+                  connected: nextConnected,
+                  connectedAt: nextConnected
+                    ? new Date().toISOString()
+                    : undefined,
+                  displayName: displayName ?? c.displayName,
+                }
+              : c
+          ),
+        };
+      }
+      // Brand-new connection
+      return {
+        ...s,
+        integrationConnectionsAdded: [
+          ...s.integrationConnectionsAdded,
+          {
+            pairId,
+            provider,
+            connected: nextConnected,
+            connectedAt: nextConnected ? new Date().toISOString() : undefined,
+            displayName,
+          },
+        ],
+      };
+    }),
+
   reset: () => setState(() => defaultState),
 };
 
@@ -599,35 +751,51 @@ export function useEvent(id: string | undefined): EventItem | undefined {
   return id ? all.find((e) => e.id === id) : undefined;
 }
 
-/** Merged meetings for a pair — seed + patches + additions, sorted by start. */
+/** Merged meetings for a pair — seed + patches + additions, with action-item overlay, sorted by start. */
 export function usePairMeetings(pairId: string | undefined): PairMeeting[] {
   const state = useDemoState();
   return useMemo(() => {
     if (!pairId) return [];
+    const applyAi = (m: PairMeeting) =>
+      m.summary
+        ? { ...m, summary: applyActionItemPatches(m.summary, state.actionItemPatches) }
+        : m;
     const fromSeed = seedPairMeetings
       .filter((m) => m.pairId === pairId)
       .map((m) => {
         const patch = state.pairMeetingPatches[m.id];
-        return patch ? { ...m, ...patch, id: m.id } : m;
+        return applyAi(patch ? { ...m, ...patch, id: m.id } : m);
       });
-    const fromAdded = state.pairMeetingsAdded.filter((m) => m.pairId === pairId);
+    const fromAdded = state.pairMeetingsAdded
+      .filter((m) => m.pairId === pairId)
+      .map(applyAi);
     return [...fromSeed, ...fromAdded].sort((a, b) =>
       a.scheduledFor.localeCompare(b.scheduledFor)
     );
-  }, [pairId, state.pairMeetingPatches, state.pairMeetingsAdded]);
+  }, [
+    pairId,
+    state.pairMeetingPatches,
+    state.pairMeetingsAdded,
+    state.actionItemPatches,
+  ]);
 }
 
-/** Merged outcomes for a pair — seed + additions, sorted by date. */
+/** Merged outcomes for a pair — seed + additions, with verification overlay, sorted by date. */
 export function usePairOutcomes(pairId: string | undefined): PairOutcome[] {
   const state = useDemoState();
   return useMemo(() => {
     if (!pairId) return [];
     const fromSeed = seedPairOutcomes.filter((o) => o.pairId === pairId);
-    const fromAdded = state.pairOutcomesAdded.filter((o) => o.pairId === pairId);
-    return [...fromSeed, ...fromAdded].sort((a, b) =>
-      a.occurredOn.localeCompare(b.occurredOn)
+    const fromAdded = state.pairOutcomesAdded.filter(
+      (o) => o.pairId === pairId
     );
-  }, [pairId, state.pairOutcomesAdded]);
+    return [...fromSeed, ...fromAdded]
+      .map((o) => {
+        const v = state.outcomeVerifications[o.id];
+        return v ? { ...o, verification: v } : o;
+      })
+      .sort((a, b) => a.occurredOn.localeCompare(b.occurredOn));
+  }, [pairId, state.pairOutcomesAdded, state.outcomeVerifications]);
 }
 
 /** Effective video link for a pair (override beats seed). */
@@ -644,9 +812,69 @@ export function usePairVideoLink(pairId: string | undefined): string | undefined
 export function useAllPairOutcomes(): PairOutcome[] {
   const state = useDemoState();
   return useMemo(
-    () => [...seedPairOutcomes, ...state.pairOutcomesAdded],
-    [state.pairOutcomesAdded]
+    () =>
+      [...seedPairOutcomes, ...state.pairOutcomesAdded].map((o) => {
+        const v = state.outcomeVerifications[o.id];
+        return v ? { ...o, verification: v } : o;
+      }),
+    [state.pairOutcomesAdded, state.outcomeVerifications]
   );
+}
+
+/** All mentorship requests — seed + added, with status patches applied. */
+export function useMentorshipRequests(): MentorshipRequest[] {
+  const state = useDemoState();
+  return useMemo(() => {
+    const seed = seedMentorshipRequests.map((r) => {
+      const patch = state.mentorshipRequestPatches[r.id];
+      return patch ? { ...r, ...patch, id: r.id } : r;
+    });
+    const added = state.mentorshipRequestsAdded.map((r) => {
+      const patch = state.mentorshipRequestPatches[r.id];
+      return patch ? { ...r, ...patch, id: r.id } : r;
+    });
+    return [...seed, ...added].sort((a, b) =>
+      b.submittedAt.localeCompare(a.submittedAt)
+    );
+  }, [state.mentorshipRequestPatches, state.mentorshipRequestsAdded]);
+}
+
+/** Integration connections for a pair — seed + added, with patches. */
+export function usePairIntegrations(
+  pairId: string | undefined
+): IntegrationConnection[] {
+  const state = useDemoState();
+  return useMemo(() => {
+    if (!pairId) return [];
+    const fromSeed = seedIntegrationConnections
+      .filter((c) => c.pairId === pairId)
+      .map((c) => {
+        const key = `${c.pairId}|${c.provider}`;
+        const patch = state.integrationConnectionPatches[key];
+        return patch ? { ...c, ...patch } : c;
+      });
+    const fromAdded = state.integrationConnectionsAdded.filter(
+      (c) => c.pairId === pairId
+    );
+    return [...fromSeed, ...fromAdded];
+  }, [
+    pairId,
+    state.integrationConnectionPatches,
+    state.integrationConnectionsAdded,
+  ]);
+}
+
+/** Apply action-item patches on top of a meeting summary. */
+export function applyActionItemPatches(
+  summary: import("../data/demo").MeetingSummary | undefined,
+  patches: Record<string, Partial<ActionItem>>
+): import("../data/demo").MeetingSummary | undefined {
+  if (!summary) return summary;
+  const items = summary.actionItems.map((ai) => {
+    const patch = patches[ai.id];
+    return patch ? { ...ai, ...patch, id: ai.id } : ai;
+  });
+  return { ...summary, actionItems: items };
 }
 
 export const roleLabel: Record<DemoRole, { label: string; latin: string; description: string }> = {
