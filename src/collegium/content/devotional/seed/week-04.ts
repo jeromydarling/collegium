@@ -22,8 +22,8 @@ export const week04: DevotionalDay[] = [
     excerpt: {
       workId: "more-utopia",
       author: "Thomas More",
-      citation: "Utopia, Book I (Robynson trans., 1551)",
-      text: `And verily it is naught (sayd I) to be of counsell with princes, onles a man wold counsell them to thinges that be honest. Whiche is a thinge that you cannot doe. For your aduise and counsell can take no place wyth a prince that is enclyned and bent to the contrary parte. Yes (quoth he) but yet there is an other philosophie more ciuile, whiche knoweth, as ye wolde saye, her owne stage, and therafter ordreth and behaueth her selfe in the playe that she hath in hande, playing her parte accordingly with comelinesse, vtteringe nothing out of due ordre and fasshion. And this is the philosophie that you muste vse.`,
+      citation: "Utopia, Book I — the Dialogue of Counsel (Robinson tr. 1551, spelling modernized)",
+      text: `And surely (said I) it is no use being of counsel with princes, unless a man would counsel them to things that be honest, which is a thing that you cannot do, for your advice and counsel can take no place with a prince that is inclined and bent to the contrary part. Yes (quoth he), but yet there is another philosophy more civil, which knoweth, as one would say, her own stage, and thereafter ordereth and behaveth herself in the play that she hath in hand, playing her part accordingly with comeliness, uttering nothing out of due order and fashion. And this is the philosophy that you must use.`,
     },
   },
   {
@@ -126,7 +126,7 @@ export const week04: DevotionalDay[] = [
     },
     excerpt: {
       author: "Thomas More",
-      citation: "Letter to Margaret Roper, from the Tower of London, 1534 (Rogers ed., 1947)",
+      citation: "Letter to Margaret Roper, from the Tower of London, 1534, in The English Works of Sir Thomas More (Rastell ed. 1557, spelling modernized)",
       text: `Surely, Megge, a fainter heart than thy frail father hath, canst thou not have. And yet I verily trust in the great mercy of God, that He shall of His goodness so stay me with His holy hand that He shall not finally suffer me to fall wretchedly from His favour. And the like trust, dear daughter, in His high goodness I verily conceive of you. And so much the more, in that you take, for the love of Him, so godly the loss of your worldly substance, lands, livelihood, and being driven to live in a strange country to His high pleasure. Be of good cheer, my good daughter, and take no thought for me, though I look up sadly, for I have a good hope that God shall make me a strong champion in His own quarrel.`,
     },
   },
