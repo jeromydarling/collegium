@@ -16,6 +16,7 @@
     "remotion": "remotion studio src/remotion/index.ts",
     "remotion:render": "remotion render src/remotion/index.ts JusticeGap out/justice-gap.mp4 --concurrency=1",
     "remotion:still": "remotion still src/remotion/index.ts JusticeGap out/justice-gap-frame.png --frame=100",
+    "narration:generate": "vite-node scripts/generate-narration.ts",
     "video:render": "cd collegium-walkthrough && npx hyperframes render --output ../public/intro.mp4",
     "music:generate": "node scripts/generate-music.mjs",
     "forms:fetch": "node scripts/fetch-bar-forms.mjs",

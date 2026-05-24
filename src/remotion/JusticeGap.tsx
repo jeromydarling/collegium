@@ -20,6 +20,13 @@ import { LawyerDensityScene } from "./scenes/LawyerDensity";
 import { EvictionCourtScene } from "./scenes/EvictionCourt";
 import { VolumeScene } from "./scenes/Volume";
 import { ClosingScene } from "./scenes/Closing";
+import {
+  NARRATION_LINES,
+  SCENE_START_FRAMES,
+  narrationFilePath,
+  type NarrationLine,
+} from "./narration";
+import { hasStaticFile } from "./staticFiles";
 
 const SCENE_DURATIONS = {
   opening: sec(4),
@@ -49,12 +56,19 @@ export const JusticeGap: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.cream }}>
-      {/* Music bed — fades in over the first second, fades out across
-          the last two seconds, ducks slightly during the count-up.
-          Track lives at public/assets/audio/justice-gap-score.mp3 —
-          swap that file to use a different score; the Audio component
-          just plays whatever's there. */}
+      {/* Music bed — ducks under narration when present. Track lives
+          at public/assets/audio/justice-gap-score.mp3 — swap that file
+          to use a different score; the Audio component just plays
+          whatever's there. */}
       <ScoreBed totalFrames={JUSTICE_GAP_DURATION_FRAMES} />
+
+      {/* Narration — one <Audio> per script line, mounted at the
+          composition frame derived from the scene + in-scene offset.
+          If the mp3 hasn't been generated yet (no ElevenLabs run),
+          the file is missing and Remotion silently no-ops. */}
+      {NARRATION_LINES.map((line) => (
+        <NarrationTrack key={line.id} line={line} />
+      ))}
 
       <Sequence {...slot(SCENE_DURATIONS.opening)}>
         <Opening />
@@ -84,20 +98,71 @@ export const JusticeGap: React.FC = () => {
  *
  * Envelope (in seconds):
  *   0 → 1.5 : fade in to 0.55
- *   1.5 → 56 : stay at 0.55 (under the dialogue / numbers)
+ *   1.5 → 56 : 0.55 normally; ducks to 0.18 while narration is playing
  *   56 → 60 : fade to 0
+ *
+ * Narration ducking: we compute an approximate "narration is active"
+ * window per line (start frame + assumed 0.075 s per character of
+ * text — a rough but stable proxy for the actual mp3 duration without
+ * needing to ffprobe each file from inside the renderer) and reduce
+ * the music volume during those windows.
  */
 function ScoreBed({ totalFrames }: { totalFrames: number }) {
   const frame = useCurrentFrame();
   const fadeInEnd = sec(1.5);
   const fadeOutStart = totalFrames - sec(4);
 
-  const volume = interpolate(
+  // Base envelope
+  let volume = interpolate(
     frame,
     [0, fadeInEnd, fadeOutStart, totalFrames - 1],
     [0, 0.55, 0.55, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
-  return <Audio src={staticFile("assets/audio/justice-gap-score.mp3")} volume={volume} />;
+  // Duck while any narration line is playing
+  if (isNarrationActive(frame) && volume > 0.18) {
+    volume = 0.18;
+  }
+
+  return (
+    <Audio src={staticFile("assets/audio/justice-gap-score.mp3")} volume={volume} />
+  );
+}
+
+/**
+ * Per-line narration track. Mounted as an absolute-positioned <Audio>
+ * scheduled at the right composition frame. If the mp3 file is not
+ * present (no ElevenLabs run), Remotion will fail-soft at render time
+ * (the track is simply silent); we also short-circuit via the
+ * hasStaticFile helper.
+ */
+function NarrationTrack({ line }: { line: NarrationLine }) {
+  if (!hasStaticFile(narrationFilePath(line))) {
+    return null;
+  }
+  const startFrame =
+    SCENE_START_FRAMES[line.scene] + sec(line.startInScene);
+  return (
+    <Sequence from={startFrame}>
+      <Audio src={staticFile(narrationFilePath(line))} />
+    </Sequence>
+  );
+}
+
+/**
+ * Rough estimate of whether any narration is sounding at frame N.
+ * Each line is assumed to last (text length × 0.075 s + 0.5 s tail).
+ * The real durations vary by voice and pacing; this is a stable
+ * proxy good enough for the duck-the-music decision.
+ */
+function isNarrationActive(frame: number): boolean {
+  for (const line of NARRATION_LINES) {
+    const start =
+      SCENE_START_FRAMES[line.scene] + sec(line.startInScene);
+    const durationSec = line.text.length * 0.075 + 0.5;
+    const end = start + sec(durationSec);
+    if (frame >= start && frame < end) return true;
+  }
+  return false;
 }

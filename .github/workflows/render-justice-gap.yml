@@ -1,0 +1,100 @@
+name: Render Justice Gap short
+
+# Builds the Justice Gap Remotion video end-to-end:
+#   1. Optionally regenerates narration via ElevenLabs TTS (using
+#      ELEVENLABS_API_KEY repo secret) — six per-scene mp3s into
+#      public/assets/audio/narration/.
+#   2. Renders the Remotion composition to out/justice-gap.mp4.
+#   3. Uploads the result as a workflow artifact (not committed by
+#      default — the file is too large to live in the repo).
+#
+# Trigger:
+#   - Manually from the Actions tab ("Run workflow") — toggles for
+#     "regenerate_narration" and a release tag.
+#
+# Required repo secret (only when regenerate_narration = true):
+#   ELEVENLABS_API_KEY
+
+on:
+  workflow_dispatch:
+    inputs:
+      regenerate_narration:
+        description: "Regenerate narration via ElevenLabs TTS (otherwise reuse committed mp3s if any)"
+        type: boolean
+        default: true
+      release_tag:
+        description: "Optional GitHub Release tag — when set, attaches the mp4 to a release"
+        type: string
+        default: ""
+
+concurrency:
+  group: render-justice-gap-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Regenerate narration (ElevenLabs)
+        if: ${{ inputs.regenerate_narration == true }}
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          if [ -z "$ELEVENLABS_API_KEY" ]; then
+            echo "::warning::ELEVENLABS_API_KEY secret is not set — skipping narration regeneration. The render will use any narration mp3s already in public/assets/audio/narration/, or none."
+          else
+            npm run narration:generate
+          fi
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Render Justice Gap composition
+        run: |
+          mkdir -p out
+          npm run remotion:render
+
+      - name: Probe the rendered output
+        run: |
+          ffprobe -v error \
+            -show_entries format=duration:stream=codec_type,codec_name,width,height \
+            -of default=noprint_wrappers=1 \
+            out/justice-gap.mp4
+          ls -lh out/justice-gap.mp4
+
+      - name: Upload rendered video as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: justice-gap-video
+          path: out/justice-gap.mp4
+          retention-days: 90
+
+      - name: Attach to release (when release_tag is set)
+        if: ${{ inputs.release_tag != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ inputs.release_tag }}" out/justice-gap.mp4 \
+            --clobber
