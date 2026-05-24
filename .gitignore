@@ -34,3 +34,4 @@ collegium-walkthrough/transcript.json
 collegium-walkthrough/captions.vtt
 # (music.mp3 IS tracked — committed by the render-video CI workflow so
 # renders are reproducible without re-calling the ElevenLabs API every time.)
+out/
