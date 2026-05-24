@@ -93,7 +93,7 @@ export const week01: DevotionalDay[] = [
       text: `And when he was come thither, he abode in a cave: and behold the word of the Lord came unto him, and said to him: What dost thou here, Elias? And he answered: With zeal have I been zealous for the Lord God of hosts: for the children of Israel have forsaken thy covenant: they have thrown down thy altars, they have slain thy prophets with the sword, and I alone am left, and they seek my life to take it away. And he said to him: Go forth, and stand upon the mount before the Lord: and behold the Lord passeth, and a great and strong wind before the Lord overthrowing the mountains, and breaking the rocks in pieces: the Lord is not in the wind, and after the wind an earthquake: the Lord is not in the earthquake. And after the earthquake a fire: the Lord is not in the fire, and after the fire a whistling of a gentle air.`,
     },
     excerpt: {
-      author: "Marcus Tullius Cicero",
+      author: "Cicero",
       citation: "De Officiis, I.20 (Walter Miller tr., 1913)",
       text: `Of the principles of justice, the foundation is good faith — that is, truth and fidelity to promises and agreements. And therefore we may follow the Stoics, who diligently investigate the etymology of words; and we may accept their statement that good faith is so called because what is promised is made good, although some may think this rather a far-fetched derivation. There are, on the other hand, two kinds of injustice: the one, on the part of those who inflict wrong; the other, on the part of those who, though they could, do not shield from wrong those upon whom it is being inflicted.`,
     },

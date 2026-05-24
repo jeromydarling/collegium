@@ -111,7 +111,7 @@ export const week05: DevotionalDay[] = [
     },
     excerpt: {
       workId: "leo-rerum-novarum",
-      author: "Pope Leo XIII",
+      author: "Leo XIII",
       citation: "Rerum Novarum, §37 (1891)",
       text: `When there is question of defending the rights of individuals, the poor and badly off have a claim to especial consideration. The richer class have many ways of shielding themselves, and stand less in need of help from the State; whereas the mass of the poor have no resources of their own to fall back upon, and must chiefly depend upon the assistance of the State. And it is for this reason that wage-earners, since they mostly belong in the mass of the needy, should be specially cared for and protected by the government.`,
     },

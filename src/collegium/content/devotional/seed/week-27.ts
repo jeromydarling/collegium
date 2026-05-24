@@ -138,7 +138,7 @@ export const week27: DevotionalDay[] = [
     },
     excerpt: {
       workId: "leo-rerum-novarum",
-      author: "Pope Leo XIII",
+      author: "Leo XIII",
       citation: "Rerum Novarum, §41 (Vatican English tr., 1891)",
       text: `If we turn now to things external and material, the first thing of all to secure is to save unfortunate working people from the cruelty of men of greed, who use human beings as mere instruments for money-making. It is neither just nor human so to grind men down with excessive labour as to stupefy their minds and wear out their bodies. Daily labour, therefore, should be so regulated as not to be protracted over longer hours than strength admits. The rest from labour is not to be understood as mere idleness; much less must it be an occasion for spending money and for vicious indulgence, as many would have it to be; but it should be rest from labour, hallowed by religion.`,
     },

@@ -79,7 +79,7 @@ export const week20: DevotionalDay[] = [
       text: "He that sweareth to his neighbour, and deceiveth not.",
     },
     excerpt: {
-      author: "Marcus Tullius Cicero",
+      author: "Cicero",
       citation: "De Officiis, Book III, ch. 24-25 (Walter Miller trans., Loeb, 1913)",
       text: `Promises are, therefore, not to be kept, if the keeping of them is to prove harmful to those to whom you have made them; and, if the fulfilment of a promise should do more harm to you than good to him to whom it was made, it is no violation of moral duty to give the greater good precedence over the lesser good. ... But not every promise is to be kept: if I promise to do that which is wrong, I ought not to keep my word. ... All such promises, then, as are not to one's advantage to keep, should not be considered binding; and yet — to return now to my proposition — when more harm would arise from keeping than from breaking the promise, an exception should be made. He that breaks a promise without reason is the very pattern of unfaithfulness; but he that keeps it when good men suffer is unwise.`,
     },

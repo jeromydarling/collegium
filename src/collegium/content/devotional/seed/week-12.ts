@@ -14,7 +14,7 @@ export const week12: DevotionalDay[] = [
     },
     excerpt: {
       workId: "pius-quadragesimo",
-      author: "Pope Pius XI",
+      author: "Pius XI",
       citation: "Quadragesimo Anno §§79-80 (1931)",
       text: `As history abundantly proves, it is true that on account of changed conditions many things which were done by small associations in former times cannot be done now save by large associations. Still, that most weighty principle, which cannot be set aside or changed, remains fixed and unshaken in social philosophy: Just as it is gravely wrong to take from individuals what they can accomplish by their own initiative and industry and give it to the community, so also it is an injustice and at the same time a grave evil and disturbance of right order to assign to a greater and higher association what lesser and subordinate organizations can do. For every social activity ought of its very nature to furnish help to the members of the body social, and never destroy and absorb them.`,
     },
@@ -50,7 +50,7 @@ export const week12: DevotionalDay[] = [
     },
     excerpt: {
       workId: "pius-quadragesimo",
-      author: "Pope Pius XI",
+      author: "Pius XI",
       citation: "Quadragesimo Anno §80 (1931)",
       text: `The supreme authority of the State ought, therefore, to let subordinate groups handle matters and concerns of lesser importance, which would otherwise dissipate its efforts greatly. Thereby the State will more freely, powerfully, and effectively do all those things that belong to it alone because it alone can do them: directing, watching, urging, restraining, as occasion requires and necessity demands. Therefore, those in power should be sure that the more perfectly a graduated order is kept among the various associations, in observance of the principle of subsidiary function, the stronger social authority and effectiveness will be, and the happier and more prosperous the condition of the State.`,
     },
@@ -68,7 +68,7 @@ export const week12: DevotionalDay[] = [
     },
     excerpt: {
       workId: "leo-rerum-novarum",
-      author: "Pope Leo XIII",
+      author: "Leo XIII",
       citation: "Rerum Novarum §51 (1891)",
       text: `The State should watch over these societies of citizens banded together in accordance with their rights, but it should not thrust itself into their peculiar concerns and their organization, for things move and live by the spirit inspiring them, and may be killed by the rough grasp of a hand from without.`,
     },
@@ -86,7 +86,7 @@ export const week12: DevotionalDay[] = [
     },
     excerpt: {
       workId: "leo-rerum-novarum",
-      author: "Pope Leo XIII",
+      author: "Leo XIII",
       citation: "Rerum Novarum §49 (1891)",
       text: `Such societies as are adapted to the needs of the time in which we live, societies for mutual help, various benevolent foundations established by private persons to provide for the workman, and for his widow or his orphans, in case of sudden calamity, in sickness, and in the event of death, and what are called "patronages" for boys and girls, for young people, and also for those of more mature age, hold the foremost place. The most important of all are workingmen's unions, for these virtually include all the rest.`,
     },
@@ -104,7 +104,7 @@ export const week12: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologica II-II, q. 71, a. 1",
       text: `It belongs to one who exercises an office, in virtue of that office, to give counsel: thus a lawyer is bound to give counsel in matters of law, a physician in matters of medicine, an architect in matters of building. Wherefore if anyone, through guile or laziness, fails to do so, he sins against justice. And, similarly, in cases of necessity, one is bound to give counsel to anyone who asks it, even though one does not exercise an office in his regard.`,
     },
@@ -122,7 +122,7 @@ export const week12: DevotionalDay[] = [
     },
     excerpt: {
       workId: "augustine-city",
-      author: "St. Augustine",
+      author: "Augustine of Hippo",
       citation: "Sermon 215, on the Creed",
       text: `He chose a mother whom He had created; He created a mother whom He chose. Mary was the Virgin Mother, the chaste handmaid, who in conceiving the Word also conceived virginity. She brought forth her Son in such wise that she did not lose her virginity; for as a virgin she conceived, as a virgin brought forth, and a virgin she remained. Why dost thou wonder at this, O man? It behoved God to be born in this manner, when He deigned to become man.`,
     },

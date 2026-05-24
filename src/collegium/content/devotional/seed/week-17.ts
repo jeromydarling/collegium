@@ -21,7 +21,7 @@ export const week17: DevotionalDay[] = [
       text: `A wise man will hold his peace till he see opportunity: but a babbler, and a fool, will regard no time. He that useth many words shall hurt his own soul: and he that taketh authority to himself unjustly shall be hated.`,
     },
     excerpt: {
-      author: "St. Benedict of Nursia",
+      author: "Benedict of Nursia",
       citation: "Rule of St. Benedict, Ch. 6, De Taciturnitate (Gasquet trans., 1909)",
       text: `Let us do as saith the prophet: I said, I will take heed to my ways, that I sin not with my tongue. I have set a guard to my mouth: I was dumb and was humbled and kept silence even from good things. Here the prophet sheweth that if at times we ought to refrain even from good words for the sake of silence, how much more ought we to abstain from evil words, on account of the punishment due to sin. Therefore, on account of the great value of silence, let leave to speak be seldom granted even to perfect disciples, although their words be of good and holy matters and tending to edification; because it is written: In much speaking thou shalt not escape sin.`,
     },
@@ -58,7 +58,7 @@ export const week17: DevotionalDay[] = [
       text: `He that setteth bounds to his words, is knowing and wise: and the man of understanding is of a precious spirit. Even a fool, if he will hold his peace, shall be counted wise: and if he close his lips, a man of understanding.`,
     },
     excerpt: {
-      author: "St. Ambrose of Milan",
+      author: "Ambrose of Milan",
       citation: "De Officiis Ministrorum, Bk. I, Ch. 5, §§17-20 (de Romestin trans., NPNF2, 1896)",
       text: `Let us guard our hearts, let us guard our mouth. Both have been written about. In this place we are bidden to take heed to our mouth; in another we are told: Keep thy heart with all watchfulness. If David took heed, wilt thou not take heed? If Isaiah had unclean lips — who said: Woe is me, for I am a man of unclean lips — if a prophet of the Lord had unclean lips, how shall we have them clean? But for whom was it written, but for each one of us, that he might learn to bridle his mouth? . . . And so to learn to be silent that we might know how to speak, is no small matter; for he who knows not how to be silent knows not, either, how to speak.`,
     },
@@ -76,7 +76,7 @@ export const week17: DevotionalDay[] = [
       text: "A fool uttereth all his mind: a wise man deferreth, and keepeth it till afterwards.",
     },
     excerpt: {
-      author: "Marcus Tullius Cicero",
+      author: "Cicero",
       citation: "De Officiis, Bk. I, §134 (Walter Miller trans., Loeb, 1913)",
       text: `And, as the power of speech in the orator and the power of silence in the philosopher are exhibited in the moderation of voice and the proper management of words, so the well-bred man, observing this rule in conversation, will neither be too eager to speak nor will he break in upon another. . . . For we ought not to forget that the conversation may run on this or that subject, and it should be allowed to wander naturally; yet so that we may bring it back, when it strays too far, to that point from which it ought not to have departed.`,
     },
@@ -94,7 +94,7 @@ export const week17: DevotionalDay[] = [
       text: "All things have their season, and in their times all things pass under heaven. . . . A time to rend, and a time to sew. A time to keep silence, and a time to speak.",
     },
     excerpt: {
-      author: "St. Augustine of Hippo",
+      author: "Augustine of Hippo",
       citation: "Tractates on the Gospel of John, Tractate 1, §8 (Browne trans., NPNF1, 1888)",
       text: `Let none flatter himself: of himself he is Satan. From God he has nothing but this, that he is. From himself, except sin, he has nothing. Take from thyself sin, which is not of God: for sin is nothing, and men become nothing when they sin. . . . But thou hast something from Him; and great is what He has given to thee. Therefore by His mercy, not by thy own deserts, thou hast become anything. . . . Restrain thyself; tarry; what then dost thou seek? what dost thou seek?`,
     },
@@ -131,7 +131,7 @@ export const week17: DevotionalDay[] = [
       text: "You know, my dearest brethren. And let every man be swift to hear, but slow to speak, and slow to anger.",
     },
     excerpt: {
-      author: "St. Gregory the Great",
+      author: "Gregory the Great",
       citation: "Pastoral Rule, Book III, Ch. 14 (Davis trans., NPNF2, 1895)",
       text: `Differently to be admonished are the silent, and the talkative. For it is to be intimated to the silent that, while they shun some vices unadvisedly, they are, without their knowing it, implicated in worse. For often from bridling the tongue overmuch they suffer from more grievous loquacity in the heart; so that thoughts seethe the more in the mind from being straitened by the violent guard of indiscreet silence. . . . On the other hand, those who are given to much speaking are to be admonished that they vigilantly take note from what rectitude they fall away when they pour themselves out in a multitude of words.`,
     },

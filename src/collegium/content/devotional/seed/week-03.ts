@@ -123,7 +123,7 @@ export const week03: DevotionalDay[] = [
       text: "For judgment without mercy to him that hath not done mercy. And mercy exalteth itself above judgment.",
     },
     excerpt: {
-      author: "Marcus Tullius Cicero",
+      author: "Cicero",
       citation: "De Officiis I.10.33 (trans. Walter Miller, Loeb Classical Library, 1913; public domain in US)",
       text: `Injustices often arise also through chicanery, that is, through an over-subtle and even fraudulent construction of the law. This it is that gave rise to the now familiar saw, 'More law, less justice.' Through such interpretation also a great deal of wrong is committed in transactions between state and state; thus, when a truce had been made with the enemy for thirty days, a famous general went to ravaging their fields by night, because, he said, the truce stipulated 'days,' not nights. Not even our own countryman's action is to be commended, if what is told of Quintus Fabius Labeo is true.... Such sharp practice is, therefore, in my opinion, not to be approved.`,
     },

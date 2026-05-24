@@ -62,7 +62,7 @@ export const week28: DevotionalDay[] = [
       text: `If it be possible, as much as is in you, have peace with all men. Revenge not yourselves, my dearly beloved; but give place unto wrath, for it is written: Revenge is mine, I will repay, saith the Lord. But if thy enemy be hungry, give him to eat; if he thirst, give him to drink. For, doing this, thou shalt heap coals of fire upon his head. Be not overcome by evil, but overcome evil by good.`,
     },
     excerpt: {
-      author: "Marcus Tullius Cicero",
+      author: "Cicero",
       citation: "De Officiis, Book I, §§25, 33-34 (Walter Miller tr., 1913)",
       text: `Then, too, there are duties to be respected even toward those who have wronged us. For there is a limit to retribution and to punishment; or rather, I am inclined to think, it is sufficient that the aggressor should be brought to repent of his wrong-doing, in order that he may not repeat the offence and that others may be deterred from doing wrong. Then, too, in the case of a state in its external relations, the rights of war must be strictly observed. For since there are two ways of settling a dispute: first, by discussion; second, by physical force; and since the former is characteristic of man, the latter of the brute, we must resort to force only in case we may not avail ourselves of discussion. The only excuse, therefore, for going to war is that we may live in peace unharmed; and when the victory is won, we should spare those who have not been blood-thirsty and barbarous in their warfare.`,
     },

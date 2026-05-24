@@ -20,7 +20,7 @@ export const week19: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae II-II, q.70, a.1",
       text: `It belongs to a witness to make known the truth. Now to make known the truth is a matter of common honesty: wherefore it is, in itself, lawful and praiseworthy to bear witness. But, as in other cases of common acts, this becomes virtuous or vicious in relation to its end and other circumstances.`,
     },
@@ -39,7 +39,7 @@ export const week19: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae II-II, q.70, a.4",
       text: `False witness is always sinful, since it is contrary to truth, justice, and charity, three virtues which all men are bound to observe. He commits a graver sin who bears false witness, than he who lies in ordinary discourse, because he sins not only against truth, but also against justice, since the testimony of a witness is given for the establishment of justice.`,
     },
@@ -76,7 +76,7 @@ export const week19: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae II-II, q.71, a.1",
       text: `Succor is due to one who is in straits, and especially when this concerns his life or reputation. Wherefore an advocate is not bound to defend any cause whatsoever, but he is bound to undertake the cause of the poor, when the law of charity binds him.`,
     },
@@ -94,7 +94,7 @@ export const week19: DevotionalDay[] = [
       text: "Pilate saith to him: What is truth? And when he said this, he went out again to the Jews, and saith to them: I find no cause in him.",
     },
     excerpt: {
-      author: "St. John Chrysostom",
+      author: "John Chrysostom",
       citation: "Homilies on the Acts of the Apostles, Hom. IV",
       text: `For consider, I beseech you, what a thing it was to bear witness to the truth in the presence of those who heard with murderous ears. The witness was not received; nay, was hated for being borne. Yet was the truth not less for being unbelieved.`,
     },
@@ -132,7 +132,7 @@ export const week19: DevotionalDay[] = [
     },
     excerpt: {
       workId: "augustine-city",
-      author: "St. Augustine of Hippo",
+      author: "Augustine of Hippo",
       citation: "City of God, XX.7",
       text: `Christ is the faithful witness: faithful because he could not lie; witness because he came to bear testimony to the truth. He is also the head of the martyrs, because for the truth which he bore witness to, he was the first to suffer, and in him all the rest who have suffered, suffer.`,
     },

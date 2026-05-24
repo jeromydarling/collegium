@@ -23,7 +23,7 @@ export const week44: DevotionalDay[] = [
       text: `Calling to mind that faith which is in thee unfeigned, which also dwelt first in thy grandmother Lois, and in thy mother Eunice, and I am certain that in thee also. For which cause I admonish thee, that thou stir up the grace of God which is in thee, by the imposition of my hands.`,
     },
     excerpt: {
-      author: "St. John Chrysostom",
+      author: "John Chrysostom",
       citation: "Homilies on the Second Epistle to Timothy, Homily I",
       text: `Observe how he reminds him from the beginning of his early instruction, signifying that he had given proof of it long before, and from the first; for it is no light praise to bring forward the virtue of his forefathers. As he had said to the Hebrews, Call to mind the former days, so here also he leads him back to the memory of his upbringing, that he may be the more roused to imitate it. The faith that dwelt first in Lois his grandmother, then in Eunice his mother, then in himself — this is the manner of a tradition handed on, not by writing, but by living. And what saith he then? Stir up the grace which is in thee. He doth not say, kindle, but stir up: for it is there, only buried under the cares of life; like a fire under ashes, it needeth but a stirring to burn anew.`,
     },
@@ -42,7 +42,7 @@ export const week44: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae, II-II, Q. 181, art. 3 (on the active life)",
       text: `It belongs to one and the same to receive something from another and to deliver it to others: even as one and the same is the moon's light, which she receiveth from the sun and poureth out upon the earth. Wherefore the teacher, who hath drawn from contemplation that which he hath, doth in teaching transmit the same to others; and this work, since it floweth from the fulness of contemplation, is more excellent than mere contemplation alone. For as it is greater to enlighten than merely to shine, so is it greater to deliver to others the things contemplated than only to contemplate. And this is why the prelates and teachers are placed in a state of perfection: not because the active life is in itself higher than the contemplative, but because that which proceedeth from the abundance of contemplation is the proper work of charity, which is the form of all the virtues.`,
     },
@@ -61,7 +61,7 @@ export const week44: DevotionalDay[] = [
     },
     excerpt: {
       workId: "augustine-city",
-      author: "St. Augustine of Hippo",
+      author: "Augustine of Hippo",
       citation: "Sermon CCCI, on the succession of teachers (in the manner of his preaching on the apostolic line)",
       text: `What our fathers received, they handed on; what they handed on, we have received; what we have received, we owe. For the mantle that fell from Elias was not lost in the river but taken up by Eliseus, who with the same mantle struck the same waters and passed where the master had passed. So is it with the doctrine of the Church: it is not a new thing in each generation, but the same thing, struck upon the same waters, by a hand the master has left behind. Take heed therefore, you who teach: not that you should leave behind your own opinion, but that you should leave behind a man who can strike the river. The river is the soul of the people. The mantle is the faith you have received. The Jordan parteth where the disciple, taking up what the master let fall, dareth to say: Where is now the God of Elias?`,
     },
@@ -79,7 +79,7 @@ export const week44: DevotionalDay[] = [
       text: `Iron sharpeneth iron, so a man sharpeneth the countenance of his friend.`,
     },
     excerpt: {
-      author: "St. Ambrose of Milan",
+      author: "Ambrose of Milan",
       citation: "De Officiis Ministrorum, Book II, ch. 17",
       text: `Teaching is no small office. The master oweth to his disciple not only words, but his manner of life: for the disciple learneth more by what he seeth done than by what he heareth said. And therefore let him who teacheth take heed first to himself, that he be such a man as he would have his disciple be. For as iron is sharpened by iron, so is the soul of the young man sharpened by the soul of him who instructeth him: and the file that hath no edge will leave no edge upon the work. Wherefore let the teacher beware lest, while he poureth out his learning, he pour out also his vices: for the cup that is offered is drunk to the bottom, and the dregs are drunk with the wine. Let him give what he would have received: gravity, gentleness, patience, and that fear of the Lord which is the beginning of wisdom. Then shall the disciple, sharpened upon him, sharpen another in his turn; and the line of friends shall not be broken.`,
     },
@@ -98,7 +98,7 @@ export const week44: DevotionalDay[] = [
     },
     excerpt: {
       workId: "newman-idea",
-      author: "St. John Henry Newman",
+      author: "John Henry Newman",
       citation: "Parochial and Plain Sermons, Vol. II, Sermon XXVIII ('The Apostolical Christian')",
       text: `St. Paul, in writing to the Corinthians, distinguishes between instructors and fathers. Instructors, he says, you may have ten thousand; but fathers in Christ are few. He means, that to teach is one thing, and to beget another. The instructor delivers his knowledge and is gone; but the father remaineth, watching, waiting, suffering with his children, rejoicing in their good, mourning their falls, longing for them as a mother for her sick child. And it is no light matter to be such a one: it requireth that a man should put off himself and put on those whom he hath received from God; that he should reckon their honour his own, their wound his own, their slow progress his own grief. Hence is it that the Apostle is so vehement and so tender, in turns and almost in the same breath; that he chideth them like a master and consoleth them like a nurse: for he beareth them, as he saith elsewhere, until Christ be formed in them.`,
     },
@@ -117,7 +117,7 @@ export const week44: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae, II-II, Q. 187, art. 3 (whether religious are bound to teach and the like)",
       text: `Teaching may be considered in two ways. First, as a work of the active life: and thus it is a spiritual alms-deed; for as he that giveth bread relieveth the hunger of the body, so he that giveth doctrine relieveth the hunger of the mind. Whence it is reckoned among the spiritual works of mercy, to instruct the ignorant and to counsel the doubtful. Secondly, teaching may be considered as it floweth from the abundance of contemplation: and thus it is a work proper to those who are perfect, who have first received in themselves what they communicate to others. For one cannot give what one hath not, and the cistern that is dry filleth no man's pitcher. Wherefore the teacher must first drink, and then offer; first see, and then point; first love, and then beget.`,
     },
@@ -136,7 +136,7 @@ export const week44: DevotionalDay[] = [
     },
     excerpt: {
       workId: "augustine-city",
-      author: "St. Augustine of Hippo",
+      author: "Augustine of Hippo",
       citation: "Sermon CI, on the seventy-two disciples sent by the Lord",
       text: `He sendeth them not alone, but two by two: that there may be in them already the charity which they are to preach. For he who goeth alone is easily broken, but two are not so easily overcome; and where two are gathered in his name, he himself is the third in the midst. Take notice also: the Twelve he had already sent; now he sendeth the Seventy-two. Why this number, but that as the Twelve answer to the patriarchs and the foundations of the Church, so the Seventy-two answer to the nations of the world and the elders of Moses, that no people might say, I was not sought? Pray therefore, he saith, the Lord of the harvest. For he himself it is who sendeth, who soweth, who reapeth: but he will have us pray that he may send, that what is his gift may also be our desire; and that he who alone is able to do this work may find in us the labourers who, having been once disciples, are now willing to be the masters of the disciples who shall come after.`,
     },

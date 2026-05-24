@@ -22,7 +22,7 @@ export const week39: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae, II-II, Q. 106, art. 1 (whether thankfulness is a special virtue)",
       text: `Thankfulness or gratitude looks to the favour received, and a man owes the benefactor something on that account. Wherefore there is a special aspect of debt arising out of the favour bestowed: and in consequence gratitude is a special virtue. Now the species of a virtue is taken from the special aspect of the matter or object. And since every benefit has the aspect of something due in return — not by force of legal justice, but by a certain moral fittingness — therefore gratitude, which recompenseth what is freely given, is annexed to justice as a virtue lesser than it, yet truly of its kin.`,
     },
@@ -40,7 +40,7 @@ export const week39: DevotionalDay[] = [
       text: `Always rejoice. Pray without ceasing. In all things give thanks; for this is the will of God in Christ Jesus concerning you all.`,
     },
     excerpt: {
-      author: "St. John Chrysostom",
+      author: "John Chrysostom",
       citation: "Homilies on the First Epistle to the Thessalonians, Homily IX",
       text: `In all things give thanks. What sayest thou? In all things? Yea, he says, in all. For tribulation also bringeth forth its fruit; and the things that seem grievous, when borne with thanksgiving, are turned into a great occasion of good. Hast thou suffered loss? Give thanks; thou hast not lost thy soul. Hast thou been ill spoken of? Give thanks; thou wast not stoned. Hast thou laboured, and not been rewarded? Give thanks; thou hast laid up a treasure with God, who forgetteth no labour. Let not the tongue accustomed to murmur say, Why? but let the tongue accustomed to give thanks say, Even for this.`,
     },
@@ -58,7 +58,7 @@ export const week39: DevotionalDay[] = [
       text: `And it came to pass, as he was going to Jerusalem, he passed through the midst of Samaria and Galilee. And as he entered into a certain town, there met him ten men that were lepers, who stood afar off; and lifted up their voice, saying: Jesus, master, have mercy on us. Whom when he saw, he said: Go, shew yourselves to the priests. And it came to pass, as they went, they were made clean. And one of them, when he saw that he was made clean, went back, with a loud voice glorifying God. And he fell on his face before his feet, giving thanks: and this was a Samaritan. And Jesus answering, said: Were not ten made clean? and where are the nine? There is no one found to return and give glory to God, but this stranger. And he said to him: Arise, go thy way; for thy faith hath made thee whole.`,
     },
     excerpt: {
-      author: "St. Augustine of Hippo",
+      author: "Augustine of Hippo",
       citation: "Sermon CLXXVI (on the ten lepers)",
       text: `Ten were cleansed, and one returned. The nine were Israelites: a stranger came back to give thanks. Behold the body of Christ scattered through the world, and behold the ingratitude of the many. They received the gift, and forgot the Giver; their flesh was healed, and their heart remained leprous. But this one — a stranger, a Samaritan, one of no name in the synagogue — fell on his face and gave glory to God. And the Lord said, Thy faith hath made thee whole: for the others were healed in the body, but he alone was healed in the soul. Brethren, let us be the one who returned. To receive a benefit and not to give thanks, is to be cleansed in vain.`,
     },
@@ -76,7 +76,7 @@ export const week39: DevotionalDay[] = [
       text: `Bless the Lord, O my soul: and let all that is within me bless his holy name. Bless the Lord, O my soul, and never forget all he hath done for thee. Who forgiveth all thy iniquities: who healeth all thy diseases. Who redeemeth thy life from destruction: who crowneth thee with mercy and compassion. Who satisfieth thy desire with good things: thy youth shall be renewed like the eagle's.`,
     },
     excerpt: {
-      author: "St. John Henry Newman",
+      author: "John Henry Newman",
       citation: "Parochial and Plain Sermons, Vol. V, Sermon V ('Remembrance of Past Mercies')",
       text: `It is a happy thing to learn to look back, and to recount the mercies of God. We are apt to forget how much he has done for us; we let day after day pass on, and busy ourselves with present cares and future hopes, and forget the things which are behind. Yet to remember is the beginning of thanksgiving; and thanksgiving is the foundation of all religion. Be not too eager for what is to come, nor too anxious in what is now in hand, but turn aside, as Moses did at the bush, and consider this great sight — that thou hast been led, and fed, and pardoned, and preserved, all the days of thy life. Bless the Lord, O my soul, and never forget all he hath done for thee.`,
     },
@@ -94,7 +94,7 @@ export const week39: DevotionalDay[] = [
       text: `And let the peace of Christ rejoice in your hearts, wherein also you are called in one body: and be ye thankful. Let the word of Christ dwell in you abundantly, in all wisdom: teaching and admonishing one another in psalms, hymns, and spiritual canticles, singing in grace in your hearts to God. All whatsoever you do in word or in work, all things do ye in the name of the Lord Jesus Christ, giving thanks to God and the Father by him.`,
     },
     excerpt: {
-      author: "St. Ambrose of Milan",
+      author: "Ambrose of Milan",
       citation: "De Officiis Ministrorum, Book I, ch. 38",
       text: `It is fitting then that we should give thanks for all things: for nothing is so becoming a man as to be mindful of a kindness received. For ingratitude is held to be the worst of vices, since it dries up the fountain of all other virtues. He that is thankful giveth back the only thing he can: the acknowledgement that he hath received. And by this very thankfulness he openeth his soul to receive yet more; for a grateful breast is, as it were, a vessel hollowed out by humility to hold a greater grace. Whatsoever therefore ye do, in word or in work, do all in the name of the Lord, giving thanks: that the labour itself may become a kind of prayer.`,
     },
@@ -113,7 +113,7 @@ export const week39: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "St. Thomas Aquinas",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae, II-II, Q. 106, art. 3 (whether a man is bound to repay a favour at once)",
       text: `In repaying favours we must consider both the disposition of the giver and the nature of the gift. As to the disposition, the favour ought to be acknowledged at once, even in the very moment of receiving it, by the gratitude of the heart; for the affection of the soul should not delay where the benefit hath not delayed. But as to the recompense in deed, this may be deferred, that it may be offered at a fitting time, lest it seem the discharge of a debt rather than the return of a friend. Yet to delay the acknowledgement itself is the very vice of ingratitude: for he who tarrieth to give thanks already beginneth to forget.`,
     },
@@ -132,7 +132,7 @@ export const week39: DevotionalDay[] = [
     },
     excerpt: {
       workId: "augustine-city",
-      author: "St. Augustine of Hippo",
+      author: "Augustine of Hippo",
       citation: "Confessions, Book IX, ch. 13",
       text: `Now with a heart cured of that wound wherein it might be reproved for carnal affection, I pour out unto thee, O our God, on behalf of that thy handmaid, a far different kind of tears, even that which floweth from a spirit shaken by the thought of the perils of every soul that dieth in Adam. And although she, having been made alive in Christ, even before her release from the flesh had lived to the praise of thy name for her faith and her conversation, yet dare I not say that from the day thou didst regenerate her by baptism no word went out of her mouth contrary to thy commandment. May she therefore rest in peace with her husband — and may they remember at thy altar thy handmaid Monica, by whose prayers more than by my own I am here.`,
     },

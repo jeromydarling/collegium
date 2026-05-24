@@ -94,7 +94,7 @@ export const week02: DevotionalDay[] = [
     },
     excerpt: {
       workId: "aquinas-summa",
-      author: "Thomas Aquinas (drawing on Aristotle)",
+      author: "Thomas Aquinas",
       citation: "Summa Theologiae II-II, q.23, a.3, ad 1; cf. Nicomachean Ethics VIII.1",
       text: `The Philosopher says that when men are friends there is no need of justice between them, but when they are just they need friendship as well: and the truest form of justice is considered to be a friendly quality. Friendship adds to justice, for it implies a certain union of affection, so that what justice commands as owed, friendship gives over and above as freely loved.`,
     },
@@ -111,7 +111,7 @@ export const week02: DevotionalDay[] = [
       text: `For when the Gentiles, who have not the law, do by nature those things that are of the law; these having not the law are a law to themselves: who shew the work of the law written in their hearts, their conscience bearing witness to them, and their thoughts between themselves accusing, or also defending one another.`,
     },
     excerpt: {
-      author: "Augustine",
+      author: "Augustine of Hippo",
       citation: "Confessions X.3 (trans. Pusey, public domain)",
       text: `What then have I to do with men, that they should hear my confessions — as if they could heal all my infirmities — a race, curious to know the lives of others, slothful to amend their own? Why seek they to hear from me what I am; who will not hear from Thee what themselves are? And how know they, when from myself they hear of myself, whether I speak truly; seeing no man knoweth what is in man, but the spirit of man which is in him? But if from Thee they hear of themselves, they cannot say, 'The Lord lieth.' For what is it to hear from Thee of themselves, but to know themselves?`,
     },
@@ -129,7 +129,7 @@ export const week02: DevotionalDay[] = [
     },
     excerpt: {
       workId: "augustine-city",
-      author: "Augustine",
+      author: "Augustine of Hippo",
       citation: "City of God IV.4 (trans. Marcus Dods, public domain)",
       text: `Justice being taken away, then, what are kingdoms but great robberies? For what are robberies themselves, but little kingdoms? The band itself is made up of men; it is ruled by the authority of a prince, it is knit together by the pact of the confederacy, the booty is divided by the law agreed on. If, by the admittance of abandoned men, this evil increases to such a degree that it holds places, fixes abodes, takes possession of cities, and subdues peoples, it assumes the more plainly the name of a kingdom, because the reality is now manifestly conferred on it, not by the removal of covetousness, but by the addition of impunity. Indeed, that was an apt and true reply which was given to Alexander the Great by a pirate who had been seized. For when that king had asked the man what he meant by keeping hostile possession of the sea, he answered with bold pride, 'What thou meanest by seizing the whole earth; but because I do it with a petty ship, I am called a robber, whilst thou who dost it with a great fleet art styled emperor.'`,
     },

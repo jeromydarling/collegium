@@ -130,7 +130,7 @@ export const week31: DevotionalDay[] = [
       text: "Let no evil speech proceed from your mouth; but that which is good, to the edification of faith, that it may administer grace to the hearers.",
     },
     excerpt: {
-      author: "Marcus Tullius Cicero",
+      author: "Cicero",
       citation: "De Officiis, Book I, §§ 132-134 (trans. Andrew Peabody, on appropriate speech)",
       text: `As to conversation, let it be calm, and not in the least obstinate, and let it have a certain charm. Nor must we exclude others, as if we had entered upon a private estate; but, as in other matters, so in general conversation, let us think it not unfair that each take his turn. Above all, let us see what the subject of discourse is: if grave, with seriousness; if jocose, with wit. Let us beware lest our talk betray some defect in our character; which is wont especially to happen when men, in jest or in earnest, take pleasure in speaking ill of the absent, with intent to bring them into contempt. And let us remember this: the same rules of duty which apply to the conduct of important affairs apply also to ordinary conversation; for as words are the chief instrument of our common life, so the disorder of them is the disorder of the city itself.`,
     },
