@@ -1,9 +1,10 @@
 /**
  * Eviction court — 100 small figures, animated in waves. Landlord side
- * fills with gold attorney-marks (90); tenant side leaves most of the
+ * fills with wine attorney-marks (90); tenant side leaves most of the
  * figures bare (only 10 with gold).
  *
- * Ten seconds.
+ * Ten seconds. Layout uses AbsoluteFill regions with explicit y-bounds
+ * so the punchline and source line are guaranteed visible.
  */
 
 import {
@@ -21,23 +22,25 @@ export const EvictionCourtScene: React.FC = () => {
     extrapolateRight: "clamp",
   });
 
-  // Landlord-side figures animate in over frames 20-70 (one at a time)
-  // Tenant-side animates in over frames 70-130
-  // After both, the punchline appears.
-
   const punchlineOpacity = interpolate(frame, [180, 210], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+  const sourceOpacity = interpolate(frame, [220, 250], [0, 1], {
     extrapolateRight: "clamp",
   });
 
   return (
-    <AbsoluteFill
-      style={{
-        backgroundColor: COLORS.cream,
-        color: COLORS.ink,
-        padding: "100px 120px",
-      }}
-    >
-      <div style={{ opacity: titleOpacity, marginBottom: 50 }}>
+    <AbsoluteFill style={{ backgroundColor: COLORS.cream, color: COLORS.ink }}>
+      {/* Title block — top 80-220 */}
+      <div
+        style={{
+          position: "absolute",
+          top: 80,
+          left: 120,
+          right: 120,
+          opacity: titleOpacity,
+        }}
+      >
         <div
           style={{
             fontFamily: FONTS.body,
@@ -54,7 +57,7 @@ export const EvictionCourtScene: React.FC = () => {
         <div
           style={{
             fontFamily: FONTS.display,
-            fontSize: 56,
+            fontSize: 52,
             fontWeight: 600,
             letterSpacing: -1,
           }}
@@ -63,7 +66,18 @@ export const EvictionCourtScene: React.FC = () => {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 80, marginTop: 30 }}>
+      {/* Figure grids — region 250 to 870 */}
+      <div
+        style={{
+          position: "absolute",
+          top: 250,
+          left: 120,
+          right: 120,
+          bottom: 210,
+          display: "flex",
+          gap: 100,
+        }}
+      >
         <FigureGrid
           label="Landlords with a lawyer"
           color={COLORS.wine}
@@ -80,32 +94,39 @@ export const EvictionCourtScene: React.FC = () => {
         />
       </div>
 
+      {/* Punchline — y=890 to y=970 */}
       <div
         style={{
-          marginTop: 60,
+          position: "absolute",
+          bottom: 110,
+          left: 120,
+          right: 120,
           fontFamily: FONTS.display,
-          fontSize: 52,
+          fontSize: 48,
           fontWeight: 600,
           color: COLORS.ink,
           textAlign: "center",
           opacity: punchlineOpacity,
+          lineHeight: 1.2,
         }}
       >
-        90 to 10. <span style={{ color: COLORS.wine }}>The case is over before it begins.</span>
+        90 to 10.{" "}
+        <span style={{ color: COLORS.wine, fontStyle: "italic" }}>
+          The case is over before it begins.
+        </span>
       </div>
 
+      {/* Source line — bottom strip */}
       <div
         style={{
           position: "absolute",
-          bottom: 50,
+          bottom: 40,
           left: 120,
           right: 120,
           fontFamily: FONTS.mono,
-          fontSize: 16,
+          fontSize: 14,
           color: COLORS.slateSoft,
-          opacity: interpolate(frame, [220, 250], [0, 1], {
-            extrapolateRight: "clamp",
-          }),
+          opacity: sourceOpacity,
           letterSpacing: 1,
           textAlign: "center",
         }}
@@ -116,10 +137,6 @@ export const EvictionCourtScene: React.FC = () => {
   );
 };
 
-/**
- * A 10×10 grid where `count` figures fill in with the given color and
- * the rest stay outlined. Figures fill in sequentially.
- */
 function FigureGrid({
   label,
   color,
@@ -141,6 +158,7 @@ function FigureGrid({
 
   const COLS = 10;
   const ROWS = 10;
+  const FIGURE_SIZE = 44;
   const cells = Array.from({ length: ROWS * COLS }, (_, i) => {
     const filled = i < figuresToShow && i < count;
     const outlined = i < figuresToShow && i >= count;
@@ -148,13 +166,13 @@ function FigureGrid({
   });
 
   return (
-    <div style={{ flex: 1 }}>
+    <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
       <div
         style={{
           fontFamily: FONTS.body,
-          fontSize: 26,
+          fontSize: 24,
           color: COLORS.slate,
-          marginBottom: 18,
+          marginBottom: 14,
         }}
       >
         {label}
@@ -162,20 +180,27 @@ function FigureGrid({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${COLS}, 56px)`,
-          gridTemplateRows: `repeat(${ROWS}, 56px)`,
-          gap: 6,
+          gridTemplateColumns: `repeat(${COLS}, ${FIGURE_SIZE}px)`,
+          gridTemplateRows: `repeat(${ROWS}, ${FIGURE_SIZE}px)`,
+          gap: 5,
+          justifyContent: "start",
         }}
       >
         {cells.map((c) => (
-          <Figure key={c.i} filled={c.filled} outlined={c.outlined} color={color} />
+          <Figure
+            key={c.i}
+            size={FIGURE_SIZE}
+            filled={c.filled}
+            outlined={c.outlined}
+            color={color}
+          />
         ))}
       </div>
       <div
         style={{
-          marginTop: 16,
+          marginTop: 14,
           fontFamily: FONTS.display,
-          fontSize: 44,
+          fontSize: 40,
           fontWeight: 700,
           color,
         }}
@@ -187,19 +212,20 @@ function FigureGrid({
 }
 
 function Figure({
+  size,
   filled,
   outlined,
   color,
 }: {
+  size: number;
   filled: boolean;
   outlined: boolean;
   color: string;
 }) {
-  // Simple "person" silhouette: a circle head + rounded shoulders.
   const fill = filled ? color : "transparent";
   const stroke = filled ? color : outlined ? COLORS.slateSoft : "transparent";
   return (
-    <svg width={56} height={56} viewBox="0 0 56 56">
+    <svg width={size} height={size} viewBox="0 0 56 56">
       <circle cx={28} cy={18} r={9} fill={fill} stroke={stroke} strokeWidth={2} />
       <path
         d="M 10 50 Q 10 32 28 32 Q 46 32 46 50 Z"

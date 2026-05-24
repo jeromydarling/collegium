@@ -5,6 +5,10 @@
  * has no Gideon.
  *
  * Twelve seconds.
+ *
+ * Layout uses AbsoluteFill regions instead of flow layout so nothing
+ * can overflow the 1080px canvas. Safe-area margin: 60px from every
+ * edge, source line lives in its own bottom strip.
  */
 
 import {
@@ -25,7 +29,6 @@ export const VolumeScene: React.FC = () => {
     extrapolateRight: "clamp",
   });
 
-  // Criminal bar grows first (smaller)
   const criminalProgress = spring({
     frame: frame - 30,
     fps,
@@ -33,7 +36,6 @@ export const VolumeScene: React.FC = () => {
     durationInFrames: 35,
   });
 
-  // Civil bar grows after, much larger
   const civilProgress = spring({
     frame: frame - 80,
     fps,
@@ -44,23 +46,31 @@ export const VolumeScene: React.FC = () => {
   const ratioOpacity = interpolate(frame, [180, 220], [0, 1], {
     extrapolateRight: "clamp",
   });
+  const sourceOpacity = interpolate(frame, [240, 270], [0, 1], {
+    extrapolateRight: "clamp",
+  });
 
-  // Scaling: max bar height 700px maps to 150M (civil)
-  const PIXELS_PER_MILLION = 700 / 150;
+  // Bar heights cap at 560px (the bars container is 560px tall).
+  // Mapping: 150M civil = 560px; 10M criminal = 37px.
+  const MAX_BAR_HEIGHT = 560;
+  const PIXELS_PER_MILLION = MAX_BAR_HEIGHT / 150;
   const criminalHeight =
     (STATS.annualArrests / 1_000_000) * PIXELS_PER_MILLION * criminalProgress;
   const civilHeight =
     (STATS.annualUnmetCivilEvents / 1_000_000) * PIXELS_PER_MILLION * civilProgress;
 
   return (
-    <AbsoluteFill
-      style={{
-        backgroundColor: COLORS.cream,
-        color: COLORS.ink,
-        padding: "100px 120px",
-      }}
-    >
-      <div style={{ opacity: titleOpacity, marginBottom: 30 }}>
+    <AbsoluteFill style={{ backgroundColor: COLORS.cream, color: COLORS.ink }}>
+      {/* Title — top 200px */}
+      <div
+        style={{
+          position: "absolute",
+          top: 80,
+          left: 120,
+          right: 120,
+          opacity: titleOpacity,
+        }}
+      >
         <div
           style={{
             fontFamily: FONTS.body,
@@ -86,18 +96,21 @@ export const VolumeScene: React.FC = () => {
         </div>
       </div>
 
-      {/* Bars container */}
+      {/* Bars — centered region y=260 to y=900 */}
       <div
         style={{
+          position: "absolute",
+          top: 260,
+          bottom: 180,
+          left: 0,
+          right: 0,
           display: "flex",
-          gap: 120,
+          gap: 140,
           alignItems: "flex-end",
           justifyContent: "center",
-          height: 760,
-          marginTop: 30,
+          padding: "0 120px",
         }}
       >
-        {/* Criminal bar */}
         <BarColumn
           label="Annual arrests, all crimes"
           color={COLORS.slate}
@@ -108,8 +121,6 @@ export const VolumeScene: React.FC = () => {
           unit="million"
           progress={criminalProgress}
         />
-
-        {/* Civil bar */}
         <BarColumn
           label="Unmet civil legal events per year"
           color={COLORS.wine}
@@ -123,15 +134,20 @@ export const VolumeScene: React.FC = () => {
         />
       </div>
 
+      {/* Punchline — y=920 to y=990 */}
       <div
         style={{
-          marginTop: 30,
+          position: "absolute",
+          bottom: 90,
+          left: 120,
+          right: 120,
           fontFamily: FONTS.display,
-          fontSize: 52,
+          fontSize: 48,
           fontWeight: 600,
           color: COLORS.ink,
           textAlign: "center",
           opacity: ratioOpacity,
+          lineHeight: 1.2,
         }}
       >
         Fifteen-to-one.{" "}
@@ -140,23 +156,23 @@ export const VolumeScene: React.FC = () => {
         </span>
       </div>
 
+      {/* Source line — bottom strip, y=1030 to y=1060 */}
       <div
         style={{
           position: "absolute",
-          bottom: 50,
+          bottom: 40,
           left: 120,
           right: 120,
           fontFamily: FONTS.mono,
-          fontSize: 16,
+          fontSize: 14,
           color: COLORS.slateSoft,
-          opacity: interpolate(frame, [240, 270], [0, 1], {
-            extrapolateRight: "clamp",
-          }),
+          opacity: sourceOpacity,
           letterSpacing: 1,
           textAlign: "center",
         }}
       >
-        FBI UCR · LSC 2022 Justice Gap Report · "Gideon" = Gideon v. Wainwright (1963), criminal-only
+        FBI UCR · LSC 2022 Justice Gap Report · "Gideon" = Gideon v. Wainwright
+        (1963), criminal-only
       </div>
     </AbsoluteFill>
   );
@@ -185,26 +201,33 @@ function BarColumn({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 16,
+        gap: 12,
       }}
     >
       <div
         style={{
           fontFamily: FONTS.display,
-          fontSize: accent ? 72 : 56,
+          fontSize: accent ? 64 : 48,
           fontWeight: 700,
           color: accent ? COLORS.wine : COLORS.ink,
           opacity: progress,
         }}
       >
         {number}
-        <span style={{ fontSize: accent ? 32 : 24, color: COLORS.slate, fontWeight: 400, marginLeft: 10 }}>
+        <span
+          style={{
+            fontSize: accent ? 28 : 22,
+            color: COLORS.slate,
+            fontWeight: 400,
+            marginLeft: 8,
+          }}
+        >
           {unit}
         </span>
       </div>
       <div
         style={{
-          width: 180,
+          width: 160,
           height,
           backgroundColor: color,
           borderRadius: "6px 6px 0 0",
@@ -214,10 +237,10 @@ function BarColumn({
       <div
         style={{
           fontFamily: FONTS.body,
-          fontSize: 22,
+          fontSize: 20,
           color: COLORS.slate,
           textAlign: "center",
-          maxWidth: 320,
+          maxWidth: 280,
           lineHeight: 1.3,
         }}
       >

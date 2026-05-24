@@ -12,7 +12,7 @@
  *   46–60s  Closing — naming the work and the source citation
  */
 
-import { AbsoluteFill, Sequence } from "remotion";
+import { AbsoluteFill, Audio, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { COLORS, sec } from "./theme";
 import { Opening } from "./scenes/Opening";
 import { BigNumberScene } from "./scenes/BigNumber";
@@ -49,6 +49,13 @@ export const JusticeGap: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.cream }}>
+      {/* Music bed — fades in over the first second, fades out across
+          the last two seconds, ducks slightly during the count-up.
+          Track lives at public/assets/audio/justice-gap-score.mp3 —
+          swap that file to use a different score; the Audio component
+          just plays whatever's there. */}
+      <ScoreBed totalFrames={JUSTICE_GAP_DURATION_FRAMES} />
+
       <Sequence {...slot(SCENE_DURATIONS.opening)}>
         <Opening />
       </Sequence>
@@ -70,3 +77,27 @@ export const JusticeGap: React.FC = () => {
     </AbsoluteFill>
   );
 };
+
+/**
+ * Music bed with frame-driven volume envelope. Reads
+ * public/assets/audio/justice-gap-score.mp3 via staticFile().
+ *
+ * Envelope (in seconds):
+ *   0 → 1.5 : fade in to 0.55
+ *   1.5 → 56 : stay at 0.55 (under the dialogue / numbers)
+ *   56 → 60 : fade to 0
+ */
+function ScoreBed({ totalFrames }: { totalFrames: number }) {
+  const frame = useCurrentFrame();
+  const fadeInEnd = sec(1.5);
+  const fadeOutStart = totalFrames - sec(4);
+
+  const volume = interpolate(
+    frame,
+    [0, fadeInEnd, fadeOutStart, totalFrames - 1],
+    [0, 0.55, 0.55, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
+  return <Audio src={staticFile("assets/audio/justice-gap-score.mp3")} volume={volume} />;
+}
