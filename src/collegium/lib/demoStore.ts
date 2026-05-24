@@ -7,7 +7,16 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { events as seedEvents, type EventItem } from "../data/demo";
+import {
+  events as seedEvents,
+  pairMeetings as seedPairMeetings,
+  pairOutcomes as seedPairOutcomes,
+  mentorPairs as seedMentorPairs,
+  type EventItem,
+  type PairMeeting,
+  type PairOutcome,
+  type MentorPair,
+} from "../data/demo";
 
 const STORAGE_KEY = "collegium_demo_state_v1";
 
@@ -151,6 +160,13 @@ export type DemoState = {
   eventOverrides: Record<string, Partial<EventItem>>;
   /** Seed event ids the steward has deleted — filtered out at read time. */
   deletedEventIds: string[];
+  /** Per-pair meeting overrides — patches and additions on top of seed. */
+  pairMeetingsAdded: PairMeeting[];
+  pairMeetingPatches: Record<string, Partial<PairMeeting>>;
+  /** Per-pair outcomes the user has added on top of seed. */
+  pairOutcomesAdded: PairOutcome[];
+  /** Per-pair video link overrides (lets the visitor change a pair's standing room). */
+  pairVideoLinkOverrides: Record<string, string>;
 };
 
 export type MentorJournalEntry = {
@@ -186,6 +202,10 @@ const defaultState: DemoState = {
   customEvents: [],
   eventOverrides: {},
   deletedEventIds: [],
+  pairMeetingsAdded: [],
+  pairMeetingPatches: {},
+  pairOutcomesAdded: [],
+  pairVideoLinkOverrides: {},
 };
 
 function load(): DemoState {
@@ -484,6 +504,54 @@ export const demoStore = {
     })),
   logHours: (entry: { matterId: string; hours: number; date: string; note?: string }) =>
     setState((s) => ({ ...s, loggedHours: [...s.loggedHours, entry] })),
+
+  // ── Mentor pair: meetings, outcomes, video link ──
+  addPairMeeting: (m: Omit<PairMeeting, "id">): string => {
+    const id = `pm-custom-${Date.now()}`;
+    setState((s) => ({
+      ...s,
+      pairMeetingsAdded: [...s.pairMeetingsAdded, { ...m, id }],
+    }));
+    return id;
+  },
+  updatePairMeeting: (id: string, patch: Partial<PairMeeting>) =>
+    setState((s) => {
+      // Added meetings get patched in place
+      const inAdded = s.pairMeetingsAdded.some((m) => m.id === id);
+      if (inAdded) {
+        return {
+          ...s,
+          pairMeetingsAdded: s.pairMeetingsAdded.map((m) =>
+            m.id === id ? { ...m, ...patch, id: m.id } : m
+          ),
+        };
+      }
+      // Seed meetings get an overlay patch
+      return {
+        ...s,
+        pairMeetingPatches: {
+          ...s.pairMeetingPatches,
+          [id]: { ...(s.pairMeetingPatches[id] ?? {}), ...patch },
+        },
+      };
+    }),
+  addPairOutcome: (o: Omit<PairOutcome, "id" | "recordedAt">): string => {
+    const id = `po-custom-${Date.now()}`;
+    setState((s) => ({
+      ...s,
+      pairOutcomesAdded: [
+        ...s.pairOutcomesAdded,
+        { ...o, id, recordedAt: new Date().toISOString() },
+      ],
+    }));
+    return id;
+  },
+  setPairVideoLink: (pairId: string, url: string) =>
+    setState((s) => ({
+      ...s,
+      pairVideoLinkOverrides: { ...s.pairVideoLinkOverrides, [pairId]: url },
+    })),
+
   reset: () => setState(() => defaultState),
 };
 
@@ -529,6 +597,56 @@ export function useAllEvents(): EventItem[] {
 export function useEvent(id: string | undefined): EventItem | undefined {
   const all = useAllEvents();
   return id ? all.find((e) => e.id === id) : undefined;
+}
+
+/** Merged meetings for a pair — seed + patches + additions, sorted by start. */
+export function usePairMeetings(pairId: string | undefined): PairMeeting[] {
+  const state = useDemoState();
+  return useMemo(() => {
+    if (!pairId) return [];
+    const fromSeed = seedPairMeetings
+      .filter((m) => m.pairId === pairId)
+      .map((m) => {
+        const patch = state.pairMeetingPatches[m.id];
+        return patch ? { ...m, ...patch, id: m.id } : m;
+      });
+    const fromAdded = state.pairMeetingsAdded.filter((m) => m.pairId === pairId);
+    return [...fromSeed, ...fromAdded].sort((a, b) =>
+      a.scheduledFor.localeCompare(b.scheduledFor)
+    );
+  }, [pairId, state.pairMeetingPatches, state.pairMeetingsAdded]);
+}
+
+/** Merged outcomes for a pair — seed + additions, sorted by date. */
+export function usePairOutcomes(pairId: string | undefined): PairOutcome[] {
+  const state = useDemoState();
+  return useMemo(() => {
+    if (!pairId) return [];
+    const fromSeed = seedPairOutcomes.filter((o) => o.pairId === pairId);
+    const fromAdded = state.pairOutcomesAdded.filter((o) => o.pairId === pairId);
+    return [...fromSeed, ...fromAdded].sort((a, b) =>
+      a.occurredOn.localeCompare(b.occurredOn)
+    );
+  }, [pairId, state.pairOutcomesAdded]);
+}
+
+/** Effective video link for a pair (override beats seed). */
+export function usePairVideoLink(pairId: string | undefined): string | undefined {
+  const state = useDemoState();
+  if (!pairId) return undefined;
+  const override = state.pairVideoLinkOverrides[pairId];
+  if (override) return override;
+  const pair = seedMentorPairs.find((p) => p.id === pairId);
+  return pair?.videoLink;
+}
+
+/** Cross-pair counts for dashboards / module headlines. */
+export function useAllPairOutcomes(): PairOutcome[] {
+  const state = useDemoState();
+  return useMemo(
+    () => [...seedPairOutcomes, ...state.pairOutcomesAdded],
+    [state.pairOutcomesAdded]
+  );
 }
 
 export const roleLabel: Record<DemoRole, { label: string; latin: string; description: string }> = {

@@ -24,6 +24,8 @@ import type {
   EventItem,
   ServiceMatter,
   NRIBriefing,
+  PairMeeting,
+  PairOutcome,
 } from "../../data/demo";
 import type { PeerGuild, PeerSignal } from "../../data/communio";
 
@@ -33,6 +35,9 @@ export interface NRIInput {
   mentorPairs: MentorPair[];
   events: EventItem[];
   serviceMatters: ServiceMatter[];
+  /** Optional — once provided, the engine reasons about scheduling gaps and bar/job milestones. */
+  pairMeetings?: PairMeeting[];
+  pairOutcomes?: PairOutcome[];
   peerSignals?: PeerSignal[];
   peerGuilds?: PeerGuild[];
   /** Override "now" for deterministic testing. Defaults to system time. */
@@ -73,6 +78,8 @@ export function generateBriefings(input: NRIInput): NRIBriefing[] {
     ...mentorPairDriftRule(input, now, today),
     ...mentorPairLongGapRule(input, now, today),
     ...mentorPairThrivingArcRule(input, now, today),
+    ...mentorPairUnscheduledRule(input, now, today),
+    ...mentorPairOutcomeCelebrationRule(input, now, today),
     ...chapterServiceSurgeRule(input, now, today),
     ...chapterSuccessionRiskRule(input, today),
     ...chapterOfficerOverloadRule(input, today),
@@ -226,6 +233,140 @@ function mentorPairThrivingArcRule(
         pair.notes ? trimSignal(pair.notes) : `Steady cadence, no flags`,
       ],
       suggestedAction: `Invite ${lastNameOnly(mentor.name)} to speak briefly at the next chapter event about what a long mentor arc has taught them. Keep it under five minutes.`,
+      generatedOn: today,
+      tone: "celebrate",
+    });
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ */
+/* Rule: Mentor pair with no upcoming meeting scheduled                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Fires when an active pair has no future meeting on the books AND
+ * their last meeting was longer ago than their cadence allows. Distinct
+ * from the gap rule: this one is about scheduling hygiene, not just
+ * elapsed silence.
+ */
+function mentorPairUnscheduledRule(
+  input: NRIInput,
+  now: Date,
+  today: string
+): NRIBriefing[] {
+  const out: NRIBriefing[] = [];
+  if (!input.pairMeetings) return out;
+  const nowMs = now.getTime();
+
+  for (const pair of input.mentorPairs) {
+    if (pair.status === "paused") continue;
+    const pairMeetings = input.pairMeetings.filter((m) => m.pairId === pair.id);
+    const upcoming = pairMeetings.filter(
+      (m) => m.status === "scheduled" && new Date(m.scheduledFor).getTime() >= nowMs
+    );
+    if (upcoming.length > 0) continue;
+
+    // No upcoming. Check last completed against cadence threshold.
+    const completed = pairMeetings
+      .filter((m) => m.status === "completed")
+      .sort((a, b) => b.scheduledFor.localeCompare(a.scheduledFor));
+    const last = completed[0];
+    const threshold = CADENCE_THRESHOLD_DAYS[pair.cadence];
+    const daysSinceLast = last
+      ? Math.round((nowMs - new Date(last.scheduledFor).getTime()) / DAY_MS)
+      : Infinity;
+    if (daysSinceLast <= threshold) continue;
+
+    const mentor = input.people.find((p) => p.id === pair.mentorId);
+    const mentee = input.people.find((p) => p.id === pair.menteeId);
+    if (!mentor || !mentee) continue;
+
+    out.push({
+      id: `nri-mp-unscheduled-${pair.id}`,
+      scope: "mentor-pair",
+      scopeId: pair.id,
+      title: `${lastNameOnly(mentor.name)} & ${lastNameOnly(mentee.name)} — no next meeting on the books`,
+      body: `Their ${pair.cadence} cadence expects a touch every ${threshold} days, and the calendar is empty past today. The pair likely needs nothing more than a one-minute "what does the next two weeks look like?" prompt.`,
+      signals: [
+        last
+          ? `Last meeting ${daysSinceLast} days ago`
+          : `No completed meetings on file`,
+        `Cadence: ${pair.cadence} (expects ≤ ${threshold} days)`,
+        `No future meetings scheduled`,
+      ],
+      suggestedAction: `Steward or the mentor opens the pair's schedule tab and adds the next meeting. Don't ask permission — propose a date and let them adjust.`,
+      generatedOn: today,
+      tone: "attend",
+    });
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ */
+/* Rule: Recent outcome milestone (bar passed, first job, etc.)        */
+/* ------------------------------------------------------------------ */
+
+const CELEBRATABLE_OUTCOMES = new Set([
+  "bar-passed",
+  "first-job",
+  "judicial-clerkship",
+  "publication",
+  "moot-court",
+  "partnership-offered",
+  "still-in-practice-1yr",
+  "still-in-practice-5yr",
+  "still-in-practice-10yr",
+]);
+
+function mentorPairOutcomeCelebrationRule(
+  input: NRIInput,
+  now: Date,
+  today: string
+): NRIBriefing[] {
+  const out: NRIBriefing[] = [];
+  if (!input.pairOutcomes) return out;
+  const nowMs = now.getTime();
+  const SIXTY_DAYS = 60 * DAY_MS;
+
+  for (const outcome of input.pairOutcomes) {
+    if (!CELEBRATABLE_OUTCOMES.has(outcome.kind)) continue;
+    const occurredMs = new Date(outcome.occurredOn).getTime();
+    if (nowMs - occurredMs > SIXTY_DAYS) continue;
+    if (occurredMs > nowMs + 7 * DAY_MS) continue; // not too-far-future
+
+    const pair = input.mentorPairs.find((p) => p.id === outcome.pairId);
+    if (!pair) continue;
+    const mentor = input.people.find((p) => p.id === pair.mentorId);
+    const mentee = input.people.find((p) => p.id === pair.menteeId);
+    if (!mentor || !mentee) continue;
+
+    const kindLabel: Record<string, string> = {
+      "bar-passed": "passed the bar",
+      "first-job": "landed her first legal job",
+      "judicial-clerkship": "started a judicial clerkship",
+      publication: "got a piece published",
+      "moot-court": "won at moot court",
+      "partnership-offered": "was offered partnership",
+      "still-in-practice-1yr": "marked one year in practice",
+      "still-in-practice-5yr": "marked five years in practice",
+      "still-in-practice-10yr": "marked ten years in practice",
+    };
+    const verb =
+      kindLabel[outcome.kind] ?? "hit a milestone in her formation arc";
+
+    out.push({
+      id: `nri-mp-outcome-${outcome.id}`,
+      scope: "mentor-pair",
+      scopeId: pair.id,
+      title: `${mentee.name.split(" ")[0]} ${verb}`,
+      body: `${outcome.detail} The pair with ${lastNameOnly(mentor.name)} has been part of this arc since ${new Date(pair.startedOn).toLocaleDateString("en-US", { month: "long", year: "numeric" })}. Worth naming aloud, both to honor the mentor's accompaniment and to give the next pair an example.`,
+      signals: [
+        `Outcome recorded ${outcome.occurredOn}`,
+        outcome.recordedBy ? `Recorded by ${outcome.recordedBy}` : `Recorded in the pair's outcomes`,
+        `Pair active ${monthsBetween(pair.startedOn, now)} months`,
+      ],
+      suggestedAction: `Send a short congratulatory note to the mentor (not the mentee) — it was her steadiness that made this possible. Consider naming the outcome at the next chapter gathering.`,
       generatedOn: today,
       tone: "celebrate",
     });

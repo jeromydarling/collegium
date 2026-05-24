@@ -5,6 +5,8 @@ import {
   people,
   events,
   serviceMatters,
+  pairMeetings,
+  pairOutcomes,
 } from "../data/demo";
 import { peerGuilds, peerSignals } from "../data/communio";
 import { generateBriefings } from "../lib/nri/engine";
@@ -28,6 +30,8 @@ export function NRIPulse() {
         mentorPairs,
         events,
         serviceMatters,
+        pairMeetings,
+        pairOutcomes,
         peerGuilds,
         peerSignals,
       }),

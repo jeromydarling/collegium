@@ -103,6 +103,70 @@ export type MentorPair = {
   lastMeeting?: string;
   status: "thriving" | "steady" | "drifting" | "paused";
   notes: string;
+  /**
+   * Standing video room URL for this pair (their Zoom/Meet/Jitsi link).
+   * Single "bring your own URL" approach — no third-party OAuth. Pair
+   * sets it once via the journal page; the "Open video room" button
+   * uses it forever. A per-meeting override lives on PairMeeting.
+   */
+  videoLink?: string;
+};
+
+/**
+ * A scheduled or completed pair meeting. The pair page lets the mentor
+ * or steward schedule new meetings, mark them complete, drop a one-line
+ * note, and export the schedule to .ics for Google Calendar / Apple
+ * Calendar / Outlook to subscribe to.
+ */
+export type PairMeeting = {
+  id: string;
+  pairId: string;
+  /** ISO datetime — start of the meeting in the pair's local tz. */
+  scheduledFor: string;
+  durationMinutes: number;
+  /** Optional one-line agenda the pair set together. */
+  agenda?: string;
+  status: "scheduled" | "completed" | "missed" | "rescheduled" | "cancelled";
+  /** One-line note dropped after the meeting (or after it was missed). */
+  notes?: string;
+  /** Override the pair's standing video room, if used. */
+  videoLink?: string;
+};
+
+/**
+ * A longitudinal outcome milestone for the mentee. The point of mentor
+ * pairing is producing lawyers who pass the bar, get the first job,
+ * and stay in practice — this is the data that says whether the program
+ * is working.
+ */
+export type PairOutcome = {
+  id: string;
+  pairId: string;
+  /** ISO date the milestone occurred (not when it was recorded). */
+  occurredOn: string;
+  kind:
+    | "bar-passed"
+    | "bar-failed"
+    | "first-job"
+    | "judicial-clerkship"
+    | "internship"
+    | "moot-court"
+    | "publication"
+    | "partnership-track"
+    | "partnership-offered"
+    | "still-in-practice-1yr"
+    | "still-in-practice-3yr"
+    | "still-in-practice-5yr"
+    | "still-in-practice-10yr"
+    | "left-practice"
+    | "left-and-returned"
+    | "other";
+  /** Free-text detail. "Passed IL bar on first attempt", "Hired as associate at Kelly & Roy, Chicago", etc. */
+  detail: string;
+  /** Who recorded this — usually the mentor or local steward. */
+  recordedBy?: string;
+  /** ISO timestamp when recorded (separate from when it occurred). */
+  recordedAt: string;
 };
 
 export type ServiceMatter = {
@@ -834,6 +898,7 @@ export const mentorPairs: MentorPair[] = [
     cadence: "monthly",
     lastMeeting: "2026-04-22",
     status: "thriving",
+    videoLink: "https://meet.google.com/coyle-chen-monthly",
     notes:
       "Two-year arc. Daniel was a 2L when this started; now a third-year associate working on his first solo immigration matter. Conversations have shifted from career strategy to vocation.",
   },
@@ -845,6 +910,7 @@ export const mentorPairs: MentorPair[] = [
     cadence: "biweekly",
     lastMeeting: "2026-05-05",
     status: "steady",
+    videoLink: "https://zoom.us/j/8127541129",
     notes:
       "Hannah is ecumenical, Elena is Catholic. The Bible-and-Law conversations have surprised both of them. Hannah's summer-internship plans are forming.",
   },
@@ -867,6 +933,7 @@ export const mentorPairs: MentorPair[] = [
     cadence: "monthly",
     lastMeeting: "2026-05-08",
     status: "thriving",
+    videoLink: "https://meet.jit.si/CollegiumBrennanRoy",
     notes:
       "Mentorship has evolved into co-leadership. Anita is being prepared for the VP-to-President transition next year.",
   },
@@ -881,6 +948,230 @@ export const mentorPairs: MentorPair[] = [
     notes:
       "Aileen is testing whether corporate practice can be a Christian vocation. David is leaning into the question rather than answering it for her.",
   },
+];
+
+// ────────────────────────────────────────────────────────────────────
+// Pair meetings — scheduled + completed history per pair
+// ────────────────────────────────────────────────────────────────────
+
+export const pairMeetings: PairMeeting[] = [
+  // Coyle & Chen — monthly. Two completed, one upcoming.
+  {
+    id: "pm-coyle-chen-2026-03",
+    pairId: "mp-coyle-chen",
+    scheduledFor: "2026-03-19T18:30:00",
+    durationMinutes: 60,
+    agenda: "First solo immigration matter — review intake and conflict check.",
+    status: "completed",
+    notes: "Daniel walked through his first solo intake (asylum, Venezuelan family). Coyle pushed on conflict check with prior co-counsel.",
+  },
+  {
+    id: "pm-coyle-chen-2026-04",
+    pairId: "mp-coyle-chen",
+    scheduledFor: "2026-04-22T18:30:00",
+    durationMinutes: 60,
+    agenda: "Hearing prep — direct exam practice.",
+    status: "completed",
+    notes: "Ran the direct twice. Worked on slowing down before opening questions.",
+  },
+  {
+    id: "pm-coyle-chen-2026-06",
+    pairId: "mp-coyle-chen",
+    scheduledFor: "2026-06-04T18:30:00",
+    durationMinutes: 60,
+    agenda: "Post-hearing debrief and vocation check-in.",
+    status: "scheduled",
+  },
+
+  // Ruiz & Park — biweekly. Tight cadence.
+  {
+    id: "pm-ruiz-park-2026-04-21",
+    pairId: "mp-ruiz-park",
+    scheduledFor: "2026-04-21T17:00:00",
+    durationMinutes: 45,
+    agenda: "Summer internship choice — three offers on the table.",
+    status: "completed",
+    notes: "Hannah is leaning toward the Catholic Legal Aid Society over the firm offer. Elena asked the right hard questions about loan implications.",
+  },
+  {
+    id: "pm-ruiz-park-2026-05-05",
+    pairId: "mp-ruiz-park",
+    scheduledFor: "2026-05-05T17:00:00",
+    durationMinutes: 45,
+    agenda: "Bible study — Acts 4 on the early Church's common life.",
+    status: "completed",
+  },
+  {
+    id: "pm-ruiz-park-2026-05-19",
+    pairId: "mp-ruiz-park",
+    scheduledFor: "2026-05-19T17:00:00",
+    durationMinutes: 45,
+    agenda: "Pre-internship send-off.",
+    status: "scheduled",
+  },
+
+  // Hartmann & Velasquez — DRIFTING. Two missed; no upcoming.
+  {
+    id: "pm-hartmann-velasquez-2026-03-10",
+    pairId: "mp-hartmann-velasquez",
+    scheduledFor: "2026-03-10T19:00:00",
+    durationMinutes: 60,
+    agenda: "Bar-prep schedule and Anki strategy.",
+    status: "completed",
+    notes: "Maria has the Themis schedule. Concerns about constitutional law density.",
+  },
+  {
+    id: "pm-hartmann-velasquez-2026-04-07",
+    pairId: "mp-hartmann-velasquez",
+    scheduledFor: "2026-04-07T19:00:00",
+    durationMinutes: 60,
+    agenda: "Mid-bar-prep check-in.",
+    status: "missed",
+    notes: "Maria did not appear. Prof. Hartmann sent a one-line note that evening; no reply.",
+  },
+  {
+    id: "pm-hartmann-velasquez-2026-05-05",
+    pairId: "mp-hartmann-velasquez",
+    scheduledFor: "2026-05-05T19:00:00",
+    durationMinutes: 60,
+    agenda: "Bar prep — last month.",
+    status: "missed",
+    notes: "Second consecutive miss. Steward Coyle flagged for soft outreach (not from Hartmann).",
+  },
+
+  // Brennan & Roy — monthly, near co-leadership.
+  {
+    id: "pm-brennan-roy-2026-04-10",
+    pairId: "mp-brennan-roy",
+    scheduledFor: "2026-04-10T12:00:00",
+    durationMinutes: 90,
+    agenda: "Chapter VP-to-President transition timeline.",
+    status: "completed",
+    notes: "Walked through the September handover plan. Anita drafted the talking points.",
+  },
+  {
+    id: "pm-brennan-roy-2026-05-08",
+    pairId: "mp-brennan-roy",
+    scheduledFor: "2026-05-08T12:00:00",
+    durationMinutes: 90,
+    agenda: "Red Mass planning and chapter calendar review.",
+    status: "completed",
+  },
+  {
+    id: "pm-brennan-roy-2026-06-12",
+    pairId: "mp-brennan-roy",
+    scheduledFor: "2026-06-12T12:00:00",
+    durationMinutes: 90,
+    agenda: "End-of-year retreat planning + mentorship matching for incoming students.",
+    status: "scheduled",
+  },
+
+  // Tanner & Lim — monthly.
+  {
+    id: "pm-tanner-lim-2026-04-30",
+    pairId: "mp-tanner-lim",
+    scheduledFor: "2026-04-30T20:00:00",
+    durationMinutes: 60,
+    agenda: "Corporate practice as Christian vocation — Rerum Novarum reading.",
+    status: "completed",
+    notes: "Aileen brought the Rerum Novarum §§5-15 reading. David let her sit with the discomfort rather than resolving it.",
+  },
+  {
+    id: "pm-tanner-lim-2026-06-04",
+    pairId: "mp-tanner-lim",
+    scheduledFor: "2026-06-04T20:00:00",
+    durationMinutes: 60,
+    agenda: "Year-one review — what corporate work has cost; what it has given.",
+    status: "scheduled",
+  },
+];
+
+// ────────────────────────────────────────────────────────────────────
+// Pair outcomes — longitudinal milestones the program produces
+// ────────────────────────────────────────────────────────────────────
+
+export const pairOutcomes: PairOutcome[] = [
+  // Coyle & Chen — Daniel went from 2L to associate over two years.
+  {
+    id: "po-chen-bar",
+    pairId: "mp-coyle-chen",
+    occurredOn: "2025-07-22",
+    kind: "bar-passed",
+    detail: "Passed the Illinois bar on first attempt.",
+    recordedBy: "Margaret Coyle",
+    recordedAt: "2025-09-15T10:30:00",
+  },
+  {
+    id: "po-chen-first-job",
+    pairId: "mp-coyle-chen",
+    occurredOn: "2025-09-08",
+    kind: "first-job",
+    detail: "Started as associate at the National Immigrant Justice Center, Chicago.",
+    recordedBy: "Margaret Coyle",
+    recordedAt: "2025-09-15T10:32:00",
+  },
+  {
+    id: "po-chen-1yr",
+    pairId: "mp-coyle-chen",
+    occurredOn: "2026-09-08",
+    kind: "still-in-practice-1yr",
+    detail: "One year in. First solo asylum matter underway. Stayed at NIJC; promoted to staff attorney track.",
+    recordedBy: "Margaret Coyle",
+    recordedAt: "2026-05-20T14:15:00",
+  },
+
+  // Hartmann & Velasquez — bar pending.
+  {
+    id: "po-velasquez-internship",
+    pairId: "mp-hartmann-velasquez",
+    occurredOn: "2025-06-01",
+    kind: "internship",
+    detail: "Summer 2025 internship at the D.C. Public Defender Service.",
+    recordedBy: "Prof. Eleanor Hartmann",
+    recordedAt: "2025-08-30T16:00:00",
+  },
+  {
+    id: "po-velasquez-moot",
+    pairId: "mp-hartmann-velasquez",
+    occurredOn: "2026-02-14",
+    kind: "moot-court",
+    detail: "Won the 3L Moot Court Tournament at CUA Law (constitutional law brief).",
+    recordedBy: "Prof. Eleanor Hartmann",
+    recordedAt: "2026-02-16T09:00:00",
+  },
+
+  // Brennan & Roy — chapter leadership pipeline.
+  {
+    id: "po-roy-leadership",
+    pairId: "mp-brennan-roy",
+    occurredOn: "2025-09-01",
+    kind: "other",
+    detail: "Elected Vice President of the D.C. metro chapter; transitioning to President in Sept 2026.",
+    recordedBy: "Sean Brennan",
+    recordedAt: "2025-09-05T11:00:00",
+  },
+  {
+    id: "po-roy-publication",
+    pairId: "mp-brennan-roy",
+    occurredOn: "2026-01-15",
+    kind: "publication",
+    detail: "Co-authored short piece in Catholic Lawyer on chapter formation models.",
+    recordedBy: "Sean Brennan",
+    recordedAt: "2026-01-17T08:00:00",
+  },
+
+  // Tanner & Lim — first year of practice.
+  {
+    id: "po-lim-1yr",
+    pairId: "mp-tanner-lim",
+    occurredOn: "2026-04-15",
+    kind: "still-in-practice-1yr",
+    detail: "One year as M&A associate at Sidley Austin. Considering the question of corporate work-as-vocation rather than running from it.",
+    recordedBy: "David Tanner",
+    recordedAt: "2026-04-20T19:30:00",
+  },
+
+  // Ruiz & Park — too new for outcomes yet.
 ];
 
 // ────────────────────────────────────────────────────────────────────

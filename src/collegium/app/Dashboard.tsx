@@ -17,6 +17,8 @@ import {
   serviceMatters,
   mentorPairs,
   people,
+  pairMeetings,
+  pairOutcomes,
 } from "../data/demo";
 import { peerGuilds, peerSignals } from "../data/communio";
 import { generateBriefings } from "../lib/nri/engine";
@@ -39,6 +41,8 @@ export function Dashboard() {
     mentorPairs,
     events,
     serviceMatters,
+    pairMeetings,
+    pairOutcomes,
     peerGuilds,
     peerSignals,
   });

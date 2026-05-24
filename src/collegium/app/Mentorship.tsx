@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Sparkles, ArrowRight, PenLine } from "lucide-react";
-import { mentorPairs, people, chapters } from "../data/demo";
+import { Sparkles, ArrowRight, PenLine, Award } from "lucide-react";
+import { mentorPairs, people, chapters, pairOutcomes } from "../data/demo";
 
 export function Mentorship() {
   return (
@@ -36,11 +36,12 @@ export function Mentorship() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 sm:mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6 sm:mb-8">
         <Stat label="Active pairs" value={mentorPairs.length} />
         <Stat label="Thriving" value={mentorPairs.filter((p) => p.status === "thriving").length} />
         <Stat label="Steady" value={mentorPairs.filter((p) => p.status === "steady").length} />
         <Stat label="Drifting" value={mentorPairs.filter((p) => p.status === "drifting").length} accent="warn" />
+        <Stat label="Outcomes recorded" value={pairOutcomes.length} accent="celebrate" />
       </div>
 
       <div className="space-y-4">
@@ -125,13 +126,27 @@ function monthsSince(date: string) {
   return (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
 }
 
-function Stat({ label, value, accent }: { label: string; value: number; accent?: "warn" }) {
+function Stat({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: number;
+  accent?: "warn" | "celebrate";
+}) {
+  const color =
+    accent === "warn"
+      ? "text-[hsl(8_55%_42%)]"
+      : accent === "celebrate"
+        ? "text-[hsl(145_40%_28%)]"
+        : "text-[hsl(var(--c-ink))]";
   return (
     <div className="collegium-card p-4">
-      <div className="text-xs text-[hsl(var(--c-slate-soft))] uppercase tracking-wider mb-1">{label}</div>
-      <div className={`collegium-display text-3xl ${accent === "warn" ? "text-[hsl(8_55%_42%)]" : "text-[hsl(var(--c-ink))]"}`}>
-        {value}
+      <div className="text-xs text-[hsl(var(--c-slate-soft))] uppercase tracking-wider mb-1">
+        {label}
       </div>
+      <div className={`collegium-display text-3xl ${color}`}>{value}</div>
     </div>
   );
 }
