@@ -1,4 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { CollegiumAuthProvider } from "./lib/auth/CollegiumAuthContext";
+import { SignIn } from "./app/auth/SignIn";
+import { SignUp } from "./app/auth/SignUp";
+import { ForgotPassword } from "./app/auth/ForgotPassword";
+import { ResetPassword } from "./app/auth/ResetPassword";
+import { AuthCallback } from "./app/auth/AuthCallback";
 import { PublicLayout } from "./components/PublicLayout";
 import { AppLayout } from "./components/AppLayout";
 
@@ -85,8 +91,9 @@ function ScrollToTopOnNav() {
 
 export default function CollegiumApp() {
   return (
-    <BrowserRouter basename={basename === "/" ? undefined : basename}>
-      <ScrollToTopOnNav />
+    <CollegiumAuthProvider>
+      <BrowserRouter basename={basename === "/" ? undefined : basename}>
+        <ScrollToTopOnNav />
       <Routes>
         {/* Public marketing */}
         <Route element={<PublicLayout />}>
@@ -106,6 +113,13 @@ export default function CollegiumApp() {
         <Route path="checkout" element={<Checkout />} />
         <Route path="onboarding" element={<Onboarding />} />
         <Route path="portal/:token" element={<ClientPortal />} />
+
+        {/* Auth — sign-in, sign-up, password recovery, OAuth callback. */}
+        <Route path="auth/sign-in" element={<SignIn />} />
+        <Route path="auth/sign-up" element={<SignUp />} />
+        <Route path="auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="auth/reset-password" element={<ResetPassword />} />
+        <Route path="auth/callback" element={<AuthCallback />} />
 
         {/* Auxilium — second front door. Plain English, public-facing. */}
         <Route path="auxilium" element={<AuxiliumLanding />} />
@@ -178,7 +192,8 @@ export default function CollegiumApp() {
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </CollegiumAuthProvider>
   );
 }
