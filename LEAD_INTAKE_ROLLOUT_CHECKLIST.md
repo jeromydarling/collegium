@@ -31,7 +31,9 @@ Per-app status of the Layer 1 universal lead-intake migration. Update boxes as e
 ## Per-app integration steps (same for every app)
 
 1. Copy `src/components/feedback/CrosLeadForm.tsx` from the CROS repo into the satellite repo at the same path.
-2. (Optional) Set `VITE_CROS_INTAKE_URL=https://thecros.lovable.app/functions/v1/public-leads-intake` in the satellite's `.env`.
+2. (Optional) Set `VITE_CROS_INTAKE_URL=https://zmeawjhxbgvtcfcfcygf.supabase.co/functions/v1/public-leads-intake` in the satellite's `.env`.
+
+   **Do not use `https://thecros.lovable.app/functions/v1/...`** — that URL 307-redirects to `thecros.app`, which serves the SPA shell (no edge function, no CORS headers). Browsers silently fail the request. Use the Supabase Functions origin directly.
 3. Replace the existing form body with `<CrosLeadForm sourceApp="<slug>" ... />`.
 4. Ensure the satellite's deployed origin appears in `_shared/cors.ts` allowlist on CROS. (All current origins already present.)
 5. Smoke-test: submit, then watch OperatorConsole → Leads by App → row count tick up for that slug.
