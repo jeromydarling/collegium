@@ -181,6 +181,83 @@ Deno.serve(async (req) => {
       // This is a safety net for direct payment intents
     }
 
+    // ── charge.refunded — full or partial refund settled on the connected account ──
+    if (type === "charge.refunded") {
+      const charge = event.data.object as Stripe.Charge;
+      const piId = (charge.payment_intent as string) || null;
+      const amount = charge.amount ?? 0;
+      const amountRefunded = charge.amount_refunded ?? 0;
+      const refundStatus = amountRefunded >= amount ? "refunded" : "partially_refunded";
+
+      if (piId) {
+        await svc.from("financial_events")
+          .update({
+            status: refundStatus,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("stripe_payment_intent_id", piId);
+        logStep("Charge refunded", { piId, refundStatus, amountRefunded });
+      }
+    }
+
+    // ── application_fee.refunded — our platform fee was refunded back to the connected account ──
+    if (type === "application_fee.refunded") {
+      const fee = event.data.object as Stripe.ApplicationFee;
+      logStep("Application fee refunded", { feeId: fee.id, accountId: connectedAccountId, amountRefunded: fee.amount_refunded });
+      if (tenantId) {
+        await svc.from("financial_events").insert({
+          tenant_id: tenantId,
+          event_type: "support",
+          status: "refunded",
+          amount_cents: -(fee.amount_refunded ?? 0),
+          title: "Platform fee refunded",
+          description: `Application fee ${fee.id} was refunded.`,
+          source_type: "application_fee",
+          source_id: fee.id,
+          completed_at: new Date().toISOString(),
+        });
+      }
+    }
+
+    // ── charge.dispute.created/updated/closed — chargeback liability on connected account ──
+    if (type === "charge.dispute.created" || type === "charge.dispute.updated" || type === "charge.dispute.closed") {
+      const dispute = event.data.object as Stripe.Dispute;
+      const piId = (dispute.payment_intent as string) || null;
+      let mappedStatus: string | null = null;
+      if (type === "charge.dispute.created") mappedStatus = "disputed";
+      else if (type === "charge.dispute.closed") {
+        if (dispute.status === "won") mappedStatus = "dispute_won";
+        else if (dispute.status === "lost") mappedStatus = "dispute_lost";
+      }
+
+      if (piId && mappedStatus) {
+        await svc.from("financial_events")
+          .update({ status: mappedStatus, updated_at: new Date().toISOString() })
+          .eq("stripe_payment_intent_id", piId);
+      }
+      logStep("Dispute event", {
+        type, disputeId: dispute.id, status: dispute.status, accountId: connectedAccountId, piId, mappedStatus,
+      });
+    }
+
+    // ── payout.failed — bank rejected a payout to the connected account ──
+    if (type === "payout.failed") {
+      const payout = event.data.object as Stripe.Payout;
+      logStep("Payout failed", {
+        payoutId: payout.id, accountId: connectedAccountId, failureCode: payout.failure_code, failureMessage: payout.failure_message,
+      });
+      if (connectedAccountId) {
+        await svc.from("tenant_stripe_connect")
+          .update({
+            last_payout_failure_code: payout.failure_code ?? null,
+            last_payout_failure_message: payout.failure_message ?? null,
+            last_payout_failure_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .eq("stripe_account_id", connectedAccountId);
+      }
+    }
+
     // ── account.updated (Connect account status change) ──
     if (type === "account.updated" && connectedAccountId) {
       const account = event.data.object as Stripe.Account;
